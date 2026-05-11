@@ -1,0 +1,1153 @@
+# =============================================================================
+# sensorList.txt — Sensor Control and Component Summary Configuration
+# =============================================================================
+#
+# This file serves THREE purposes:
+#
+# PURPOSE 1 — Sensor description table (Table 1)
+#   Describes each sensor: name, physical meaning, coordinate system, units.
+#   Reference only — NOT parsed by the pipeline.
+#
+# PURPOSE 2 — Per-sensor calculation flags (Table 2)
+#   Controls which calculations are performed for each sensor channel.
+#   IS parsed by the pipeline.
+#
+# PURPOSE 3 — Component load summary configuration (Table 3)
+#   Defines sensor assignments and settings for .sum output files.
+#   IS parsed by the pipeline.
+#
+# =============================================================================
+
+
+# =============================================================================
+# TABLE 0 — GLOBAL FATIGUE AND DEL PARAMETERS
+# Parsed by the pipeline — defines Wöhler slopes for RFC, LDD, LRD methods
+# =============================================================================
+#
+# Three independent slope lists — one per fatigue method.
+# All slopes listed here will be computed and written to FAT files.
+# SUM file slopes (Table 4) must be a subset of RFC_M_VALUES.
+#
+# Neq values are read from LC_PostProcess.txt header (NEQ_LIFETIME, NEQ_REV).
+# LIFETIME_SECS is derived automatically from LIFETIME_YEARS.
+#
+[FATIGUE_PARAMETERS]
+#
+# ── RFC — Rainflow Counting ───────────────────────────────────────────────────
+# Used for : .rfc files, lifetime RFC DEL, all SUM folder fatigue tables
+# Neq      : NEQ_LIFETIME (from LC_PostProcess.txt, e.g. 1e7)
+RFC_M_VALUES     = 3.0  3.3  4.0  5.0  6.0  8.0  10.0  12.0  25.0
+#
+# ── LDD — Level Duration Distribution ────────────────────────────────────────
+# Used for : .ldd files, lifetime LDD DEL (1Hz time-based)
+# Neq      : LIFETIME_SECS = LIFETIME_YEARS x 365.25 x 24 x 3600
+LDD_M_VALUES     = 3.0  3.3  4.0  5.0  6.0  8.0  10.0  12.0  25.0  3.3  6.7
+#
+# ── LRD — Level Revolution Distribution ──────────────────────────────────────
+# Used for : .lrd files, lifetime LRD DEL (revolution-based, rotating sensors)
+# Neq      : NEQ_REV (from LC_PostProcess.txt, e.g. 1e8)
+LRD_M_VALUES     = 3.0  3.3  4.0  5.0  6.0  8.0  10.0  12.0  25.0  3.3  6.7
+
+
+# =============================================================================
+# TABLE 1 — SENSOR DESCRIPTION
+# Reference only — not parsed by the pipeline
+# =============================================================================
+#
+# Col 1 : SensorName     — exact channel name as in OpenFAST output
+# Col 2 : Description    — physical meaning of the sensor
+# Col 3 : CoordSystem    — coordinate system / frame of reference
+# Col 4 : Units          — physical units
+#
+# Coordinate system legend:
+#   Hub/Coned (c) : Rotates with rotor. Does NOT rotate with blade pitch.
+#                   Mx = in-plane bending, My = out-of-plane bending, Mz = torsion
+#   Blade (b)     : Rotates with rotor AND with blade pitch.
+#                   Mx = edgewise bending, My = flapwise bending, Mz = torsion
+#   Tower (t)     : Fixed to tower. Does not rotate.
+#                   Mx = side-side bending, My = fore-aft bending, Mz = torsion
+#   Nacelle (p)   : Rotates with yaw. Does not rotate with rotor.
+#                   Mx = rolling moment, My = pitching moment, Mz = yaw moment
+#   Shaft non-rot : Fixed to nacelle. Does not rotate with rotor.
+#   Shaft rot     : Rotates with rotor. Fixed to low-speed shaft.
+#
+# ---------------------------------------------------------------------------------------------------------------------------------------
+# SensorName                  Description                                         CoordSystem              Units
+# ---------------------------------------------------------------------------------------------------------------------------------------
+#
+# ── Blade 1 Root — Hub/Coned frame (c suffix) ──────────────────────────────────────────────────────────────────────────────────────────
+# RootFxc1_[kN]               Blade 1 root in-plane shear force                   Hub/Coned (no pitch)     kN
+# RootFyc1_[kN]               Blade 1 root out-of-plane shear force               Hub/Coned (no pitch)     kN
+# RootFzc1_[kN]               Blade 1 root axial force (along pitch axis)         Hub/Coned (no pitch)     kN
+# RootMxc1_[kN-m]             Blade 1 root in-plane bending moment                Hub/Coned (no pitch)     kN-m
+# RootMyc1_[kN-m]             Blade 1 root out-of-plane bending moment            Hub/Coned (no pitch)     kN-m
+# RootMzc1_[kN-m]             Blade 1 root torsion moment                         Hub/Coned (no pitch)     kN-m
+#
+# ── Blade 1 Root — Blade frame (b suffix) ──────────────────────────────────────────────────────────────────────────────────────────────
+# RootFxb1_[kN]               Blade 1 root edgewise shear force                   Blade (pitched)          kN
+# RootFyb1_[kN]               Blade 1 root flapwise shear force                   Blade (pitched)          kN
+# RootFzb1_[kN]               Blade 1 root axial force (along pitch axis)         Blade (pitched)          kN
+# RootMxb1_[kN-m]             Blade 1 root edgewise bending moment                Blade (pitched)          kN-m
+# RootMyb1_[kN-m]             Blade 1 root flapwise bending moment                Blade (pitched)          kN-m
+# RootMzb1_[kN-m]             Blade 1 root torsion/pitching moment                Blade (pitched)          kN-m
+#
+# ── Blade 2 Root — Hub/Coned frame (c suffix) ──────────────────────────────────────────────────────────────────────────────────────────
+# RootFxc2_[kN]               Blade 2 root in-plane shear force                   Hub/Coned (no pitch)     kN
+# RootFyc2_[kN]               Blade 2 root out-of-plane shear force               Hub/Coned (no pitch)     kN
+# RootFzc2_[kN]               Blade 2 root axial force                            Hub/Coned (no pitch)     kN
+# RootMxc2_[kN-m]             Blade 2 root in-plane bending moment                Hub/Coned (no pitch)     kN-m
+# RootMyc2_[kN-m]             Blade 2 root out-of-plane bending moment            Hub/Coned (no pitch)     kN-m
+# RootMzc2_[kN-m]             Blade 2 root torsion moment                         Hub/Coned (no pitch)     kN-m
+#
+# ── Blade 2 Root — Blade frame (b suffix) ──────────────────────────────────────────────────────────────────────────────────────────────
+# RootFxb2_[kN]               Blade 2 root edgewise shear force                   Blade (pitched)          kN
+# RootFyb2_[kN]               Blade 2 root flapwise shear force                   Blade (pitched)          kN
+# RootFzb2_[kN]               Blade 2 root axial force                            Blade (pitched)          kN
+# RootMxb2_[kN-m]             Blade 2 root edgewise bending moment                Blade (pitched)          kN-m
+# RootMyb2_[kN-m]             Blade 2 root flapwise bending moment                Blade (pitched)          kN-m
+# RootMzb2_[kN-m]             Blade 2 root torsion/pitching moment                Blade (pitched)          kN-m
+#
+# ── Blade 3 Root — Hub/Coned frame (c suffix) ──────────────────────────────────────────────────────────────────────────────────────────
+# RootFxc3_[kN]               Blade 3 root in-plane shear force                   Hub/Coned (no pitch)     kN
+# RootFyc3_[kN]               Blade 3 root out-of-plane shear force               Hub/Coned (no pitch)     kN
+# RootFzc3_[kN]               Blade 3 root axial force                            Hub/Coned (no pitch)     kN
+# RootMxc3_[kN-m]             Blade 3 root in-plane bending moment                Hub/Coned (no pitch)     kN-m
+# RootMyc3_[kN-m]             Blade 3 root out-of-plane bending moment            Hub/Coned (no pitch)     kN-m
+# RootMzc3_[kN-m]             Blade 3 root torsion moment                         Hub/Coned (no pitch)     kN-m
+#
+# ── Blade 3 Root — Blade frame (b suffix) ──────────────────────────────────────────────────────────────────────────────────────────────
+# RootFxb3_[kN]               Blade 3 root edgewise shear force                   Blade (pitched)          kN
+# RootFyb3_[kN]               Blade 3 root flapwise shear force                   Blade (pitched)          kN
+# RootFzb3_[kN]               Blade 3 root axial force                            Blade (pitched)          kN
+# RootMxb3_[kN-m]             Blade 3 root edgewise bending moment                Blade (pitched)          kN-m
+# RootMyb3_[kN-m]             Blade 3 root flapwise bending moment                Blade (pitched)          kN-m
+# RootMzb3_[kN-m]             Blade 3 root torsion/pitching moment                Blade (pitched)          kN-m
+#
+# ── Blade Spanwise — ElastoDyn (b suffix, blade local frame) ───────────────────────────────────────────────────────────────────────────
+# Mx=edgewise, My=flapwise, Mz=torsion — same pattern for Spn1 through Spn9, blades 1-3
+# Spn1MLxb1_[kN-m]            Blade 1 edgewise bending moment at Spn1             Blade local              kN-m
+# Spn1MLyb1_[kN-m]            Blade 1 flapwise bending moment at Spn1             Blade local              kN-m
+# Spn1MLzb1_[kN-m]            Blade 1 torsion moment at Spn1                      Blade local              kN-m
+# Spn1FLxb1_[kN]              Blade 1 edgewise shear force at Spn1                Blade local              kN
+# Spn1FLyb1_[kN]              Blade 1 flapwise shear force at Spn1                Blade local              kN
+# Spn1FLzb1_[kN]              Blade 1 axial force at Spn1                         Blade local              kN
+# ... (Spn2 through Spn9 follow same pattern for blades 1, 2, 3)
+#
+# ── Tower Base ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# TwrBsFxt_[kN]               Tower base fore-aft shear force                     Tower (fixed)            kN
+# TwrBsFyt_[kN]               Tower base side-side shear force                    Tower (fixed)            kN
+# TwrBsFzt_[kN]               Tower base axial force (vertical)                   Tower (fixed)            kN
+# TwrBsMxt_[kN-m]             Tower base side-side bending moment                 Tower (fixed)            kN-m
+# TwrBsMyt_[kN-m]             Tower base fore-aft bending moment                  Tower (fixed)            kN-m
+# TwrBsMzt_[kN-m]             Tower base torsion moment                           Tower (fixed)            kN-m
+#
+# ── Tower Height Stations — ElastoDyn (t suffix, tower fixed frame) ────────────────────────────────────────────────────────────────────
+# Mx=side-side bending, My=fore-aft bending, Mz=torsion — same pattern for TwHt1 through TwHt9
+# TwHt1MLxt_[kN-m]            Tower side-side bending moment at height station 1  Tower (fixed)            kN-m
+# TwHt1MLyt_[kN-m]            Tower fore-aft bending moment at height station 1   Tower (fixed)            kN-m
+# TwHt1MLzt_[kN-m]            Tower torsion moment at height station 1            Tower (fixed)            kN-m
+# TwHt1FLxt_[kN]              Tower fore-aft shear force at height station 1      Tower (fixed)            kN
+# TwHt1FLyt_[kN]              Tower side-side shear force at height station 1     Tower (fixed)            kN
+# TwHt1FLzt_[kN]              Tower axial force at height station 1               Tower (fixed)            kN
+# ... (TwHt2 through TwHt9 follow same pattern)
+#
+# ── Tower Top / Yaw Bearing ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# YawBrFxp_[kN]               Yaw bearing fore-aft shear force                    Nacelle (yawed)          kN
+# YawBrFyp_[kN]               Yaw bearing side-side shear force                   Nacelle (yawed)          kN
+# YawBrFzp_[kN]               Yaw bearing vertical force                          Nacelle (yawed)          kN
+# YawBrMxp_[kN-m]             Yaw bearing rolling moment                          Nacelle (yawed)          kN-m
+# YawBrMyp_[kN-m]             Yaw bearing pitching moment                         Nacelle (yawed)          kN-m
+# YawBrMzp_[kN-m]             Yaw bearing yaw moment (yaw drive torque)           Nacelle (yawed)          kN-m
+#
+# ── Tower Top / Yaw Bearing — Translational Accelerations (p suffix) ──────────────────────────────────────────────────────────────────────────
+# YawBrTAxp_[m/s^2]           Tower top fore-aft translational acceleration        Nacelle (yawed)          m/s^2
+# YawBrTAyp_[m/s^2]           Tower top side-side translational acceleration       Nacelle (yawed)          m/s^2
+# YawBrTAzp_[m/s^2]           Tower top vertical translational acceleration        Nacelle (yawed)          m/s^2
+#
+# ── Tower Top / Yaw Bearing — Angular Accelerations (p suffix) ─────────────────────────────────────────────────────────────────────────────────
+# YawBrRAxp_[deg/s^2]         Tower top roll angular acceleration                  Nacelle (yawed)          deg/s^2
+# YawBrRAyp_[deg/s^2]         Tower top pitch angular acceleration                 Nacelle (yawed)          deg/s^2
+# YawBrRAzp_[deg/s^2]         Tower top yaw angular acceleration                   Nacelle (yawed)          deg/s^2
+#
+# ── Low-Speed Shaft — Non-rotating frame ───────────────────────────────────────────────────────────────────────────────────────────────
+# LSShftFxa_[kN]              Low-speed shaft axial thrust force                  Shaft non-rotating       kN
+# LSShftFya_[kN]              Low-speed shaft lateral force (y)                   Shaft non-rotating       kN
+# LSShftFza_[kN]              Low-speed shaft lateral force (z)                   Shaft non-rotating       kN
+# LSShftMxa_[kN-m]            Low-speed shaft torque (driving torque)             Shaft non-rotating       kN-m
+# LSShftMya_[kN-m]            Low-speed shaft bending moment (y)                  Shaft non-rotating       kN-m
+# LSShftMza_[kN-m]            Low-speed shaft bending moment (z)                  Shaft non-rotating       kN-m
+#
+# ── Low-Speed Shaft — Rotating frame ───────────────────────────────────────────────────────────────────────────────────────────────────
+# LSShftFys_[kN]              Low-speed shaft lateral force (y, rotating)         Shaft rotating           kN
+# LSShftFzs_[kN]              Low-speed shaft lateral force (z, rotating)         Shaft rotating           kN
+# LSShftMxs_[kN-m]            Low-speed shaft torque (rotating)                   Shaft rotating           kN-m
+# LSShftMys_[kN-m]            Low-speed shaft bending moment (y, rotating)        Shaft rotating           kN-m
+# LSShftMzs_[kN-m]            Low-speed shaft bending moment (z, rotating)        Shaft rotating           kN-m
+#
+# ── Blade Tip Deflection & Tower Clearance ────────────────────────────────────────────────────────────────────────────────────────────
+# OoPDefl1_[m]               Blade 1 out-of-plane tip deflection (flapwise)        Blade/Tower              m
+# OoPDefl2_[m]               Blade 2 out-of-plane tip deflection (flapwise)        Blade/Tower              m
+# OoPDefl3_[m]               Blade 3 out-of-plane tip deflection (flapwise)        Blade/Tower              m
+# TwrClrnc1_[m]              Tower clearance blade 1 (tip to tower surface)        Blade/Tower              m
+# TwrClrnc2_[m]              Tower clearance blade 2 (tip to tower surface)        Blade/Tower              m
+# TwrClrnc3_[m]              Tower clearance blade 3 (tip to tower surface)        Blade/Tower              m
+#
+# ── Rotor / Generator ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# RotSpeed_[rpm]              Rotor rotational speed                               N/A                      rpm
+# GenSpeed_[rpm]              Generator rotational speed                           N/A                      rpm
+# RotThrust_[kN]              Rotor aerodynamic thrust force                       Hub rotating             kN
+# RotTorq_[kN-m]              Rotor aerodynamic torque                             Hub rotating             kN-m
+# GenTq_[kN-m]                Generator reaction torque                           Generator shaft          kN-m
+# GenPwr_[kW]                 Generator electrical power output                   N/A                      kW
+#
+# ── Nacelle Accelerations ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# NcIMUTAxs_[m/s^2]           Nacelle fore-aft translational acceleration         Nacelle (fixed)          m/s^2
+# NcIMUTAys_[m/s^2]           Nacelle side-side translational acceleration        Nacelle (fixed)          m/s^2
+#
+# ── Wind / Inflow ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# RtVAvgxh_[m/s]              Rotor-averaged wind speed (x, hub height)           Hub-height inertial      m/s
+# RtVAvgyh_[m/s]              Rotor-averaged wind speed (y, hub height)           Hub-height inertial      m/s
+# HorWndDir_[deg]             Horizontal wind direction                           N/A                      deg
+# RotTSR_[-]                  Tip speed ratio                                     N/A                      -
+#
+# ── Blade Pitch and Azimuth ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# BlPitch1_[deg]              Blade 1 pitch angle (positive nose into wind)       N/A                      deg
+# BlPitch2_[deg]              Blade 2 pitch angle                                 N/A                      deg
+# BlPitch3_[deg]              Blade 3 pitch angle                                 N/A                      deg
+# Azimuth_[deg]               Rotor azimuth angle (0 = blade 1 pointing up)       N/A                      deg
+# ── Derived Sensors — Resultant Bending Moments ────────────────────────────────────────────────────────────────────────────────────────
+# Computed from time series at every time step: Mres = sqrt(M1^2 + M2^2)
+# Mz (torsion) excluded from all resultants. Always positive — Min not meaningful.
+# EXT produces .max file only. Excluded from summary_Raw/Family/FamilyPLF.sta.
+#
+# Mres_RootBld1_[kN-m]  Blade 1 root resultant bending sqrt(Mxb1^2+Myb1^2)    Blade (pitched)          kN-m
+# Mres_RootBld2_[kN-m]  Blade 2 root resultant bending sqrt(Mxb2^2+Myb2^2)    Blade (pitched)          kN-m
+# Mres_RootBld3_[kN-m]  Blade 3 root resultant bending sqrt(Mxb3^2+Myb3^2)    Blade (pitched)          kN-m
+# Mres_RootHub1_[kN-m]  Blade 1 root resultant bending sqrt(Mxc1^2+Myc1^2)    Hub/Coned (no pitch)     kN-m
+# Mres_RootHub2_[kN-m]  Blade 2 root resultant bending sqrt(Mxc2^2+Myc2^2)    Hub/Coned (no pitch)     kN-m
+# Mres_RootHub3_[kN-m]  Blade 3 root resultant bending sqrt(Mxc3^2+Myc3^2)    Hub/Coned (no pitch)     kN-m
+# Mres_LSShft_a_[kN-m]  LSS resultant bending — non-rotating sqrt(Mya^2+Mza^2) Shaft non-rotating      kN-m
+# Mres_LSShft_s_[kN-m]  LSS resultant bending — rotating sqrt(Mys^2+Mzs^2)    Shaft rotating           kN-m
+# Mres_TwrBs_[kN-m]     Tower base resultant sqrt(Mxt^2+Myt^2)                 Tower (fixed)            kN-m
+# Mres_TwHt1_[kN-m]     Tower height station 1 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt2_[kN-m]     Tower height station 2 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt3_[kN-m]     Tower height station 3 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt4_[kN-m]     Tower height station 4 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt5_[kN-m]     Tower height station 5 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt6_[kN-m]     Tower height station 6 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt7_[kN-m]     Tower height station 7 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt8_[kN-m]     Tower height station 8 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_TwHt9_[kN-m]     Tower height station 9 resultant sqrt(MLxt^2+MLyt^2)   Tower (fixed)            kN-m
+# Mres_YawBr_[kN-m]     Yaw bearing resultant sqrt(Mxp^2+Myp^2)                Nacelle (yawed)          kN-m
+# ---------------------------------------------------------------------------------------------------------------------------------------
+
+
+# =============================================================================
+# TABLE 2 — PER-SENSOR CALCULATION FLAGS
+# Parsed by the pipeline
+# =============================================================================
+#
+# Col  1 : SensorName    — exact channel name as in OpenFAST output
+# Col  2 : Group         — node group (sensors in same group = same structural node)
+# Col  3 : STA           — 1 = compute Max, Min, Mean, Stdev, Range, AbsMax, RMS
+# Col  4 : 1HzEq         — 1 = compute per-file 1Hz equivalent DEL
+# Col  5 : EXT           — 1 = extreme ranking with PLF, top 10 families
+# Col  6 : RFC           — 1 = lifetime RFC spectrum → .rfc file
+# Col  7 : Markov        — 1 = lifetime Markov matrix → .markov file
+# Col  8 : LRD           — 1 = Level Revolution Distribution → .lrd file
+# Col  9 : LDD           — 1 = Level Duration Distribution → .ldd file
+# Col 10 : Complimentary — 1 = complementary loads at top 10 extreme events
+# Col 11 : CompMethod    — 1=closest to mean, 2=worst seed, 3=moment resultant
+#
+# Default for unlisted sensors: STA=1, 1HzEq=1, all others=0
+#
+# SensorName                  Group   STA  1HzEq   EXT   RFC  Markov   LRD   LDD  Complimentary  CompMethod
+# ==========================================================================================================
+#
+# ── Blade 1 Root — Hub/Coned frame (c suffix) ─────────────────────────────────
+RootFxc1_[kN]                     1     1      1     1     1       1     1     1              1           2
+RootFyc1_[kN]                     1     1      1     1     1       1     1     1              1           2
+RootFzc1_[kN]                     1     1      1     1     1       1     1     1              1           2
+RootMxc1_[kN-m]                   1     1      1     1     1       1     1     1              1           2
+RootMyc1_[kN-m]                   1     1      1     1     1       1     1     1              1           2
+RootMzc1_[kN-m]                   1     1      1     1     1       1     1     1              1           2
+#
+# ── Blade 1 Root — Blade frame (b suffix) ─────────────────────────────────────
+RootFxb1_[kN]                     2     1      1     1     1       1     1     1              1           2
+RootFyb1_[kN]                     2     1      1     1     1       1     1     1              1           2
+RootFzb1_[kN]                     2     1      1     1     1       1     1     1              1           2
+RootMxb1_[kN-m]                   2     1      1     1     1       1     1     1              1           2
+RootMyb1_[kN-m]                   2     1      1     1     1       1     1     1              1           2
+RootMzb1_[kN-m]                   2     1      1     1     1       1     1     1              1           2
+#
+# ── Blade 2 Root — Hub/Coned frame (c suffix) ─────────────────────────────────
+RootFxc2_[kN]                     3     1      1     1     1       1     1     1              1           2
+RootFyc2_[kN]                     3     1      1     1     1       1     1     1              1           2
+RootFzc2_[kN]                     3     1      1     1     1       1     1     1              1           2
+RootMxc2_[kN-m]                   3     1      1     1     1       1     1     1              1           2
+RootMyc2_[kN-m]                   3     1      1     1     1       1     1     1              1           2
+RootMzc2_[kN-m]                   3     1      1     1     1       1     1     1              1           2
+#
+# ── Blade 2 Root — Blade frame (b suffix) ─────────────────────────────────────
+RootFxb2_[kN]                     4     1      1     1     1       1     1     1              1           2
+RootFyb2_[kN]                     4     1      1     1     1       1     1     1              1           2
+RootFzb2_[kN]                     4     1      1     1     1       1     1     1              1           2
+RootMxb2_[kN-m]                   4     1      1     1     1       1     1     1              1           2
+RootMyb2_[kN-m]                   4     1      1     1     1       1     1     1              1           2
+RootMzb2_[kN-m]                   4     1      1     1     1       1     1     1              1           2
+#
+# ── Blade 3 Root — Hub/Coned frame (c suffix) ─────────────────────────────────
+RootFxc3_[kN]                     5     1      1     1     1       1     1     1              1           2
+RootFyc3_[kN]                     5     1      1     1     1       1     1     1              1           2
+RootFzc3_[kN]                     5     1      1     1     1       1     1     1              1           2
+RootMxc3_[kN-m]                   5     1      1     1     1       1     1     1              1           2
+RootMyc3_[kN-m]                   5     1      1     1     1       1     1     1              1           2
+RootMzc3_[kN-m]                   5     1      1     1     1       1     1     1              1           2
+#
+# ── Blade 3 Root — Blade frame (b suffix) ─────────────────────────────────────
+RootFxb3_[kN]                     6     1      1     1     1       1     1     1              1           2
+RootFyb3_[kN]                     6     1      1     1     1       1     1     1              1           2
+RootFzb3_[kN]                     6     1      1     1     1       1     1     1              1           2
+RootMxb3_[kN-m]                   6     1      1     1     1       1     1     1              1           2
+RootMyb3_[kN-m]                   6     1      1     1     1       1     1     1              1           2
+RootMzb3_[kN-m]                   6     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn1 — blade 1 (group 7) ───────────────────────────────────
+Spn1MLxb1_[kN-m]                  7     1      1     1     1       1     1     1              1           2
+Spn1MLyb1_[kN-m]                  7     1      1     1     1       1     1     1              1           2
+Spn1MLzb1_[kN-m]                  7     1      1     1     1       1     1     1              1           2
+Spn1FLxb1_[kN]                    7     1      1     1     1       1     1     1              1           2
+Spn1FLyb1_[kN]                    7     1      1     1     1       1     1     1              1           2
+Spn1FLzb1_[kN]                    7     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn2 — blade 1 (group 8) ───────────────────────────────────
+Spn2MLxb1_[kN-m]                  8     1      1     1     1       1     1     1              1           2
+Spn2MLyb1_[kN-m]                  8     1      1     1     1       1     1     1              1           2
+Spn2MLzb1_[kN-m]                  8     1      1     1     1       1     1     1              1           2
+Spn2FLxb1_[kN]                    8     1      1     1     1       1     1     1              1           2
+Spn2FLyb1_[kN]                    8     1      1     1     1       1     1     1              1           2
+Spn2FLzb1_[kN]                    8     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn3 — blade 1 (group 9) ───────────────────────────────────
+Spn3MLxb1_[kN-m]                  9     1      1     1     1       1     1     1              1           2
+Spn3MLyb1_[kN-m]                  9     1      1     1     1       1     1     1              1           2
+Spn3MLzb1_[kN-m]                  9     1      1     1     1       1     1     1              1           2
+Spn3FLxb1_[kN]                    9     1      1     1     1       1     1     1              1           2
+Spn3FLyb1_[kN]                    9     1      1     1     1       1     1     1              1           2
+Spn3FLzb1_[kN]                    9     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn4 — blade 1 (group 10) ──────────────────────────────────
+Spn4MLxb1_[kN-m]                 10     1      1     1     1       1     1     1              1           2
+Spn4MLyb1_[kN-m]                 10     1      1     1     1       1     1     1              1           2
+Spn4MLzb1_[kN-m]                 10     1      1     1     1       1     1     1              1           2
+Spn4FLxb1_[kN]                   10     1      1     1     1       1     1     1              1           2
+Spn4FLyb1_[kN]                   10     1      1     1     1       1     1     1              1           2
+Spn4FLzb1_[kN]                   10     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn5 — blade 1 (group 11) ──────────────────────────────────
+Spn5MLxb1_[kN-m]                 11     1      1     1     1       1     1     1              1           2
+Spn5MLyb1_[kN-m]                 11     1      1     1     1       1     1     1              1           2
+Spn5MLzb1_[kN-m]                 11     1      1     1     1       1     1     1              1           2
+Spn5FLxb1_[kN]                   11     1      1     1     1       1     1     1              1           2
+Spn5FLyb1_[kN]                   11     1      1     1     1       1     1     1              1           2
+Spn5FLzb1_[kN]                   11     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn6 — blade 1 (group 12) ──────────────────────────────────
+Spn6MLxb1_[kN-m]                 12     1      1     1     1       1     1     1              1           2
+Spn6MLyb1_[kN-m]                 12     1      1     1     1       1     1     1              1           2
+Spn6MLzb1_[kN-m]                 12     1      1     1     1       1     1     1              1           2
+Spn6FLxb1_[kN]                   12     1      1     1     1       1     1     1              1           2
+Spn6FLyb1_[kN]                   12     1      1     1     1       1     1     1              1           2
+Spn6FLzb1_[kN]                   12     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn7 — blade 1 (group 13) ──────────────────────────────────
+Spn7MLxb1_[kN-m]                 13     1      1     1     1       1     1     1              1           2
+Spn7MLyb1_[kN-m]                 13     1      1     1     1       1     1     1              1           2
+Spn7MLzb1_[kN-m]                 13     1      1     1     1       1     1     1              1           2
+Spn7FLxb1_[kN]                   13     1      1     1     1       1     1     1              1           2
+Spn7FLyb1_[kN]                   13     1      1     1     1       1     1     1              1           2
+Spn7FLzb1_[kN]                   13     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn8 — blade 1 (group 14) ──────────────────────────────────
+Spn8MLxb1_[kN-m]                 14     1      1     1     1       1     1     1              1           2
+Spn8MLyb1_[kN-m]                 14     1      1     1     1       1     1     1              1           2
+Spn8MLzb1_[kN-m]                 14     1      1     1     1       1     1     1              1           2
+Spn8FLxb1_[kN]                   14     1      1     1     1       1     1     1              1           2
+Spn8FLyb1_[kN]                   14     1      1     1     1       1     1     1              1           2
+Spn8FLzb1_[kN]                   14     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn9 — blade 1 (group 15) ──────────────────────────────────
+Spn9MLxb1_[kN-m]                 15     1      1     1     1       1     1     1              1           2
+Spn9MLyb1_[kN-m]                 15     1      1     1     1       1     1     1              1           2
+Spn9MLzb1_[kN-m]                 15     1      1     1     1       1     1     1              1           2
+Spn9FLxb1_[kN]                   15     1      1     1     1       1     1     1              1           2
+Spn9FLyb1_[kN]                   15     1      1     1     1       1     1     1              1           2
+Spn9FLzb1_[kN]                   15     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Base (group 16) ─────────────────────────────────────────────────────
+TwrBsFxt_[kN]                    16     1      1     1     1       1     1     1              1           2
+TwrBsFyt_[kN]                    16     1      1     1     1       1     1     1              1           2
+TwrBsFzt_[kN]                    16     1      1     1     1       1     1     1              1           2
+TwrBsMxt_[kN-m]                  16     1      1     1     1       1     1     1              1           2
+TwrBsMyt_[kN-m]                  16     1      1     1     1       1     1     1              1           2
+TwrBsMzt_[kN-m]                  16     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 1 (group 17) ─────────────────────────────────────────
+TwHt1MLxt_[kN-m]                 17     1      1     1     1       1     1     1              1           2
+TwHt1MLyt_[kN-m]                 17     1      1     1     1       1     1     1              1           2
+TwHt1MLzt_[kN-m]                 17     1      1     1     1       1     1     1              1           2
+TwHt1FLxt_[kN]                   17     1      1     1     1       1     1     1              1           2
+TwHt1FLyt_[kN]                   17     1      1     1     1       1     1     1              1           2
+TwHt1FLzt_[kN]                   17     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 2 (group 18) ─────────────────────────────────────────
+TwHt2MLxt_[kN-m]                 18     1      1     1     1       1     1     1              1           2
+TwHt2MLyt_[kN-m]                 18     1      1     1     1       1     1     1              1           2
+TwHt2MLzt_[kN-m]                 18     1      1     1     1       1     1     1              1           2
+TwHt2FLxt_[kN]                   18     1      1     1     1       1     1     1              1           2
+TwHt2FLyt_[kN]                   18     1      1     1     1       1     1     1              1           2
+TwHt2FLzt_[kN]                   18     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 3 (group 19) ─────────────────────────────────────────
+TwHt3MLxt_[kN-m]                 19     1      1     1     1       1     1     1              1           2
+TwHt3MLyt_[kN-m]                 19     1      1     1     1       1     1     1              1           2
+TwHt3MLzt_[kN-m]                 19     1      1     1     1       1     1     1              1           2
+TwHt3FLxt_[kN]                   19     1      1     1     1       1     1     1              1           2
+TwHt3FLyt_[kN]                   19     1      1     1     1       1     1     1              1           2
+TwHt3FLzt_[kN]                   19     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 4 (group 20) ─────────────────────────────────────────
+TwHt4MLxt_[kN-m]                 20     1      1     1     1       1     1     1              1           2
+TwHt4MLyt_[kN-m]                 20     1      1     1     1       1     1     1              1           2
+TwHt4MLzt_[kN-m]                 20     1      1     1     1       1     1     1              1           2
+TwHt4FLxt_[kN]                   20     1      1     1     1       1     1     1              1           2
+TwHt4FLyt_[kN]                   20     1      1     1     1       1     1     1              1           2
+TwHt4FLzt_[kN]                   20     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 5 (group 21) ─────────────────────────────────────────
+TwHt5MLxt_[kN-m]                 21     1      1     1     1       1     1     1              1           2
+TwHt5MLyt_[kN-m]                 21     1      1     1     1       1     1     1              1           2
+TwHt5MLzt_[kN-m]                 21     1      1     1     1       1     1     1              1           2
+TwHt5FLxt_[kN]                   21     1      1     1     1       1     1     1              1           2
+TwHt5FLyt_[kN]                   21     1      1     1     1       1     1     1              1           2
+TwHt5FLzt_[kN]                   21     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 6 (group 22) ─────────────────────────────────────────
+TwHt6MLxt_[kN-m]                 22     1      1     1     1       1     1     1              1           2
+TwHt6MLyt_[kN-m]                 22     1      1     1     1       1     1     1              1           2
+TwHt6MLzt_[kN-m]                 22     1      1     1     1       1     1     1              1           2
+TwHt6FLxt_[kN]                   22     1      1     1     1       1     1     1              1           2
+TwHt6FLyt_[kN]                   22     1      1     1     1       1     1     1              1           2
+TwHt6FLzt_[kN]                   22     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 7 (group 23) ─────────────────────────────────────────
+TwHt7MLxt_[kN-m]                 23     1      1     1     1       1     1     1              1           2
+TwHt7MLyt_[kN-m]                 23     1      1     1     1       1     1     1              1           2
+TwHt7MLzt_[kN-m]                 23     1      1     1     1       1     1     1              1           2
+TwHt7FLxt_[kN]                   23     1      1     1     1       1     1     1              1           2
+TwHt7FLyt_[kN]                   23     1      1     1     1       1     1     1              1           2
+TwHt7FLzt_[kN]                   23     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 8 (group 24) ─────────────────────────────────────────
+TwHt8MLxt_[kN-m]                 24     1      1     1     1       1     1     1              1           2
+TwHt8MLyt_[kN-m]                 24     1      1     1     1       1     1     1              1           2
+TwHt8MLzt_[kN-m]                 24     1      1     1     1       1     1     1              1           2
+TwHt8FLxt_[kN]                   24     1      1     1     1       1     1     1              1           2
+TwHt8FLyt_[kN]                   24     1      1     1     1       1     1     1              1           2
+TwHt8FLzt_[kN]                   24     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Height Station 9 (group 25) ─────────────────────────────────────────
+TwHt9MLxt_[kN-m]                 25     1      1     1     1       1     1     1              1           2
+TwHt9MLyt_[kN-m]                 25     1      1     1     1       1     1     1              1           2
+TwHt9MLzt_[kN-m]                 25     1      1     1     1       1     1     1              1           2
+TwHt9FLxt_[kN]                   25     1      1     1     1       1     1     1              1           2
+TwHt9FLyt_[kN]                   25     1      1     1     1       1     1     1              1           2
+TwHt9FLzt_[kN]                   25     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Top / Yaw Bearing (group 26) ────────────────────────────────────────
+YawBrFxp_[kN]                    26     1      1     1     1       1     1     1              1           2
+YawBrFyp_[kN]                    26     1      1     1     1       1     1     1              1           2
+YawBrFzp_[kN]                    26     1      1     1     1       1     1     1              1           2
+YawBrMxp_[kN-m]                  26     1      1     1     1       1     1     1              1           2
+YawBrMyp_[kN-m]                  26     1      1     1     1       1     1     1              1           2
+YawBrMzp_[kN-m]                  26     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Top / Yaw Bearing — Translational Accelerations (group 26) ─────────
+YawBrTAxp_[m/s^2]                26     1      1     1     1       1     1     1              1           2
+YawBrTAyp_[m/s^2]                26     1      1     1     1       1     1     1              1           2
+YawBrTAzp_[m/s^2]                26     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Top / Yaw Bearing — Angular Accelerations (group 26) ──────────────
+YawBrRAxp_[deg/s^2]              26     1      1     1     1       1     1     1              1           2
+YawBrRAyp_[deg/s^2]              26     1      1     1     1       1     1     1              1           2
+YawBrRAzp_[deg/s^2]              26     1      1     1     1       1     1     1              1           2
+#
+# ── Low-Speed Shaft — Non-rotating (group 27) ─────────────────────────────────
+LSShftFxa_[kN]                   27     1      1     1     1       1     1     1              1           2
+LSShftFya_[kN]                   27     1      1     1     1       1     1     1              1           2
+LSShftFza_[kN]                   27     1      1     1     1       1     1     1              1           2
+LSShftMxa_[kN-m]                 27     1      1     1     1       1     1     1              1           2
+LSSGagMya_[kN-m]                 27     1      1     1     1       1     1     1              1           2
+LSSGagMza_[kN-m]                 27     1      1     1     1       1     1     1              1           2
+#
+# ── Low-Speed Shaft — Rotating (group 28) ─────────────────────────────────────
+# Note: LSShftMxa is NOT repeated here — torque is identical in both frames
+# and is already declared in the non-rotating-frame block above.
+# Note: LSSGagMxs is NOT a real OpenFAST channel (no Mx output at the gauge
+# in the rotating frame); only Mys and Mzs exist there.
+LSShftFxs_[kN]                   28     1      1     1     1       1     1     1              1           2
+LSShftFys_[kN]                   28     1      1     1     1       1     1     1              1           2
+LSShftFzs_[kN]                   28     1      1     1     1       1     1     1              1           2
+LSSGagMxs_[kN-m]                 28     1      1     1     1       1     1     1              1           2
+LSSGagMys_[kN-m]                 28     1      1     1     1       1     1     1              1           2
+LSSGagMzs_[kN-m]                 28     1      1     1     1       1     1     1              1           2
+#
+# ── Rotor / Generator ─────────────────────────────────────────────────────────
+RotSpeed_[rpm]                   29     1      1     1     1       1     1     1              1           2
+GenSpeed_[rpm]                   29     1      1     1     1       1     1     1              1           2
+RotThrust_[kN]                   29     1      1     1     1       1     1     1              1           2
+RotTorq_[kN-m]                   29     1      1     1     1       1     1     1              1           2
+GenTq_[kN-m]                     29     1      1     1     1       1     1     1              1           2
+GenPwr_[kW]                      29     1      1     1     1       1     1     1              1           2
+#
+# ── High-Speed Shaft ──────────────────────────────────────────────────────────
+# Required by [DRIVETRAIN] Table 3 (HSS torque + power). HSS shares its
+# rpm with the generator, so HSS speed is reported via GenSpeed_[rpm] above
+# (OpenFAST does not export a separate HSShftV channel).
+HSShftTq_[kN-m]                  29     1      1     1     1       1     1     0              0           2
+HSShftPwr_[kW]                   29     1      1     1     1       1     1     0              0           2
+#
+# ── Nacelle / Wind / Control ──────────────────────────────────────────────────
+NcIMUTAxs_[m/s^2]                 0     1      1     1     1       1     1     1              1           2
+NcIMUTAys_[m/s^2]                 0     1      1     1     1       1     1     1              1           2
+RtVAvgxh_[m/s]                    0     1      1     1     1       1     1     1              1           2
+HorWndDir_[deg]                   0     1      1     1     1       1     1     1              1           2
+BlPitch1_[deg]                    0     1      1     1     1       1     1     1              1           2
+BlPitch2_[deg]                    0     1      1     1     1       1     1     1              1           2
+BlPitch3_[deg]                    0     1      1     1     1       1     1     1              1           2
+Azimuth_[deg]                     0     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Tip Deflection & Tower Clearance ────────────────────────────────
+# Min stat used for clearance — worst case is minimum (closest to tower)
+# EXT=1 → .min file written for each sensor
+# No fatigue flags — geometric check only
+OoPDefl1_[m]                      0     1      1     1     1       1     1     1              1           2
+OoPDefl2_[m]                      0     1      1     1     1       1     1     1              1           2
+OoPDefl3_[m]                      0     1      1     1     1       1     1     1              1           2
+TwrClrnc1_[m]                     0     1      1     1     1       1     1     1              1           2
+TwrClrnc2_[m]                     0     1      1     1     1       1     1     1              1           2
+TwrClrnc3_[m]                     0     1      1     1     1       1     1     1              1           2
+
+
+
+#
+# ── Blade Spanwise Spn1 — blade 2 (group 30) ───────────────────────────────────
+Spn1MLxb2_[kN-m]                  30     1      1     1     1       1     1     1              1           2
+Spn1MLyb2_[kN-m]                  30     1      1     1     1       1     1     1              1           2
+Spn1MLzb2_[kN-m]                  30     1      1     1     1       1     1     1              1           2
+Spn1FLxb2_[kN]                    30     1      1     1     1       1     1     1              1           2
+Spn1FLyb2_[kN]                    30     1      1     1     1       1     1     1              1           2
+Spn1FLzb2_[kN]                    30     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn2 — blade 2 (group 31) ───────────────────────────────────
+Spn2MLxb2_[kN-m]                  31     1      1     1     1       1     1     1              1           2
+Spn2MLyb2_[kN-m]                  31     1      1     1     1       1     1     1              1           2
+Spn2MLzb2_[kN-m]                  31     1      1     1     1       1     1     1              1           2
+Spn2FLxb2_[kN]                    31     1      1     1     1       1     1     1              1           2
+Spn2FLyb2_[kN]                    31     1      1     1     1       1     1     1              1           2
+Spn2FLzb2_[kN]                    31     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn3 — blade 2 (group 32) ───────────────────────────────────
+Spn3MLxb2_[kN-m]                  32     1      1     1     1       1     1     1              1           2
+Spn3MLyb2_[kN-m]                  32     1      1     1     1       1     1     1              1           2
+Spn3MLzb2_[kN-m]                  32     1      1     1     1       1     1     1              1           2
+Spn3FLxb2_[kN]                    32     1      1     1     1       1     1     1              1           2
+Spn3FLyb2_[kN]                    32     1      1     1     1       1     1     1              1           2
+Spn3FLzb2_[kN]                    32     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn4 — blade 2 (group 33) ──────────────────────────────────
+Spn4MLxb2_[kN-m]                  33    1      1     1     1       1     1     1              1           2
+Spn4MLyb2_[kN-m]                  33    1      1     1     1       1     1     1              1           2
+Spn4MLzb2_[kN-m]                  33    1      1     1     1       1     1     1              1           2
+Spn4FLxb2_[kN]                    33    1      1     1     1       1     1     1              1           2
+Spn4FLyb2_[kN]                    33    1      1     1     1       1     1     1              1           2
+Spn4FLzb2_[kN]                    33    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn5 — blade 2 (group 34) ──────────────────────────────────
+Spn5MLxb2_[kN-m]                  34    1      1     1     1       1     1     1              1           2
+Spn5MLyb2_[kN-m]                  34    1      1     1     1       1     1     1              1           2
+Spn5MLzb2_[kN-m]                  34    1      1     1     1       1     1     1              1           2
+Spn5FLxb2_[kN]                    34    1      1     1     1       1     1     1              1           2
+Spn5FLyb2_[kN]                    34    1      1     1     1       1     1     1              1           2
+Spn5FLzb2_[kN]                    34    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn6 — blade 2 (group 35) ──────────────────────────────────
+Spn6MLxb2_[kN-m]                  35    1      1     1     1       1     1     1              1           2
+Spn6MLyb2_[kN-m]                  35    1      1     1     1       1     1     1              1           2
+Spn6MLzb2_[kN-m]                  35    1      1     1     1       1     1     1              1           2
+Spn6FLxb2_[kN]                    35    1      1     1     1       1     1     1              1           2
+Spn6FLyb2_[kN]                    35    1      1     1     1       1     1     1              1           2
+Spn6FLzb2_[kN]                    35    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn7 — blade 2 (group 36) ──────────────────────────────────
+Spn7MLxb2_[kN-m]                  36    1      1     1     1       1     1     1              1           2
+Spn7MLyb2_[kN-m]                  36    1      1     1     1       1     1     1              1           2
+Spn7MLzb2_[kN-m]                  36    1      1     1     1       1     1     1              1           2
+Spn7FLxb2_[kN]                    36    1      1     1     1       1     1     1              1           2
+Spn7FLyb2_[kN]                    36    1      1     1     1       1     1     1              1           2
+Spn7FLzb2_[kN]                    36    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn8 — blade 2 (group 37) ──────────────────────────────────
+Spn8MLxb2_[kN-m]                  37    1      1     1     1       1     1     1              1           2
+Spn8MLyb2_[kN-m]                  37    1      1     1     1       1     1     1              1           2
+Spn8MLzb2_[kN-m]                  37    1      1     1     1       1     1     1              1           2
+Spn8FLxb2_[kN]                    37    1      1     1     1       1     1     1              1           2
+Spn8FLyb2_[kN]                    37    1      1     1     1       1     1     1              1           2
+Spn8FLzb2_[kN]                    37    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn9 — blade 2 (group 38) ──────────────────────────────────
+Spn9MLxb2_[kN-m]                  38    1      1     1     1       1     1     1              1           2
+Spn9MLyb2_[kN-m]                  38    1      1     1     1       1     1     1              1           2
+Spn9MLzb2_[kN-m]                  38    1      1     1     1       1     1     1              1           2
+Spn9FLxb2_[kN]                    38    1      1     1     1       1     1     1              1           2
+Spn9FLyb2_[kN]                    38    1      1     1     1       1     1     1              1           2
+Spn9FLzb2_[kN]                    38    1      1     1     1       1     1     1              1           2
+
+
+
+#
+# ── Blade Spanwise Spn1 — blade 1 (group 39) ───────────────────────────────────
+Spn1MLxb3_[kN-m]                  39     1      1     1     1       1     1     1              1           2
+Spn1MLyb3_[kN-m]                  39     1      1     1     1       1     1     1              1           2
+Spn1MLzb3_[kN-m]                  39     1      1     1     1       1     1     1              1           2
+Spn1FLxb3_[kN]                    39     1      1     1     1       1     1     1              1           2
+Spn1FLyb3_[kN]                    39     1      1     1     1       1     1     1              1           2
+Spn1FLzb3_[kN]                    39     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn2 — blade 1 (group 40) ───────────────────────────────────
+Spn2MLxb3_[kN-m]                  40     1      1     1     1       1     1     1              1           2
+Spn2MLyb3_[kN-m]                  40     1      1     1     1       1     1     1              1           2
+Spn2MLzb3_[kN-m]                  40     1      1     1     1       1     1     1              1           2
+Spn2FLxb3_[kN]                    40     1      1     1     1       1     1     1              1           2
+Spn2FLyb3_[kN]                    40     1      1     1     1       1     1     1              1           2
+Spn2FLzb3_[kN]                    40     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn3 — blade 1 (group 41) ───────────────────────────────────
+Spn3MLxb3_[kN-m]                  41     1      1     1     1       1     1     1              1           2
+Spn3MLyb3_[kN-m]                  41     1      1     1     1       1     1     1              1           2
+Spn3MLzb3_[kN-m]                  41     1      1     1     1       1     1     1              1           2
+Spn3FLxb3_[kN]                    41     1      1     1     1       1     1     1              1           2
+Spn3FLyb3_[kN]                    41     1      1     1     1       1     1     1              1           2
+Spn3FLzb3_[kN]                    41     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn4 — blade 1 (group 42) ──────────────────────────────────
+Spn4MLxb3_[kN-m]                  42    1      1     1     1       1     1     1              1           2
+Spn4MLyb3_[kN-m]                  42    1      1     1     1       1     1     1              1           2
+Spn4MLzb3_[kN-m]                  42    1      1     1     1       1     1     1              1           2
+Spn4FLxb3_[kN]                    42    1      1     1     1       1     1     1              1           2
+Spn4FLyb3_[kN]                    42    1      1     1     1       1     1     1              1           2
+Spn4FLzb3_[kN]                    42    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn5 — blade 1 (group 43) ──────────────────────────────────
+Spn5MLxb3_[kN-m]                  43    1      1     1     1       1     1     1              1           2
+Spn5MLyb3_[kN-m]                  43    1      1     1     1       1     1     1              1           2
+Spn5MLzb3_[kN-m]                  43    1      1     1     1       1     1     1              1           2
+Spn5FLxb3_[kN]                    43    1      1     1     1       1     1     1              1           2
+Spn5FLyb3_[kN]                    43    1      1     1     1       1     1     1              1           2
+Spn5FLzb3_[kN]                    43    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn6 — blade 1 (group 44) ──────────────────────────────────
+Spn6MLxb3_[kN-m]                  44    1      1     1     1       1     1     1              1           2
+Spn6MLyb3_[kN-m]                  44    1      1     1     1       1     1     1              1           2
+Spn6MLzb3_[kN-m]                  44    1      1     1     1       1     1     1              1           2
+Spn6FLxb3_[kN]                    44    1      1     1     1       1     1     1              1           2
+Spn6FLyb3_[kN]                    44    1      1     1     1       1     1     1              1           2
+Spn6FLzb3_[kN]                    44    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn7 — blade 1 (group 45) ──────────────────────────────────
+Spn7MLxb3_[kN-m]                  45    1      1     1     1       1     1     1              1           2
+Spn7MLyb3_[kN-m]                  45    1      1     1     1       1     1     1              1           2
+Spn7MLzb3_[kN-m]                  45    1      1     1     1       1     1     1              1           2
+Spn7FLxb3_[kN]                    45    1      1     1     1       1     1     1              1           2
+Spn7FLyb3_[kN]                    45    1      1     1     1       1     1     1              1           2
+Spn7FLzb3_[kN]                    45    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn8 — blade 1 (group 46) ──────────────────────────────────
+Spn8MLxb3_[kN-m]                  46    1      1     1     1       1     1     1              1           2
+Spn8MLyb3_[kN-m]                  46    1      1     1     1       1     1     1              1           2
+Spn8MLzb3_[kN-m]                  46    1      1     1     1       1     1     1              1           2
+Spn8FLxb3_[kN]                    46    1      1     1     1       1     1     1              1           2
+Spn8FLyb3_[kN]                    46    1      1     1     1       1     1     1              1           2
+Spn8FLzb3_[kN]                    46    1      1     1     1       1     1     1              1           2
+#
+# ── Blade Spanwise Spn9 — blade 1 (group 47) ──────────────────────────────────
+Spn9MLxb3_[kN-m]                  47    1      1     1     1       1     1     1              1           2
+Spn9MLyb3_[kN-m]                  47    1      1     1     1       1     1     1              1           2
+Spn9MLzb3_[kN-m]                  47    1      1     1     1       1     1     1              1           2
+Spn9FLxb3_[kN]                    47    1      1     1     1       1     1     1              1           2
+Spn9FLyb3_[kN]                    47    1      1     1     1       1     1     1              1           2
+Spn9FLzb3_[kN]                    47    1      1     1     1       1     1     1              1           2
+
+# ==========================================================================================================
+
+
+# =============================================================================
+# TABLE 3A — DERIVED SENSOR DEFINITIONS
+# Reference and pipeline input — sensor name and formula only
+# =============================================================================
+#
+# Col 1 : SensorName — derived sensor name (used in .sta, .rfc, .max etc.)
+# Col 2 : Formula    — sqrt(A^2 + B^2) using exact sensor names from Table 2
+# Col 3 : Inline comment — physical meaning
+#
+# Note: Mres always positive. Min in .sta = minimum resultant (near zero, not a reversal).
+#       EXT produces .max file only. Not in summary_Raw/Family/FamilyPLF.sta.
+#       Missing component sensors → sensor skipped with warning at startup.
+#
+[DERIVED_SENSORS_DEF]
+#
+# ── Blade Root — Blade frame (b suffix, edgewise + flapwise) ─────────────────
+Mres_RootBld1_[kN-m]  = sqrt(RootMxb1_[kN-m]^2 + RootMyb1_[kN-m]^2)   # Blade 1 root resultant bending — blade frame
+Mres_RootBld2_[kN-m]  = sqrt(RootMxb2_[kN-m]^2 + RootMyb2_[kN-m]^2)   # Blade 2 root resultant bending — blade frame
+Mres_RootBld3_[kN-m]  = sqrt(RootMxb3_[kN-m]^2 + RootMyb3_[kN-m]^2)   # Blade 3 root resultant bending — blade frame
+#
+# ── Blade Root — Hub/Coned frame (c suffix, in-plane + out-of-plane) ─────────
+Mres_RootHub1_[kN-m]  = sqrt(RootMxc1_[kN-m]^2 + RootMyc1_[kN-m]^2)   # Blade 1 root resultant bending — hub/coned frame
+Mres_RootHub2_[kN-m]  = sqrt(RootMxc2_[kN-m]^2 + RootMyc2_[kN-m]^2)   # Blade 2 root resultant bending — hub/coned frame
+Mres_RootHub3_[kN-m]  = sqrt(RootMxc3_[kN-m]^2 + RootMyc3_[kN-m]^2)   # Blade 3 root resultant bending — hub/coned frame
+#
+# ── LSS Shaft — Non-rotating frame (tilt + yaw) ──────────────────────────────
+Mres_LSShft_a_[kN-m]  = sqrt(LSSGagMya_[kN-m]^2 + LSSGagMza_[kN-m]^2) # LSS resultant bending — non-rotating frame
+#
+# ── LSS Shaft — Rotating frame ───────────────────────────────────────────────
+Mres_LSShft_s_[kN-m]  = sqrt(LSSGagMys_[kN-m]^2 + LSSGagMzs_[kN-m]^2) # LSS resultant bending — rotating frame
+#
+# ── Tower Base ────────────────────────────────────────────────────────────────
+Mres_TwrBs_[kN-m]     = sqrt(TwrBsMxt_[kN-m]^2  + TwrBsMyt_[kN-m]^2)  # Tower base resultant — side-side + fore-aft
+#
+# ── Tower Height Stations ─────────────────────────────────────────────────────
+Mres_TwHt1_[kN-m]     = sqrt(TwHt1MLxt_[kN-m]^2 + TwHt1MLyt_[kN-m]^2) # Tower height station 1 resultant
+Mres_TwHt2_[kN-m]     = sqrt(TwHt2MLxt_[kN-m]^2 + TwHt2MLyt_[kN-m]^2) # Tower height station 2 resultant
+Mres_TwHt3_[kN-m]     = sqrt(TwHt3MLxt_[kN-m]^2 + TwHt3MLyt_[kN-m]^2) # Tower height station 3 resultant
+Mres_TwHt4_[kN-m]     = sqrt(TwHt4MLxt_[kN-m]^2 + TwHt4MLyt_[kN-m]^2) # Tower height station 4 resultant
+Mres_TwHt5_[kN-m]     = sqrt(TwHt5MLxt_[kN-m]^2 + TwHt5MLyt_[kN-m]^2) # Tower height station 5 resultant
+Mres_TwHt6_[kN-m]     = sqrt(TwHt6MLxt_[kN-m]^2 + TwHt6MLyt_[kN-m]^2) # Tower height station 6 resultant
+Mres_TwHt7_[kN-m]     = sqrt(TwHt7MLxt_[kN-m]^2 + TwHt7MLyt_[kN-m]^2) # Tower height station 7 resultant
+Mres_TwHt8_[kN-m]     = sqrt(TwHt8MLxt_[kN-m]^2 + TwHt8MLyt_[kN-m]^2) # Tower height station 8 resultant
+Mres_TwHt9_[kN-m]     = sqrt(TwHt9MLxt_[kN-m]^2 + TwHt9MLyt_[kN-m]^2) # Tower height station 9 resultant
+#
+# ── Tower Top / Yaw Bearing ───────────────────────────────────────────────────
+Mres_YawBr_[kN-m]     = sqrt(YawBrMxp_[kN-m]^2  + YawBrMyp_[kN-m]^2)  # Yaw bearing resultant — rolling + pitching
+
+
+# =============================================================================
+# TABLE 3B — DERIVED SENSOR CALCULATION FLAGS
+# Parsed by the pipeline — same structure as Table 2 plus PLF column
+# =============================================================================
+#
+# Col  1 : SensorName    — must match exactly a sensor defined in Table 3A
+# Col  2 : Group         — node group (same as component sensors in Table 2)
+# Col  3 : PLF           — partial load factor for EXT ranking
+# Col  4 : STA           — 1 = compute all 7 statistics + write to per-file .sta
+# Col  5 : 1HzEq         — 1 = compute per-file 1Hz DEL
+# Col  6 : EXT           — 1 = EXT ranking (.max file only for derived sensors)
+# Col  7 : RFC           — 1 = lifetime RFC spectrum → .rfc file
+# Col  8 : Markov        — 1 = lifetime Markov matrix → .markov file
+# Col  9 : LRD           — 1 = Level Revolution Distribution → .lrd file
+# Col 10 : LDD           — 1 = Level Duration Distribution → .ldd file
+# Col 11 : Complimentary — always 0 (not applicable to derived sensors)
+# Col 12 : CompMethod    — always 2 (not applicable to derived sensors)
+#
+[DERIVED_SENSORS_FLAGS]
+#
+# SensorName                Group    PLF   STA  1HzEq   EXT   RFC  Markov   LRD   LDD  Complimentary  CompMethod
+# =============================================================================================================
+#
+# ── Blade Root — Blade frame — pitch bearing design (LRD + LDD on) ───────────
+Mres_RootBld1_[kN-m]         2     1.35     1      1     1     0       0     1     1              1           2
+Mres_RootBld2_[kN-m]         4     1.35     1      1     1     0       0     1     1              1           2
+Mres_RootBld3_[kN-m]         6     1.35     1      1     1     0       0     1     1              1           2
+#
+# ── Blade Root — Hub/Coned frame — pitch bearing design (LRD + LDD on) ───────
+# RFC=1 here so HubLoads.sum Section 2 (Mres DEL) populates. Without RFC, the
+# .rfc file is not produced and the SUM writer falls back to N/A.
+Mres_RootHub1_[kN-m]         1     1.35     1      1     1     1       0     1     1              1           2
+Mres_RootHub2_[kN-m]         3     1.35     1      1     1     1       0     1     1              1           2
+Mres_RootHub3_[kN-m]         5     1.35     1      1     1     1       0     1     1              1           2
+#
+# ── LSS Shaft — Non-rotating (RFC + Markov + LDD, no LRD) ────────────────────
+Mres_LSShft_a_[kN-m]        27     1.35     1      1     1     1       1     0     1              1           2
+#
+# ── LSS Shaft — Rotating (RFC + Markov + LRD + LDD) ─────────────────────────
+Mres_LSShft_s_[kN-m]        28     1.35     1      1     1     1       1     1     1              1           2
+#
+# ── Tower — extreme only (no fatigue flags) ───────────────────────────────────
+Mres_TwrBs_[kN-m]           16     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt1_[kN-m]           17     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt2_[kN-m]           18     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt3_[kN-m]           19     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt4_[kN-m]           20     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt5_[kN-m]           21     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt6_[kN-m]           22     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt7_[kN-m]           23     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt8_[kN-m]           24     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwHt9_[kN-m]           25     1.35     1      1     1     1       0     0     0              1           2
+#
+# ── Tower Top / Yaw Bearing — extreme only ────────────────────────────────────
+Mres_YawBr_[kN-m]           26     1.35     1      1     1     1       0     0     0              1           2
+# =============================================================================================================
+
+
+
+
+
+# =============================================================================
+# TABLE 4 — COMPONENT LOAD SUMMARY CONFIGURATION
+# Parsed by the pipeline — defines sensor assignments for .sum output files
+# References sensors from Table 2 (real) and Table 3A/3B (derived)
+# Sections: [BLADE] [HUB] [PITCH_BEARING] [DRIVETRAIN] [YAW] [TOWER] [FOUNDATION]
+# =============================================================================
+
+# --- Blade loads (BldLoads.sum) ---
+# Blade frame (b suffix) — rotates with rotor AND blade pitch
+# Mx = edgewise, My = flapwise, Mz = torsion
+# Auto-detected from OpenFAST output: RootMxb/Myb/Mzb + Spn1-9 MLxb/MLyb/MLzb
+#
+# Radial positions for spanwise gages (Spn1..Spn9):
+#   The pipeline first tries [TOWER].TWR_ED_FILE (the ElastoDyn primary file
+#   exposes TipRad / HubRad / BldNodes / NBlGages / BldGagNd, which gives
+#   correct OpenFAST analysis-node positions). If that file is unavailable
+#   it falls back to BLADE_FILE_PATH (a blade-properties file with BlFract);
+#   that fallback is approximate. To get correct values, leave TWR_ED_FILE
+#   set in [TOWER] and just keep BLADE_FILE_PATH below as a legacy hint.
+[BLADE]
+BLADE_FILE_PATH  = C:\Users\PZWind-DhyeyK\Desktop\NREL_TURBULANT\NRELOffshrBsline5MW_AeroDyn_blade.dat
+BLADE_LENGTH     = 61.5
+SUM_DEL_SLOPES   = 10.0  12.0  25.0
+CONVENTION       = AUTO
+# Radial fractions (%) for MainLoads.sum blade section — 4 stations
+MAIN_BLD_FRACTIONS = 0  25  50  75
+
+
+# --- Hub loads (HubLoads.sum) ---
+# Hub/Coned frame (c suffix) — rotates with rotor, does NOT rotate with blade pitch
+# Mx = in-plane bending, My = out-of-plane bending, Mz = torsion
+# Resultant bending = sqrt(Mxc^2 + Myc^2)  — excludes Mzc (torsion)
+[HUB]
+# Resultant bending — Hub/Coned frame (c suffix); = sqrt(Mxc^2 + Myc^2)
+# Uses the derived sensors declared in Table 3A (DERIVED_SENSORS_DEF):
+#     Mres_RootHub1/2/3_[kN-m] = sqrt(RootMxc#^2 + RootMyc#^2)
+HUB_Mres_B1 = mres_roothub1_[kn-m]
+HUB_Mres_B2 = mres_roothub2_[kn-m]
+HUB_Mres_B3 = mres_roothub3_[kn-m]
+# Moments — Hub/Coned frame (c suffix)
+HUB_Mx_B1 = RootMxc1_[kN-m]
+HUB_My_B1 = RootMyc1_[kN-m]
+HUB_Mz_B1 = RootMzc1_[kN-m]
+HUB_Mx_B2 = RootMxc2_[kN-m]
+HUB_My_B2 = RootMyc2_[kN-m]
+HUB_Mz_B2 = RootMzc2_[kN-m]
+HUB_Mx_B3 = RootMxc3_[kN-m]
+HUB_My_B3 = RootMyc3_[kN-m]
+HUB_Mz_B3 = RootMzc3_[kN-m]
+# Forces — Hub/Coned frame (c suffix)
+HUB_Fx_B1 = RootFxc1_[kN]
+HUB_Fy_B1 = RootFyc1_[kN]
+HUB_Fz_B1 = RootFzc1_[kN]
+HUB_Fx_B2 = RootFxc2_[kN]
+HUB_Fy_B2 = RootFyc2_[kN]
+HUB_Fz_B2 = RootFzc2_[kN]
+HUB_Fx_B3 = RootFxc3_[kN]
+HUB_Fy_B3 = RootFyc3_[kN]
+HUB_Fz_B3 = RootFzc3_[kN]
+# DEL Wöhler slopes for fatigue table
+HUB_DEL_SLOPES   = 3.0  6.0
+
+
+# --- Pitch bearing loads (PitchBearing.sum) ---
+# Hub/Coned frame (c suffix) — rotates with rotor, does NOT rotate with blade pitch
+# Mx = in-plane bending, My = out-of-plane bending, Mz = pitch drive torque
+# Mres = sqrt(Mxc^2 + Myc^2)
+# Fatigue exponent m=3.3 — Hertzian contact S-N for rolling element bearings
+# 3 blades fixed — worst blade shown per component
+[PITCH_BEARING]
+#
+# ── RFC and LDD DEL slopes (Hertzian contact, m=3.3) ─────────────────────────
+# Must be subset of RFC_M_VALUES / LDD_M_VALUES in Table 0
+PTB_RFC_SLOPES     = 3.3
+PTB_LDD_SLOPES     = 3.3
+#
+# ── Blade 1 sensors (c suffix — hub/coned frame) ─────────────────────────────
+PTB_Mres_B1        = mres_rootbld1_[kn-m]
+PTB_Mx_B1          = RootMxc1_[kN-m]
+PTB_My_B1          = RootMyc1_[kN-m]
+PTB_Mz_B1          = RootMzc1_[kN-m]
+PTB_Fx_B1          = RootFxc1_[kN]
+PTB_Fy_B1          = RootFyc1_[kN]
+PTB_Fz_B1          = RootFzc1_[kN]
+#
+# ── Blade 2 sensors ───────────────────────────────────────────────────────────
+PTB_Mres_B2        = mres_rootbld2_[kn-m]
+PTB_Mx_B2          = RootMxc2_[kN-m]
+PTB_My_B2          = RootMyc2_[kN-m]
+PTB_Mz_B2          = RootMzc2_[kN-m]
+PTB_Fx_B2          = RootFxc2_[kN]
+PTB_Fy_B2          = RootFyc2_[kN]
+PTB_Fz_B2          = RootFzc2_[kN]
+#
+# ── Blade 3 sensors ───────────────────────────────────────────────────────────
+PTB_Mres_B3        = mres_rootbld3_[kn-m]
+PTB_Mx_B3          = RootMxc3_[kN-m]
+PTB_My_B3          = RootMyc3_[kN-m]
+PTB_Mz_B3          = RootMzc3_[kN-m]
+PTB_Fx_B3          = RootFxc3_[kN]
+PTB_Fy_B3          = RootFyc3_[kN]
+PTB_Fz_B3          = RootFzc3_[kN]
+
+
+# --- Drivetrain loads (DRTLoads.sum) ---
+# Frame a = Non-rotating (fixed to nacelle)     suffix = a
+# Frame s = Rotating (rotates with rotor)        suffix = s
+#
+# IMPORTANT: For LSS, Mx = shaft torque (about rotor/shaft axis = x-axis)
+#            My and Mz = bending moments perpendicular to shaft axis
+#            Mres      = resultant bending sqrt(My^2 + Mz^2)  [excludes Mx torque]
+#            Fx        = axial thrust force
+#
+# Table 1A : Design extreme AbsMax with PLF  — EXT/<sensor>.abs header
+# Table 1B : Lifetime RFC DEL               — FAT/<sensor>.rfc header
+# Table 1C : Lifetime LDD/LRD DEL           — FAT/<sensor>.ldd/.lrd header
+#             Full sensor names in DRT_LDD_LRD_SENSORS
+#             Frame grouping inferred from sensor name suffix (_a or _s)
+# Table 2  : Complementary loads (with PLF) — EXT/<sensor>_comp.abs header
+[DRIVETRAIN]
+#
+# ── RFC DEL slopes for Table 1B ──────────────────────────────────────────────
+DRT_DEL_SLOPES         = 4.0  8.0
+#
+# ── Non-rotating frame (a suffix) ────────────────────────────────────────────
+# IMPORTANT: For LSS, Mx = shaft torque (about rotor/shaft axis = x-axis)
+#            My and Mz = bending moments perpendicular to shaft axis
+#            Mres = sqrt(My^2 + Mz^2) — resultant bending (excludes torque Mx)
+# OpenFAST notes (verified against the .out file header):
+#   - LSShftMxa is the ONLY shaft moment channel (rotor torque); it is
+#     identical in the rotating and non-rotating frames, so DRT_Mx_s also
+#     points at LSShftMxa rather than a non-existent "LSShftMxs"/"LSSGagMxs".
+#   - LSShftFxa (axial thrust) is identical in both frames; there is no
+#     separate "LSShftFxs", so DRT_Fx_s also uses LSShftFxa.
+#   - LSS bending moments are reported at the strain-gage section
+#     (LSSGagMya/Mys/Mza/Mzs), not on LSShft*; we use those for My/Mz.
+DRT_Mres_a             = mres_lsshft_a_kn-m
+DRT_Mx_a               = LSShftMxa_[kN-m]
+DRT_My_a               = LSSGagMya_[kN-m]
+DRT_Mz_a               = LSSGagMza_[kN-m]
+DRT_Fx_a               = LSShftFxa_[kN]
+DRT_Fy_a               = LSShftFya_[kN]
+DRT_Fz_a               = LSShftFza_[kN]
+#
+# ── Rotating frame (s suffix) ────────────────────────────────────────────────
+# Same convention: Mx = shaft torque, My/Mz = bending, Mres = sqrt(My^2+Mz^2)
+DRT_Mres_s             = Mres_LSShft_s_[kN-m]
+DRT_Mx_s               = LSShftMxs_[kN-m]
+DRT_My_s               = LSSGagMys_[kN-m]
+DRT_Mz_s               = LSSGagMzs_[kN-m]
+DRT_Fx_s               = LSShftFxs_[kN]
+DRT_Fy_s               = LSShftFys_[kN]
+DRT_Fz_s               = LSShftFzs_[kN]
+#
+# ── LDD / LRD configuration for Table 1C ─────────────────────────────────────
+# Slopes must be subset of LDD_M_VALUES / LRD_M_VALUES in Table 0
+# Sensors must have LDD=1 or LRD=1 in Table 2 / Table 3B
+DRT_LDD_SLOPES         = 3.3  6.7
+DRT_LRD_SLOPES         = 3.3  6.7
+DRT_LDD_LRD_SENSORS    = LSShftMxa_[kN-m]  LSSGagMya_[kN-m]  LSSGagMza_[kN-m]  LSSGagMys_[kN-m]  LSSGagMzs_[kN-m]
+#
+# ── High-speed shaft (Table 3) ───────────────────────────────────────────────
+# HSS torque written with PLF and without PLF
+# HSS power and speed written without PLF (operational reference)
+# HSS speed channel: OpenFAST does NOT export "HSShftV". GenSpeed (rpm)
+# is reported on the high-speed shaft (rigid coupling to generator) and
+# is the standard HSS speed channel. Use GenSpeed_[rpm].
+DRT_HSS_DEL_SLOPES     = 4.0  8.0
+DRT_HSS_Tq             = HSShftTq_[kN-m]
+DRT_HSS_Pwr            = HSShftPwr_[kW]
+DRT_HSS_V              = GenSpeed_[rpm]
+
+
+# --- Yaw system loads (YawLoads.sum) ---
+# Nacelle coordinate system (p suffix) — rotates with yaw, not with rotor
+# Mx = rolling moment, My = pitching moment, Mz = yaw drive torque
+# Mz* = yaw drive torque without PLF (characteristic value for motor sizing)
+# Accelerations: p suffix = tower-top yawed frame
+# Section 1: AbsMax extreme with PLF (loads + accelerations)
+# Section 2: Lifetime RFC DEL for all sensors
+[YAW]
+YAW_DEL_SLOPES   = 3.0
+#
+# Loads — moments
+YAW_Mres         = mres_yawbr_[kn-m]
+YAW_Mx           = YawBrMxp_[kN-m]
+YAW_My           = YawBrMyp_[kN-m]
+YAW_Mz           = YawBrMzp_[kN-m]
+# Loads — forces
+YAW_Fx           = YawBrFxp_[kN]
+YAW_Fy           = YawBrFyp_[kN]
+YAW_Fz           = YawBrFzp_[kN]
+# Translational accelerations
+YAW_TAxp         = YawBrTAxp_[m/s^2]
+YAW_TAyp         = YawBrTAyp_[m/s^2]
+YAW_TAzp         = YawBrTAzp_[m/s^2]
+# Angular accelerations
+YAW_RAxp         = YawBrRAxp_[deg/s^2]
+YAW_RAyp         = YawBrRAyp_[deg/s^2]
+YAW_RAzp         = YawBrRAzp_[deg/s^2]
+
+
+
+# --- Tower loads (TwrLoads.sum) ---
+# Tower fixed coordinate system (t suffix)
+# Mx = side-side bending, My = fore-aft bending, Mz = torsion
+# Station order in output: Tower Top (YawBr) → TwHt9...TwHt1 → Tower Base (TwrBs)
+# DEL Wöhler slope for fatigue table
+[TOWER]
+# ElastoDyn primary input file — used to read tower station heights
+# Pipeline reads TowerHt, TowerBsHt, TwrFile, TwrGagNd from this file
+# then reads HtFract from the tower properties file (TwrFile path)
+# Set to NONE to skip height annotation in TwrLoads.sum
+TWR_ED_FILE      = C:\Users\PZWind-DhyeyK\Desktop\NREL_TURBULANT\5MW_R126_HH90_Elastodyn_NPP_04-08mps.dat
+TWR_DEL_SLOPES   = 4.0
+#
+# Tower Top / Yaw Bearing
+TWR_Mres_Top    = mres_yawbr_[kn-m]
+TWR_Mx_Top      = YawBrMxp_[kN-m]
+TWR_My_Top      = YawBrMyp_[kN-m]
+TWR_Mz_Top      = YawBrMzp_[kN-m]
+TWR_Fx_Top      = YawBrFxp_[kN]
+TWR_Fy_Top      = YawBrFyp_[kN]
+TWR_Fz_Top      = YawBrFzp_[kN]
+#
+# Tower Height Stations (TwHt1 = lowest, TwHt9 = highest)
+TWR_Mres_Ht9    = mres_twht9_[kn-m]
+TWR_Mx_Ht9      = TwHt9MLxt_[kN-m]
+TWR_My_Ht9      = TwHt9MLyt_[kN-m]
+TWR_Mz_Ht9      = TwHt9MLzt_[kN-m]
+TWR_Fx_Ht9      = TwHt9FLxt_[kN]
+TWR_Fy_Ht9      = TwHt9FLyt_[kN]
+TWR_Fz_Ht9      = TwHt9FLzt_[kN]
+TWR_Mres_Ht8    = mres_twht8_[kn-m]
+TWR_Mx_Ht8      = TwHt8MLxt_[kN-m]
+TWR_My_Ht8      = TwHt8MLyt_[kN-m]
+TWR_Mz_Ht8      = TwHt8MLzt_[kN-m]
+TWR_Fx_Ht8      = TwHt8FLxt_[kN]
+TWR_Fy_Ht8      = TwHt8FLyt_[kN]
+TWR_Fz_Ht8      = TwHt8FLzt_[kN]
+TWR_Mres_Ht7    = mres_twht7_[kn-m]
+TWR_Mx_Ht7      = TwHt7MLxt_[kN-m]
+TWR_My_Ht7      = TwHt7MLyt_[kN-m]
+TWR_Mz_Ht7      = TwHt7MLzt_[kN-m]
+TWR_Fx_Ht7      = TwHt7FLxt_[kN]
+TWR_Fy_Ht7      = TwHt7FLyt_[kN]
+TWR_Fz_Ht7      = TwHt7FLzt_[kN]
+TWR_Mres_Ht6    = mres_twht6_[kn-m]
+TWR_Mx_Ht6      = TwHt6MLxt_[kN-m]
+TWR_My_Ht6      = TwHt6MLyt_[kN-m]
+TWR_Mz_Ht6      = TwHt6MLzt_[kN-m]
+TWR_Fx_Ht6      = TwHt6FLxt_[kN]
+TWR_Fy_Ht6      = TwHt6FLyt_[kN]
+TWR_Fz_Ht6      = TwHt6FLzt_[kN]
+TWR_Mres_Ht5    = mres_twht5_[kn-m]
+TWR_Mx_Ht5      = TwHt5MLxt_[kN-m]
+TWR_My_Ht5      = TwHt5MLyt_[kN-m]
+TWR_Mz_Ht5      = TwHt5MLzt_[kN-m]
+TWR_Fx_Ht5      = TwHt5FLxt_[kN]
+TWR_Fy_Ht5      = TwHt5FLyt_[kN]
+TWR_Fz_Ht5      = TwHt5FLzt_[kN]
+TWR_Mres_Ht4    = mres_twht4_[kn-m]
+TWR_Mx_Ht4      = TwHt4MLxt_[kN-m]
+TWR_My_Ht4      = TwHt4MLyt_[kN-m]
+TWR_Mz_Ht4      = TwHt4MLzt_[kN-m]
+TWR_Fx_Ht4      = TwHt4FLxt_[kN]
+TWR_Fy_Ht4      = TwHt4FLyt_[kN]
+TWR_Fz_Ht4      = TwHt4FLzt_[kN]
+TWR_Mres_Ht3    = mres_twht3_[kn-m]
+TWR_Mx_Ht3      = TwHt3MLxt_[kN-m]
+TWR_My_Ht3      = TwHt3MLyt_[kN-m]
+TWR_Mz_Ht3      = TwHt3MLzt_[kN-m]
+TWR_Fx_Ht3      = TwHt3FLxt_[kN]
+TWR_Fy_Ht3      = TwHt3FLyt_[kN]
+TWR_Fz_Ht3      = TwHt3FLzt_[kN]
+TWR_Mres_Ht2    = mres_twht2_[kn-m]
+TWR_Mx_Ht2      = TwHt2MLxt_[kN-m]
+TWR_My_Ht2      = TwHt2MLyt_[kN-m]
+TWR_Mz_Ht2      = TwHt2MLzt_[kN-m]
+TWR_Fx_Ht2      = TwHt2FLxt_[kN]
+TWR_Fy_Ht2      = TwHt2FLyt_[kN]
+TWR_Fz_Ht2      = TwHt2FLzt_[kN]
+TWR_Mres_Ht1    = mres_twht1_[kn-m]
+TWR_Mx_Ht1      = TwHt1MLxt_[kN-m]
+TWR_My_Ht1      = TwHt1MLyt_[kN-m]
+TWR_Mz_Ht1      = TwHt1MLzt_[kN-m]
+TWR_Fx_Ht1      = TwHt1FLxt_[kN]
+TWR_Fy_Ht1      = TwHt1FLyt_[kN]
+TWR_Fz_Ht1      = TwHt1FLzt_[kN]
+#
+# Tower Base
+TWR_Mres_Base   = mres_twrbs_[kn-m]
+TWR_Mx_Base     = TwrBsMxt_[kN-m]
+TWR_My_Base     = TwrBsMyt_[kN-m]
+TWR_Mz_Base     = TwrBsMzt_[kN-m]
+TWR_Fx_Base     = TwrBsFxt_[kN]
+TWR_Fy_Base     = TwrBsFyt_[kN]
+TWR_Fz_Base     = TwrBsFzt_[kN]
+
+
+# --- Foundation loads (FNDLoads.sum) ---
+# Reference elevation configurable via FND_REFERENCE (documentation only)
+# For onshore: tower base sensors (TwrBs)
+# For offshore: mudline sensors from SubDyn or equivalent
+#
+# Table 1A : Design extreme with PLF      — EXT/<sensor>.abs header
+# Table 1B : Design characteristic no PLF — EXT/<sensor>.abs header
+# Table 1C : Complementary loads with PLF — EXT/<sensor>_comp.abs header
+# Table 2A : Lifetime RFC DEL             — FAT/<sensor>.rfc header
+# Table 2B : Lifetime LDD DEL             — FAT/<sensor>.ldd header
+[FOUNDATION]
+#
+# ── Reference (documentation only) ──────────────────────────────────────────
+FND_REFERENCE        = Tower base (0.0m AGL)
+#
+# ── Foundation sensors ───────────────────────────────────────────────────────
+FND_Mres             = mres_twrbs_[kn-m]
+FND_Mx               = TwrBsMxt_[kN-m]
+FND_My               = TwrBsMyt_[kN-m]
+FND_Mz               = TwrBsMzt_[kN-m]
+FND_Fx               = TwrBsFxt_[kN]
+FND_Fy               = TwrBsFyt_[kN]
+FND_Fz               = TwrBsFzt_[kN]
+#
+# ── RFC DEL slopes for Table 2A (steel weld S-N) ─────────────────────────────
+# Must be subset of RFC_M_VALUES in Table 0
+FND_RFC_SLOPES       = 3.0  5.0
+#
+# ── LDD configuration for Table 2B ───────────────────────────────────────────
+# Slopes must be subset of LDD_M_VALUES in Table 0
+# Sensors must have LDD=1 in Table 2 — full sensor names, space separated
+FND_LDD_SLOPES       = 3.0  5.0
+FND_LDD_SENSORS      = TwrBsMxt_[kN-m]  TwrBsMyt_[kN-m]  TwrBsMzt_[kN-m]  TwrBsFxt_[kN]  TwrBsFyt_[kN]  TwrBsFzt_[kN]
+
+
+# --- Tower clearance / blade tip deflection ---
+# Worst case blade tip to tower surface distance
+# Min stat (most negative/smallest value = worst clearance)
+# EXT .min files used — no PLF applied (geometric check)
+[TOWER_CLEARANCE]
+#
+# ── Direct clearance sensors (preferred if available) ────────────────────────
+CLR_TwrClrnc_B1          = TwrClrnc1_[m]
+CLR_TwrClrnc_B2          = TwrClrnc2_[m]
+CLR_TwrClrnc_B3          = TwrClrnc3_[m]
+#
+# ── Out-of-plane tip deflection (fallback if TwrClrnc not available) ────────
+CLR_OoPDefl_B1           = OoPDefl1_[m]
+CLR_OoPDefl_B2           = OoPDefl2_[m]
+CLR_OoPDefl_B3           = OoPDefl3_[m]
