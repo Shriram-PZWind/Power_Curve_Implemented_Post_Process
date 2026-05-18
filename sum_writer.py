@@ -520,10 +520,19 @@ def write_hub_loads_sum(output_path, hub_sensor_map,
         for fam_loop in family_order:
             for b in range(1, n_blades + 1):
                 sensor = hub_sensor_map.get(comp, {}).get(f'B{b}')
-                if not sensor or sensor not in sensor_cols:
+                # if not sensor or sensor not in sensor_cols:
+                #     continue
+
+                if not sensor or ext_folder is None:
                     continue
-                if ext_folder is None:
+                
+                # Check if the .abs file exists physically in the EXT folder
+                abs_file_path = os.path.join(ext_folder, f"{sensor}.abs")
+                
+                # Allow the code to proceed if the file exists OR if it's in the column list
+                if not (os.path.exists(abs_file_path) or sensor in sensor_cols):
                     continue
+                
                 val, plf, fam_from_file = read_ext_design_load(
                     ext_folder, sensor, 'abs', with_plf=True, log=log)
                 if val is None:
@@ -541,7 +550,16 @@ def write_hub_loads_sum(output_path, hub_sensor_map,
         for fam in family_order:
             for b in range(1, n_blades + 1):
                 sensor = hub_sensor_map.get(comp, {}).get(f'B{b}')
-                if not sensor or sensor not in sensor_cols:
+                # if not sensor or sensor not in sensor_cols:
+                #     continue
+                if not sensor or fat_folder is None:
+                    continue
+                
+                # Construct the expected filename: sensor.rfc
+                rfc_file_path = os.path.join(fat_folder, f"{sensor}.rfc")
+                
+                # Check if file exists OR sensor is in sensor_cols
+                if not (os.path.exists(rfc_file_path) or sensor in sensor_cols):
                     continue
                 val = (read_fat_del_header(
                     fat_folder, sensor, m, method='rfc', log=log)
@@ -1530,10 +1548,20 @@ def write_drt_loads_sum(output_path, drt_config,
                 diag_val = None
                 diag_plf = None
                 diag_dlc = None
-                if drv_sensor and drv_sensor in sensor_cols and ext_folder:
-                    diag_val, diag_plf, diag_dlc = read_ext_design_load(
-                        ext_folder, drv_sensor, 'abs',
-                        with_plf=True, log=log)
+                # if drv_sensor and drv_sensor in sensor_cols and ext_folder:
+                #     diag_val, diag_plf, diag_dlc = read_ext_design_load(
+                #         ext_folder, drv_sensor, 'abs',
+                #         with_plf=True, log=log)
+
+                if drv_sensor and ext_folder:
+                    # Construct the path to the .abs file to see if it exists
+                    abs_file_path = os.path.join(ext_folder, f"{drv_sensor}.abs")
+                    
+                    # If the file exists OR it's in sensor_cols, try to read it
+                    if os.path.exists(abs_file_path) or drv_sensor in sensor_cols:
+                        diag_val, diag_plf, diag_dlc = read_ext_design_load(
+                            ext_folder, drv_sensor, 'abs',
+                            with_plf=True, log=log)
 
                 for col_lbl in FRAME_ORDER:
                     if col_lbl == drv_lbl:
@@ -2018,7 +2046,16 @@ def write_pitch_bearing_sum(output_path, ptb_config,
         best_diag = None
         for b in range(1, N_BLADES + 1):
             sensor = blades.get(f'B{b}', {}).get(comp)
-            if not sensor or sensor not in sensor_cols or ext_folder is None:
+            # if not sensor or sensor not in sensor_cols or ext_folder is None:
+            #     continue
+            if not sensor or ext_folder is None:
+                continue
+                
+            # Check if the .abs file exists on disk
+            abs_file_path = os.path.join(ext_folder, f"{sensor}.abs")
+            
+            # Bypass sensor_cols check for Mres/Resultant files
+            if not (os.path.exists(abs_file_path) or sensor in sensor_cols):
                 continue
             dd = read_comp_design_driving(ext_folder, sensor,
                                           with_plf=True, log=None)

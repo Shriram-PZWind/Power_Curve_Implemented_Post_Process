@@ -9,8 +9,8 @@ import re
 from tower_reader import read_tower_heights
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
-INPUT_FOLDER  = r'C:\Users\PZWind-DhyeyK\Desktop\NREL_TURBULANT\output2'   # folder containing .outb / .out files
-OUTPUT_FOLDER = r'C:\Users\PZWind-DhyeyK\Desktop\NREL_TURBULANT\output2\res'            # root output folder
+INPUT_FOLDER  = r'C:\Users\PZWind-AkashM\Desktop\setup\2files'   # folder containing .outb / .out files
+OUTPUT_FOLDER = r'C:\Users\PZWind-AkashM\Desktop\setup\2files\results-2files'            # root output folder
 
 # Subfolders created automatically inside OUTPUT_FOLDER
 STA_FOLDER = os.path.join(OUTPUT_FOLDER, 'STA')  # .sta files (per-file + summary)
@@ -49,8 +49,8 @@ LOG_FILE   = os.path.join(OUTPUT_FOLDER, 'postprocess.log')  # .sum component lo
 #   (2) Accumulate lifetime cycle counts  (cycles_k × occurrences_k per file)
 # All other files in INPUT_FOLDER are processed for extreme stats + per-file
 # DEL only.
-LC_POSTPROCESS_PATH = r'C:\Users\PZWind-DhyeyK\Desktop\results\V7_BugFix2\V7_BugFix2\LC_PostProcess.txt'
-SENSOR_LIST_PATH = r'C:\Users\PZWind-DhyeyK\Desktop\results\V7_BugFix2\V7_BugFix2\sensorList.txt'
+LC_POSTPROCESS_PATH = r'C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\LC_PostProcess.txt'
+SENSOR_LIST_PATH = r'C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\sensorList.txt'
 
 # Column indices in the file table (0-based)
 _COL_FILENAME   = 0

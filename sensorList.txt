@@ -313,76 +313,76 @@ RootMyb3_[kN-m]                   6     1      1     1     1       1     1     1
 RootMzb3_[kN-m]                   6     1      1     1     1       1     1     1              1           2
 #
 # ── Blade Spanwise Spn1 — blade 1 (group 7) ───────────────────────────────────
-Spn1MLxb1_[kN-m]                  7     1      1     1     1       1     1     1              1           2
-Spn1MLyb1_[kN-m]                  7     1      1     1     1       1     1     1              1           2
-Spn1MLzb1_[kN-m]                  7     1      1     1     1       1     1     1              1           2
-Spn1FLxb1_[kN]                    7     1      1     1     1       1     1     1              1           2
-Spn1FLyb1_[kN]                    7     1      1     1     1       1     1     1              1           2
-Spn1FLzb1_[kN]                    7     1      1     1     1       1     1     1              1           2
+Spn1MLxb1_[kN-m]                  7     1      1     1     1       1     1     1              0           2
+Spn1MLyb1_[kN-m]                  7     1      1     1     1       1     1     1              0           2
+Spn1MLzb1_[kN-m]                  7     1      1     1     1       1     1     1              0           2
+Spn1FLxb1_[kN]                    7     1      1     1     1       1     1     1              0           2
+Spn1FLyb1_[kN]                    7     1      1     1     1       1     1     1              0           2
+Spn1FLzb1_[kN]                    7     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn2 — blade 1 (group 8) ───────────────────────────────────
-Spn2MLxb1_[kN-m]                  8     1      1     1     1       1     1     1              1           2
-Spn2MLyb1_[kN-m]                  8     1      1     1     1       1     1     1              1           2
-Spn2MLzb1_[kN-m]                  8     1      1     1     1       1     1     1              1           2
-Spn2FLxb1_[kN]                    8     1      1     1     1       1     1     1              1           2
-Spn2FLyb1_[kN]                    8     1      1     1     1       1     1     1              1           2
-Spn2FLzb1_[kN]                    8     1      1     1     1       1     1     1              1           2
+Spn2MLxb1_[kN-m]                  8     1      1     1     1       1     1     1              0           2
+Spn2MLyb1_[kN-m]                  8     1      1     1     1       1     1     1              0           2
+Spn2MLzb1_[kN-m]                  8     1      1     1     1       1     1     1              0           2
+Spn2FLxb1_[kN]                    8     1      1     1     1       1     1     1              0           2
+Spn2FLyb1_[kN]                    8     1      1     1     1       1     1     1              0           2
+Spn2FLzb1_[kN]                    8     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn3 — blade 1 (group 9) ───────────────────────────────────
-Spn3MLxb1_[kN-m]                  9     1      1     1     1       1     1     1              1           2
-Spn3MLyb1_[kN-m]                  9     1      1     1     1       1     1     1              1           2
-Spn3MLzb1_[kN-m]                  9     1      1     1     1       1     1     1              1           2
-Spn3FLxb1_[kN]                    9     1      1     1     1       1     1     1              1           2
-Spn3FLyb1_[kN]                    9     1      1     1     1       1     1     1              1           2
-Spn3FLzb1_[kN]                    9     1      1     1     1       1     1     1              1           2
+Spn3MLxb1_[kN-m]                  9     1      1     1     1       1     1     1              0           2
+Spn3MLyb1_[kN-m]                  9     1      1     1     1       1     1     1              0           2
+Spn3MLzb1_[kN-m]                  9     1      1     1     1       1     1     1              0           2
+Spn3FLxb1_[kN]                    9     1      1     1     1       1     1     1              0           2
+Spn3FLyb1_[kN]                    9     1      1     1     1       1     1     1              0           2
+Spn3FLzb1_[kN]                    9     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn4 — blade 1 (group 10) ──────────────────────────────────
-Spn4MLxb1_[kN-m]                 10     1      1     1     1       1     1     1              1           2
-Spn4MLyb1_[kN-m]                 10     1      1     1     1       1     1     1              1           2
-Spn4MLzb1_[kN-m]                 10     1      1     1     1       1     1     1              1           2
-Spn4FLxb1_[kN]                   10     1      1     1     1       1     1     1              1           2
-Spn4FLyb1_[kN]                   10     1      1     1     1       1     1     1              1           2
-Spn4FLzb1_[kN]                   10     1      1     1     1       1     1     1              1           2
+Spn4MLxb1_[kN-m]                 10     1      1     1     1       1     1     1              0           2
+Spn4MLyb1_[kN-m]                 10     1      1     1     1       1     1     1              0           2
+Spn4MLzb1_[kN-m]                 10     1      1     1     1       1     1     1              0           2
+Spn4FLxb1_[kN]                   10     1      1     1     1       1     1     1              0           2
+Spn4FLyb1_[kN]                   10     1      1     1     1       1     1     1              0           2
+Spn4FLzb1_[kN]                   10     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn5 — blade 1 (group 11) ──────────────────────────────────
-Spn5MLxb1_[kN-m]                 11     1      1     1     1       1     1     1              1           2
-Spn5MLyb1_[kN-m]                 11     1      1     1     1       1     1     1              1           2
-Spn5MLzb1_[kN-m]                 11     1      1     1     1       1     1     1              1           2
-Spn5FLxb1_[kN]                   11     1      1     1     1       1     1     1              1           2
-Spn5FLyb1_[kN]                   11     1      1     1     1       1     1     1              1           2
-Spn5FLzb1_[kN]                   11     1      1     1     1       1     1     1              1           2
+Spn5MLxb1_[kN-m]                 11     1      1     1     1       1     1     1              0           2
+Spn5MLyb1_[kN-m]                 11     1      1     1     1       1     1     1              0           2
+Spn5MLzb1_[kN-m]                 11     1      1     1     1       1     1     1              0           2
+Spn5FLxb1_[kN]                   11     1      1     1     1       1     1     1              0           2
+Spn5FLyb1_[kN]                   11     1      1     1     1       1     1     1              0           2
+Spn5FLzb1_[kN]                   11     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn6 — blade 1 (group 12) ──────────────────────────────────
-Spn6MLxb1_[kN-m]                 12     1      1     1     1       1     1     1              1           2
-Spn6MLyb1_[kN-m]                 12     1      1     1     1       1     1     1              1           2
-Spn6MLzb1_[kN-m]                 12     1      1     1     1       1     1     1              1           2
-Spn6FLxb1_[kN]                   12     1      1     1     1       1     1     1              1           2
-Spn6FLyb1_[kN]                   12     1      1     1     1       1     1     1              1           2
-Spn6FLzb1_[kN]                   12     1      1     1     1       1     1     1              1           2
+Spn6MLxb1_[kN-m]                 12     1      1     1     1       1     1     1              0           2
+Spn6MLyb1_[kN-m]                 12     1      1     1     1       1     1     1              0           2
+Spn6MLzb1_[kN-m]                 12     1      1     1     1       1     1     1              0           2
+Spn6FLxb1_[kN]                   12     1      1     1     1       1     1     1              0           2
+Spn6FLyb1_[kN]                   12     1      1     1     1       1     1     1              0           2
+Spn6FLzb1_[kN]                   12     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn7 — blade 1 (group 13) ──────────────────────────────────
-Spn7MLxb1_[kN-m]                 13     1      1     1     1       1     1     1              1           2
-Spn7MLyb1_[kN-m]                 13     1      1     1     1       1     1     1              1           2
-Spn7MLzb1_[kN-m]                 13     1      1     1     1       1     1     1              1           2
-Spn7FLxb1_[kN]                   13     1      1     1     1       1     1     1              1           2
-Spn7FLyb1_[kN]                   13     1      1     1     1       1     1     1              1           2
-Spn7FLzb1_[kN]                   13     1      1     1     1       1     1     1              1           2
+Spn7MLxb1_[kN-m]                 13     1      1     1     1       1     1     1              0           2
+Spn7MLyb1_[kN-m]                 13     1      1     1     1       1     1     1              0           2
+Spn7MLzb1_[kN-m]                 13     1      1     1     1       1     1     1              0           2
+Spn7FLxb1_[kN]                   13     1      1     1     1       1     1     1              0           2
+Spn7FLyb1_[kN]                   13     1      1     1     1       1     1     1              0           2
+Spn7FLzb1_[kN]                   13     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn8 — blade 1 (group 14) ──────────────────────────────────
-Spn8MLxb1_[kN-m]                 14     1      1     1     1       1     1     1              1           2
-Spn8MLyb1_[kN-m]                 14     1      1     1     1       1     1     1              1           2
-Spn8MLzb1_[kN-m]                 14     1      1     1     1       1     1     1              1           2
-Spn8FLxb1_[kN]                   14     1      1     1     1       1     1     1              1           2
-Spn8FLyb1_[kN]                   14     1      1     1     1       1     1     1              1           2
-Spn8FLzb1_[kN]                   14     1      1     1     1       1     1     1              1           2
+Spn8MLxb1_[kN-m]                 14     1      1     1     1       1     1     1              0           2
+Spn8MLyb1_[kN-m]                 14     1      1     1     1       1     1     1              0           2
+Spn8MLzb1_[kN-m]                 14     1      1     1     1       1     1     1              0           2
+Spn8FLxb1_[kN]                   14     1      1     1     1       1     1     1              0           2
+Spn8FLyb1_[kN]                   14     1      1     1     1       1     1     1              0           2
+Spn8FLzb1_[kN]                   14     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn9 — blade 1 (group 15) ──────────────────────────────────
-Spn9MLxb1_[kN-m]                 15     1      1     1     1       1     1     1              1           2
-Spn9MLyb1_[kN-m]                 15     1      1     1     1       1     1     1              1           2
-Spn9MLzb1_[kN-m]                 15     1      1     1     1       1     1     1              1           2
-Spn9FLxb1_[kN]                   15     1      1     1     1       1     1     1              1           2
-Spn9FLyb1_[kN]                   15     1      1     1     1       1     1     1              1           2
-Spn9FLzb1_[kN]                   15     1      1     1     1       1     1     1              1           2
+Spn9MLxb1_[kN-m]                 15     1      1     1     1       1     1     1              0           2
+Spn9MLyb1_[kN-m]                 15     1      1     1     1       1     1     1              0           2
+Spn9MLzb1_[kN-m]                 15     1      1     1     1       1     1     1              0           2
+Spn9FLxb1_[kN]                   15     1      1     1     1       1     1     1              0           2
+Spn9FLyb1_[kN]                   15     1      1     1     1       1     1     1              0           2
+Spn9FLzb1_[kN]                   15     1      1     1     1       1     1     1              0           2
 #
 # ── Tower Base (group 16) ─────────────────────────────────────────────────────
 TwrBsFxt_[kN]                    16     1      1     1     1       1     1     1              1           2
@@ -498,17 +498,17 @@ LSSGagMza_[kN-m]                 27     1      1     1     1       1     1     1
 LSShftFxs_[kN]                   28     1      1     1     1       1     1     1              1           2
 LSShftFys_[kN]                   28     1      1     1     1       1     1     1              1           2
 LSShftFzs_[kN]                   28     1      1     1     1       1     1     1              1           2
-LSSGagMxs_[kN-m]                 28     1      1     1     1       1     1     1              1           2
+LSShftMxs_[kN-m]                 28     1      1     1     1       1     1     1              1           2
 LSSGagMys_[kN-m]                 28     1      1     1     1       1     1     1              1           2
 LSSGagMzs_[kN-m]                 28     1      1     1     1       1     1     1              1           2
 #
 # ── Rotor / Generator ─────────────────────────────────────────────────────────
-RotSpeed_[rpm]                   29     1      1     1     1       1     1     1              1           2
-GenSpeed_[rpm]                   29     1      1     1     1       1     1     1              1           2
-RotThrust_[kN]                   29     1      1     1     1       1     1     1              1           2
-RotTorq_[kN-m]                   29     1      1     1     1       1     1     1              1           2
-GenTq_[kN-m]                     29     1      1     1     1       1     1     1              1           2
-GenPwr_[kW]                      29     1      1     1     1       1     1     1              1           2
+RotSpeed_[rpm]                   29     1      1     1     1       1     1     1              0           2
+GenSpeed_[rpm]                   29     1      1     1     1       1     1     1              0           2
+RotThrust_[kN]                   29     1      1     1     1       1     1     1              0           2
+RotTorq_[kN-m]                   29     1      1     1     1       1     1     1              0           2
+GenTq_[kN-m]                     29     1      1     1     1       1     1     1              0           2
+GenPwr_[kW]                      29     1      1     1     1       1     1     1              0           2
 #
 # ── High-Speed Shaft ──────────────────────────────────────────────────────────
 # Required by [DRIVETRAIN] Table 3 (HSS torque + power). HSS shares its
@@ -518,175 +518,175 @@ HSShftTq_[kN-m]                  29     1      1     1     1       1     1     0
 HSShftPwr_[kW]                   29     1      1     1     1       1     1     0              0           2
 #
 # ── Nacelle / Wind / Control ──────────────────────────────────────────────────
-NcIMUTAxs_[m/s^2]                 0     1      1     1     1       1     1     1              1           2
-NcIMUTAys_[m/s^2]                 0     1      1     1     1       1     1     1              1           2
-RtVAvgxh_[m/s]                    0     1      1     1     1       1     1     1              1           2
-HorWndDir_[deg]                   0     1      1     1     1       1     1     1              1           2
-BlPitch1_[deg]                    0     1      1     1     1       1     1     1              1           2
-BlPitch2_[deg]                    0     1      1     1     1       1     1     1              1           2
-BlPitch3_[deg]                    0     1      1     1     1       1     1     1              1           2
-Azimuth_[deg]                     0     1      1     1     1       1     1     1              1           2
+NcIMUTAxs_[m/s^2]                 0     1      1     1     1       1     1     1              0           2
+NcIMUTAys_[m/s^2]                 0     1      1     1     1       1     1     1              0           2
+RtVAvgxh_[m/s]                    0     1      1     1     1       1     1     1              0           2
+HorWndDir_[deg]                   0     1      1     1     1       1     1     1              0           2
+BlPitch1_[deg]                    0     1      1     1     1       1     1     1              0           2
+BlPitch2_[deg]                    0     1      1     1     1       1     1     1              0           2
+BlPitch3_[deg]                    0     1      1     1     1       1     1     1              0           2
+Azimuth_[deg]                     0     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Tip Deflection & Tower Clearance ────────────────────────────────
 # Min stat used for clearance — worst case is minimum (closest to tower)
 # EXT=1 → .min file written for each sensor
 # No fatigue flags — geometric check only
-OoPDefl1_[m]                      0     1      1     1     1       1     1     1              1           2
-OoPDefl2_[m]                      0     1      1     1     1       1     1     1              1           2
-OoPDefl3_[m]                      0     1      1     1     1       1     1     1              1           2
-TwrClrnc1_[m]                     0     1      1     1     1       1     1     1              1           2
-TwrClrnc2_[m]                     0     1      1     1     1       1     1     1              1           2
-TwrClrnc3_[m]                     0     1      1     1     1       1     1     1              1           2
+OoPDefl1_[m]                      0     1      1     1     1       1     1     1              0           2
+OoPDefl2_[m]                      0     1      1     1     1       1     1     1              0           2
+OoPDefl3_[m]                      0     1      1     1     1       1     1     1              0           2
+TwrClrnc1_[m]                     0     1      1     1     1       1     1     1              0           2
+TwrClrnc2_[m]                     0     1      1     1     1       1     1     1              0           2
+TwrClrnc3_[m]                     0     1      1     1     1       1     1     1              0           2
 
 
 
 #
 # ── Blade Spanwise Spn1 — blade 2 (group 30) ───────────────────────────────────
-Spn1MLxb2_[kN-m]                  30     1      1     1     1       1     1     1              1           2
-Spn1MLyb2_[kN-m]                  30     1      1     1     1       1     1     1              1           2
-Spn1MLzb2_[kN-m]                  30     1      1     1     1       1     1     1              1           2
-Spn1FLxb2_[kN]                    30     1      1     1     1       1     1     1              1           2
-Spn1FLyb2_[kN]                    30     1      1     1     1       1     1     1              1           2
-Spn1FLzb2_[kN]                    30     1      1     1     1       1     1     1              1           2
+Spn1MLxb2_[kN-m]                  30     1      1     1     1       1     1     1              0           2
+Spn1MLyb2_[kN-m]                  30     1      1     1     1       1     1     1              0           2
+Spn1MLzb2_[kN-m]                  30     1      1     1     1       1     1     1              0           2
+Spn1FLxb2_[kN]                    30     1      1     1     1       1     1     1              0           2
+Spn1FLyb2_[kN]                    30     1      1     1     1       1     1     1              0           2
+Spn1FLzb2_[kN]                    30     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn2 — blade 2 (group 31) ───────────────────────────────────
-Spn2MLxb2_[kN-m]                  31     1      1     1     1       1     1     1              1           2
-Spn2MLyb2_[kN-m]                  31     1      1     1     1       1     1     1              1           2
-Spn2MLzb2_[kN-m]                  31     1      1     1     1       1     1     1              1           2
-Spn2FLxb2_[kN]                    31     1      1     1     1       1     1     1              1           2
-Spn2FLyb2_[kN]                    31     1      1     1     1       1     1     1              1           2
-Spn2FLzb2_[kN]                    31     1      1     1     1       1     1     1              1           2
+Spn2MLxb2_[kN-m]                  31     1      1     1     1       1     1     1              0           2
+Spn2MLyb2_[kN-m]                  31     1      1     1     1       1     1     1              0           2
+Spn2MLzb2_[kN-m]                  31     1      1     1     1       1     1     1              0           2
+Spn2FLxb2_[kN]                    31     1      1     1     1       1     1     1              0           2
+Spn2FLyb2_[kN]                    31     1      1     1     1       1     1     1              0           2
+Spn2FLzb2_[kN]                    31     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn3 — blade 2 (group 32) ───────────────────────────────────
-Spn3MLxb2_[kN-m]                  32     1      1     1     1       1     1     1              1           2
-Spn3MLyb2_[kN-m]                  32     1      1     1     1       1     1     1              1           2
-Spn3MLzb2_[kN-m]                  32     1      1     1     1       1     1     1              1           2
-Spn3FLxb2_[kN]                    32     1      1     1     1       1     1     1              1           2
-Spn3FLyb2_[kN]                    32     1      1     1     1       1     1     1              1           2
-Spn3FLzb2_[kN]                    32     1      1     1     1       1     1     1              1           2
+Spn3MLxb2_[kN-m]                  32     1      1     1     1       1     1     1              0           2
+Spn3MLyb2_[kN-m]                  32     1      1     1     1       1     1     1              0           2
+Spn3MLzb2_[kN-m]                  32     1      1     1     1       1     1     1              0           2
+Spn3FLxb2_[kN]                    32     1      1     1     1       1     1     1              0           2
+Spn3FLyb2_[kN]                    32     1      1     1     1       1     1     1              0           2
+Spn3FLzb2_[kN]                    32     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn4 — blade 2 (group 33) ──────────────────────────────────
-Spn4MLxb2_[kN-m]                  33    1      1     1     1       1     1     1              1           2
-Spn4MLyb2_[kN-m]                  33    1      1     1     1       1     1     1              1           2
-Spn4MLzb2_[kN-m]                  33    1      1     1     1       1     1     1              1           2
-Spn4FLxb2_[kN]                    33    1      1     1     1       1     1     1              1           2
-Spn4FLyb2_[kN]                    33    1      1     1     1       1     1     1              1           2
-Spn4FLzb2_[kN]                    33    1      1     1     1       1     1     1              1           2
+Spn4MLxb2_[kN-m]                  33    1      1     1     1       1     1     1              0           2
+Spn4MLyb2_[kN-m]                  33    1      1     1     1       1     1     1              0           2
+Spn4MLzb2_[kN-m]                  33    1      1     1     1       1     1     1              0           2
+Spn4FLxb2_[kN]                    33    1      1     1     1       1     1     1              0           2
+Spn4FLyb2_[kN]                    33    1      1     1     1       1     1     1              0           2
+Spn4FLzb2_[kN]                    33    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn5 — blade 2 (group 34) ──────────────────────────────────
-Spn5MLxb2_[kN-m]                  34    1      1     1     1       1     1     1              1           2
-Spn5MLyb2_[kN-m]                  34    1      1     1     1       1     1     1              1           2
-Spn5MLzb2_[kN-m]                  34    1      1     1     1       1     1     1              1           2
-Spn5FLxb2_[kN]                    34    1      1     1     1       1     1     1              1           2
-Spn5FLyb2_[kN]                    34    1      1     1     1       1     1     1              1           2
-Spn5FLzb2_[kN]                    34    1      1     1     1       1     1     1              1           2
+Spn5MLxb2_[kN-m]                  34    1      1     1     1       1     1     1              0           2
+Spn5MLyb2_[kN-m]                  34    1      1     1     1       1     1     1              0           2
+Spn5MLzb2_[kN-m]                  34    1      1     1     1       1     1     1              0           2
+Spn5FLxb2_[kN]                    34    1      1     1     1       1     1     1              0           2
+Spn5FLyb2_[kN]                    34    1      1     1     1       1     1     1              0           2
+Spn5FLzb2_[kN]                    34    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn6 — blade 2 (group 35) ──────────────────────────────────
-Spn6MLxb2_[kN-m]                  35    1      1     1     1       1     1     1              1           2
-Spn6MLyb2_[kN-m]                  35    1      1     1     1       1     1     1              1           2
-Spn6MLzb2_[kN-m]                  35    1      1     1     1       1     1     1              1           2
-Spn6FLxb2_[kN]                    35    1      1     1     1       1     1     1              1           2
-Spn6FLyb2_[kN]                    35    1      1     1     1       1     1     1              1           2
-Spn6FLzb2_[kN]                    35    1      1     1     1       1     1     1              1           2
+Spn6MLxb2_[kN-m]                  35    1      1     1     1       1     1     1              0           2
+Spn6MLyb2_[kN-m]                  35    1      1     1     1       1     1     1              0           2
+Spn6MLzb2_[kN-m]                  35    1      1     1     1       1     1     1              0           2
+Spn6FLxb2_[kN]                    35    1      1     1     1       1     1     1              0           2
+Spn6FLyb2_[kN]                    35    1      1     1     1       1     1     1              0           2
+Spn6FLzb2_[kN]                    35    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn7 — blade 2 (group 36) ──────────────────────────────────
-Spn7MLxb2_[kN-m]                  36    1      1     1     1       1     1     1              1           2
-Spn7MLyb2_[kN-m]                  36    1      1     1     1       1     1     1              1           2
-Spn7MLzb2_[kN-m]                  36    1      1     1     1       1     1     1              1           2
-Spn7FLxb2_[kN]                    36    1      1     1     1       1     1     1              1           2
-Spn7FLyb2_[kN]                    36    1      1     1     1       1     1     1              1           2
-Spn7FLzb2_[kN]                    36    1      1     1     1       1     1     1              1           2
+Spn7MLxb2_[kN-m]                  36    1      1     1     1       1     1     1              0           2
+Spn7MLyb2_[kN-m]                  36    1      1     1     1       1     1     1              0           2
+Spn7MLzb2_[kN-m]                  36    1      1     1     1       1     1     1              0           2
+Spn7FLxb2_[kN]                    36    1      1     1     1       1     1     1              0           2
+Spn7FLyb2_[kN]                    36    1      1     1     1       1     1     1              0           2
+Spn7FLzb2_[kN]                    36    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn8 — blade 2 (group 37) ──────────────────────────────────
-Spn8MLxb2_[kN-m]                  37    1      1     1     1       1     1     1              1           2
-Spn8MLyb2_[kN-m]                  37    1      1     1     1       1     1     1              1           2
-Spn8MLzb2_[kN-m]                  37    1      1     1     1       1     1     1              1           2
-Spn8FLxb2_[kN]                    37    1      1     1     1       1     1     1              1           2
-Spn8FLyb2_[kN]                    37    1      1     1     1       1     1     1              1           2
-Spn8FLzb2_[kN]                    37    1      1     1     1       1     1     1              1           2
+Spn8MLxb2_[kN-m]                  37    1      1     1     1       1     1     1              0           2
+Spn8MLyb2_[kN-m]                  37    1      1     1     1       1     1     1              0           2
+Spn8MLzb2_[kN-m]                  37    1      1     1     1       1     1     1              0           2
+Spn8FLxb2_[kN]                    37    1      1     1     1       1     1     1              0           2
+Spn8FLyb2_[kN]                    37    1      1     1     1       1     1     1              0           2
+Spn8FLzb2_[kN]                    37    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn9 — blade 2 (group 38) ──────────────────────────────────
-Spn9MLxb2_[kN-m]                  38    1      1     1     1       1     1     1              1           2
-Spn9MLyb2_[kN-m]                  38    1      1     1     1       1     1     1              1           2
-Spn9MLzb2_[kN-m]                  38    1      1     1     1       1     1     1              1           2
-Spn9FLxb2_[kN]                    38    1      1     1     1       1     1     1              1           2
-Spn9FLyb2_[kN]                    38    1      1     1     1       1     1     1              1           2
-Spn9FLzb2_[kN]                    38    1      1     1     1       1     1     1              1           2
+Spn9MLxb2_[kN-m]                  38    1      1     1     1       1     1     1              0           2
+Spn9MLyb2_[kN-m]                  38    1      1     1     1       1     1     1              0           2
+Spn9MLzb2_[kN-m]                  38    1      1     1     1       1     1     1              0           2
+Spn9FLxb2_[kN]                    38    1      1     1     1       1     1     1              0           2
+Spn9FLyb2_[kN]                    38    1      1     1     1       1     1     1              0           2
+Spn9FLzb2_[kN]                    38    1      1     1     1       1     1     1              0           2
 
 
 
 #
 # ── Blade Spanwise Spn1 — blade 1 (group 39) ───────────────────────────────────
-Spn1MLxb3_[kN-m]                  39     1      1     1     1       1     1     1              1           2
-Spn1MLyb3_[kN-m]                  39     1      1     1     1       1     1     1              1           2
-Spn1MLzb3_[kN-m]                  39     1      1     1     1       1     1     1              1           2
-Spn1FLxb3_[kN]                    39     1      1     1     1       1     1     1              1           2
-Spn1FLyb3_[kN]                    39     1      1     1     1       1     1     1              1           2
-Spn1FLzb3_[kN]                    39     1      1     1     1       1     1     1              1           2
+Spn1MLxb3_[kN-m]                  39     1      1     1     1       1     1     1              0           2
+Spn1MLyb3_[kN-m]                  39     1      1     1     1       1     1     1              0           2
+Spn1MLzb3_[kN-m]                  39     1      1     1     1       1     1     1              0           2
+Spn1FLxb3_[kN]                    39     1      1     1     1       1     1     1              0           2
+Spn1FLyb3_[kN]                    39     1      1     1     1       1     1     1              0           2
+Spn1FLzb3_[kN]                    39     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn2 — blade 1 (group 40) ───────────────────────────────────
-Spn2MLxb3_[kN-m]                  40     1      1     1     1       1     1     1              1           2
-Spn2MLyb3_[kN-m]                  40     1      1     1     1       1     1     1              1           2
-Spn2MLzb3_[kN-m]                  40     1      1     1     1       1     1     1              1           2
-Spn2FLxb3_[kN]                    40     1      1     1     1       1     1     1              1           2
-Spn2FLyb3_[kN]                    40     1      1     1     1       1     1     1              1           2
-Spn2FLzb3_[kN]                    40     1      1     1     1       1     1     1              1           2
+Spn2MLxb3_[kN-m]                  40     1      1     1     1       1     1     1              0           2
+Spn2MLyb3_[kN-m]                  40     1      1     1     1       1     1     1              0           2
+Spn2MLzb3_[kN-m]                  40     1      1     1     1       1     1     1              0           2
+Spn2FLxb3_[kN]                    40     1      1     1     1       1     1     1              0           2
+Spn2FLyb3_[kN]                    40     1      1     1     1       1     1     1              0           2
+Spn2FLzb3_[kN]                    40     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn3 — blade 1 (group 41) ───────────────────────────────────
-Spn3MLxb3_[kN-m]                  41     1      1     1     1       1     1     1              1           2
-Spn3MLyb3_[kN-m]                  41     1      1     1     1       1     1     1              1           2
-Spn3MLzb3_[kN-m]                  41     1      1     1     1       1     1     1              1           2
-Spn3FLxb3_[kN]                    41     1      1     1     1       1     1     1              1           2
-Spn3FLyb3_[kN]                    41     1      1     1     1       1     1     1              1           2
-Spn3FLzb3_[kN]                    41     1      1     1     1       1     1     1              1           2
+Spn3MLxb3_[kN-m]                  41     1      1     1     1       1     1     1              0           2
+Spn3MLyb3_[kN-m]                  41     1      1     1     1       1     1     1              0           2
+Spn3MLzb3_[kN-m]                  41     1      1     1     1       1     1     1              0           2
+Spn3FLxb3_[kN]                    41     1      1     1     1       1     1     1              0           2
+Spn3FLyb3_[kN]                    41     1      1     1     1       1     1     1              0           2
+Spn3FLzb3_[kN]                    41     1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn4 — blade 1 (group 42) ──────────────────────────────────
-Spn4MLxb3_[kN-m]                  42    1      1     1     1       1     1     1              1           2
-Spn4MLyb3_[kN-m]                  42    1      1     1     1       1     1     1              1           2
-Spn4MLzb3_[kN-m]                  42    1      1     1     1       1     1     1              1           2
-Spn4FLxb3_[kN]                    42    1      1     1     1       1     1     1              1           2
-Spn4FLyb3_[kN]                    42    1      1     1     1       1     1     1              1           2
-Spn4FLzb3_[kN]                    42    1      1     1     1       1     1     1              1           2
+Spn4MLxb3_[kN-m]                  42    1      1     1     1       1     1     1              0           2
+Spn4MLyb3_[kN-m]                  42    1      1     1     1       1     1     1              0           2
+Spn4MLzb3_[kN-m]                  42    1      1     1     1       1     1     1              0           2
+Spn4FLxb3_[kN]                    42    1      1     1     1       1     1     1              0           2
+Spn4FLyb3_[kN]                    42    1      1     1     1       1     1     1              0           2
+Spn4FLzb3_[kN]                    42    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn5 — blade 1 (group 43) ──────────────────────────────────
-Spn5MLxb3_[kN-m]                  43    1      1     1     1       1     1     1              1           2
-Spn5MLyb3_[kN-m]                  43    1      1     1     1       1     1     1              1           2
-Spn5MLzb3_[kN-m]                  43    1      1     1     1       1     1     1              1           2
-Spn5FLxb3_[kN]                    43    1      1     1     1       1     1     1              1           2
-Spn5FLyb3_[kN]                    43    1      1     1     1       1     1     1              1           2
-Spn5FLzb3_[kN]                    43    1      1     1     1       1     1     1              1           2
+Spn5MLxb3_[kN-m]                  43    1      1     1     1       1     1     1              0           2
+Spn5MLyb3_[kN-m]                  43    1      1     1     1       1     1     1              0           2
+Spn5MLzb3_[kN-m]                  43    1      1     1     1       1     1     1              0           2
+Spn5FLxb3_[kN]                    43    1      1     1     1       1     1     1              0           2
+Spn5FLyb3_[kN]                    43    1      1     1     1       1     1     1              0           2
+Spn5FLzb3_[kN]                    43    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn6 — blade 1 (group 44) ──────────────────────────────────
-Spn6MLxb3_[kN-m]                  44    1      1     1     1       1     1     1              1           2
-Spn6MLyb3_[kN-m]                  44    1      1     1     1       1     1     1              1           2
-Spn6MLzb3_[kN-m]                  44    1      1     1     1       1     1     1              1           2
-Spn6FLxb3_[kN]                    44    1      1     1     1       1     1     1              1           2
-Spn6FLyb3_[kN]                    44    1      1     1     1       1     1     1              1           2
-Spn6FLzb3_[kN]                    44    1      1     1     1       1     1     1              1           2
+Spn6MLxb3_[kN-m]                  44    1      1     1     1       1     1     1              0           2
+Spn6MLyb3_[kN-m]                  44    1      1     1     1       1     1     1              0           2
+Spn6MLzb3_[kN-m]                  44    1      1     1     1       1     1     1              0           2
+Spn6FLxb3_[kN]                    44    1      1     1     1       1     1     1              0           2
+Spn6FLyb3_[kN]                    44    1      1     1     1       1     1     1              0           2
+Spn6FLzb3_[kN]                    44    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn7 — blade 1 (group 45) ──────────────────────────────────
-Spn7MLxb3_[kN-m]                  45    1      1     1     1       1     1     1              1           2
-Spn7MLyb3_[kN-m]                  45    1      1     1     1       1     1     1              1           2
-Spn7MLzb3_[kN-m]                  45    1      1     1     1       1     1     1              1           2
-Spn7FLxb3_[kN]                    45    1      1     1     1       1     1     1              1           2
-Spn7FLyb3_[kN]                    45    1      1     1     1       1     1     1              1           2
-Spn7FLzb3_[kN]                    45    1      1     1     1       1     1     1              1           2
+Spn7MLxb3_[kN-m]                  45    1      1     1     1       1     1     1              0           2
+Spn7MLyb3_[kN-m]                  45    1      1     1     1       1     1     1              0           2
+Spn7MLzb3_[kN-m]                  45    1      1     1     1       1     1     1              0           2
+Spn7FLxb3_[kN]                    45    1      1     1     1       1     1     1              0           2
+Spn7FLyb3_[kN]                    45    1      1     1     1       1     1     1              0           2
+Spn7FLzb3_[kN]                    45    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn8 — blade 1 (group 46) ──────────────────────────────────
-Spn8MLxb3_[kN-m]                  46    1      1     1     1       1     1     1              1           2
-Spn8MLyb3_[kN-m]                  46    1      1     1     1       1     1     1              1           2
-Spn8MLzb3_[kN-m]                  46    1      1     1     1       1     1     1              1           2
-Spn8FLxb3_[kN]                    46    1      1     1     1       1     1     1              1           2
-Spn8FLyb3_[kN]                    46    1      1     1     1       1     1     1              1           2
-Spn8FLzb3_[kN]                    46    1      1     1     1       1     1     1              1           2
+Spn8MLxb3_[kN-m]                  46    1      1     1     1       1     1     1              0           2
+Spn8MLyb3_[kN-m]                  46    1      1     1     1       1     1     1              0           2
+Spn8MLzb3_[kN-m]                  46    1      1     1     1       1     1     1              0           2
+Spn8FLxb3_[kN]                    46    1      1     1     1       1     1     1              0           2
+Spn8FLyb3_[kN]                    46    1      1     1     1       1     1     1              0           2
+Spn8FLzb3_[kN]                    46    1      1     1     1       1     1     1              0           2
 #
 # ── Blade Spanwise Spn9 — blade 1 (group 47) ──────────────────────────────────
-Spn9MLxb3_[kN-m]                  47    1      1     1     1       1     1     1              1           2
-Spn9MLyb3_[kN-m]                  47    1      1     1     1       1     1     1              1           2
-Spn9MLzb3_[kN-m]                  47    1      1     1     1       1     1     1              1           2
-Spn9FLxb3_[kN]                    47    1      1     1     1       1     1     1              1           2
-Spn9FLyb3_[kN]                    47    1      1     1     1       1     1     1              1           2
-Spn9FLzb3_[kN]                    47    1      1     1     1       1     1     1              1           2
+Spn9MLxb3_[kN-m]                  47    1      1     1     1       1     1     1              0           2
+Spn9MLyb3_[kN-m]                  47    1      1     1     1       1     1     1              0           2
+Spn9MLzb3_[kN-m]                  47    1      1     1     1       1     1     1              0           2
+Spn9FLxb3_[kN]                    47    1      1     1     1       1     1     1              0           2
+Spn9FLyb3_[kN]                    47    1      1     1     1       1     1     1              0           2
+Spn9FLzb3_[kN]                    47    1      1     1     1       1     1     1              0           2
 
 # ==========================================================================================================
 
@@ -764,37 +764,37 @@ Mres_YawBr_[kN-m]     = sqrt(YawBrMxp_[kN-m]^2  + YawBrMyp_[kN-m]^2)  # Yaw bear
 # =============================================================================================================
 #
 # ── Blade Root — Blade frame — pitch bearing design (LRD + LDD on) ───────────
-Mres_RootBld1_[kN-m]         2     1.35     1      1     1     0       0     1     1              1           2
-Mres_RootBld2_[kN-m]         4     1.35     1      1     1     0       0     1     1              1           2
-Mres_RootBld3_[kN-m]         6     1.35     1      1     1     0       0     1     1              1           2
+Mres_RootBld1_[kN-m]         2     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld2_[kN-m]         4     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld3_[kN-m]         6     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── Blade Root — Hub/Coned frame — pitch bearing design (LRD + LDD on) ───────
 # RFC=1 here so HubLoads.sum Section 2 (Mres DEL) populates. Without RFC, the
 # .rfc file is not produced and the SUM writer falls back to N/A.
-Mres_RootHub1_[kN-m]         1     1.35     1      1     1     1       0     1     1              1           2
-Mres_RootHub2_[kN-m]         3     1.35     1      1     1     1       0     1     1              1           2
-Mres_RootHub3_[kN-m]         5     1.35     1      1     1     1       0     1     1              1           2
+Mres_RootHub1_[kN-m]         1     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub2_[kN-m]         3     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub3_[kN-m]         5     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── LSS Shaft — Non-rotating (RFC + Markov + LDD, no LRD) ────────────────────
-Mres_LSShft_a_[kN-m]        27     1.35     1      1     1     1       1     0     1              1           2
+Mres_LSShft_a_[kN-m]        27     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── LSS Shaft — Rotating (RFC + Markov + LRD + LDD) ─────────────────────────
 Mres_LSShft_s_[kN-m]        28     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── Tower — extreme only (no fatigue flags) ───────────────────────────────────
-Mres_TwrBs_[kN-m]           16     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt1_[kN-m]           17     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt2_[kN-m]           18     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt3_[kN-m]           19     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt4_[kN-m]           20     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt5_[kN-m]           21     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt6_[kN-m]           22     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt7_[kN-m]           23     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt8_[kN-m]           24     1.35     1      1     1     1       0     0     0              1           2
-Mres_TwHt9_[kN-m]           25     1.35     1      1     1     1       0     0     0              1           2
+Mres_TwrBs_[kN-m]           16     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt1_[kN-m]           17     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt2_[kN-m]           18     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt3_[kN-m]           19     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt4_[kN-m]           20     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt5_[kN-m]           21     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt6_[kN-m]           22     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt7_[kN-m]           23     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt8_[kN-m]           24     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt9_[kN-m]           25     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── Tower Top / Yaw Bearing — extreme only ────────────────────────────────────
-Mres_YawBr_[kN-m]           26     1.35     1      1     1     1       0     0     0              1           2
+Mres_YawBr_[kN-m]           26     1.35     1      1     1     1       1     1     1              1           2
 # =============================================================================================================
 
 
@@ -821,7 +821,7 @@ Mres_YawBr_[kN-m]           26     1.35     1      1     1     1       0     0  
 #   that fallback is approximate. To get correct values, leave TWR_ED_FILE
 #   set in [TOWER] and just keep BLADE_FILE_PATH below as a legacy hint.
 [BLADE]
-BLADE_FILE_PATH  = C:\Users\PZWind-DhyeyK\Desktop\NREL_TURBULANT\NRELOffshrBsline5MW_AeroDyn_blade.dat
+BLADE_FILE_PATH  = C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\NRELOffshrBsline5MW_AeroDyn_blade.dat
 BLADE_LENGTH     = 61.5
 SUM_DEL_SLOPES   = 10.0  12.0  25.0
 CONVENTION       = AUTO
@@ -837,9 +837,9 @@ MAIN_BLD_FRACTIONS = 0  25  50  75
 # Resultant bending — Hub/Coned frame (c suffix); = sqrt(Mxc^2 + Myc^2)
 # Uses the derived sensors declared in Table 3A (DERIVED_SENSORS_DEF):
 #     Mres_RootHub1/2/3_[kN-m] = sqrt(RootMxc#^2 + RootMyc#^2)
-HUB_Mres_B1 = mres_roothub1_[kn-m]
-HUB_Mres_B2 = mres_roothub2_[kn-m]
-HUB_Mres_B3 = mres_roothub3_[kn-m]
+HUB_Mres_B1 = mres_roothub1_kn-m
+HUB_Mres_B2 = mres_roothub2_kn-m
+HUB_Mres_B3 = mres_roothub3_kn-m
 # Moments — Hub/Coned frame (c suffix)
 HUB_Mx_B1 = RootMxc1_[kN-m]
 HUB_My_B1 = RootMyc1_[kN-m]
@@ -947,7 +947,7 @@ DRT_Fz_a               = LSShftFza_[kN]
 #
 # ── Rotating frame (s suffix) ────────────────────────────────────────────────
 # Same convention: Mx = shaft torque, My/Mz = bending, Mres = sqrt(My^2+Mz^2)
-DRT_Mres_s             = Mres_LSShft_s_[kN-m]
+DRT_Mres_s             = mres_lsshft_s_kN-m
 DRT_Mx_s               = LSShftMxs_[kN-m]
 DRT_My_s               = LSSGagMys_[kN-m]
 DRT_Mz_s               = LSSGagMzs_[kN-m]
@@ -1014,7 +1014,7 @@ YAW_RAzp         = YawBrRAzp_[deg/s^2]
 # Pipeline reads TowerHt, TowerBsHt, TwrFile, TwrGagNd from this file
 # then reads HtFract from the tower properties file (TwrFile path)
 # Set to NONE to skip height annotation in TwrLoads.sum
-TWR_ED_FILE      = C:\Users\PZWind-DhyeyK\Desktop\NREL_TURBULANT\5MW_R126_HH90_Elastodyn_NPP_04-08mps.dat
+TWR_ED_FILE      = C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\5MW_R126_HH90_Elastodyn_NPP_04-08mps.dat
 TWR_DEL_SLOPES   = 4.0
 #
 # Tower Top / Yaw Bearing
