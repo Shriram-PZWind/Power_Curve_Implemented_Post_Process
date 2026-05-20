@@ -32,8 +32,8 @@ NEQ_REV        = 1e8
 Filename                       SimTime  Family   FamilyMethod     PLF       OccurrenceFreq_20yr      OccurrenceHours_20yr         Probability_%
 [-]                                [s]     [-]            [-]     [-]                       [-]                     [hrs]                   [%]
 #===============================================================================================================================================
-DLC11_4mps_seed01.outb              600       1              1    1.35                   15477.7                   2579.61              1.471372
-DLC11_4mps_seed02.outb              600       1              1    1.35                   15477.7                   2579.61              1.471372
+DLC41_Vi_Seed01.outb                600       1              1    1.35                   15477.7                   2579.61              1.471372
+#DLC11_4mps_seed02.outb             600       1              1    1.35                   15477.7                   2579.61              1.471372
 #DLC13_04mps_Seed03.outb            600       1              1    1.35                         0                         0                     0
 #DLC13_04mps_Seed04.outb            600       1              1    1.35                         0                         0                     0
 #DLC13_04mps_Seed05.outb            600       1              1    1.35                         0                         0                     0
