@@ -1,0 +1,57 @@
+
+
+# =============================================================================
+# TABLE 3B — DERIVED SENSOR CALCULATION FLAGS
+# Parsed by the pipeline — same structure as Table 2 plus PLF column
+# =============================================================================
+#
+# Col  1 : SensorName    — must match exactly a sensor defined in Table 3A
+# Col  2 : Group         — node group (same as component sensors in Table 2)
+# Col  3 : PLF           — partial load factor for EXT ranking
+# Col  4 : STA           — 1 = compute all 7 statistics + write to per-file .sta
+# Col  5 : 1HzEq         — 1 = compute per-file 1Hz DEL
+# Col  6 : EXT           — 1 = EXT ranking (.max file only for derived sensors)
+# Col  7 : RFC           — 1 = lifetime RFC spectrum → .rfc file
+# Col  8 : Markov        — 1 = lifetime Markov matrix → .markov file
+# Col  9 : LRD           — 1 = Level Revolution Distribution → .lrd file
+# Col 10 : LDD           — 1 = Level Duration Distribution → .ldd file
+# Col 11 : Complimentary — always 0 (not applicable to derived sensors)
+# Col 12 : CompMethod    — always 2 (not applicable to derived sensors)
+#
+[DERIVED_SENSORS_FLAGS]
+#
+# SensorName                Group    PLF   STA  1HzEq   EXT   RFC  Markov   LRD   LDD  Complimentary  CompMethod
+# =============================================================================================================
+#
+# ── Blade Root — Blade frame — pitch bearing design (LRD + LDD on) ───────────
+Mres_RootBld1_[kN-m]         2     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld2_[kN-m]         4     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld3_[kN-m]         6     1.35     1      1     1     1       1     1     1              1           2
+#
+# ── Blade Root — Hub/Coned frame — pitch bearing design (LRD + LDD on) ───────
+# RFC=1 here so HubLoads.sum Section 2 (Mres DEL) populates. Without RFC, the
+# .rfc file is not produced and the SUM writer falls back to N/A.
+Mres_RootHub1_[kN-m]         1     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub2_[kN-m]         3     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub3_[kN-m]         5     1.35     1      1     1     1       1     1     1              1           2
+#
+# ── LSS Shaft — Non-rotating (RFC + Markov + LDD, no LRD) ────────────────────
+Mres_LSShft_a_[kN-m]        27     1.35     1      1     1     1       1     1     1              1           2
+#
+# ── LSS Shaft — Rotating (RFC + Markov + LRD + LDD) ─────────────────────────
+Mres_LSShft_s_[kN-m]        28     1.35     1      1     1     1       1     1     1              1           2
+#
+# ── Tower — extreme only (no fatigue flags) ───────────────────────────────────
+Mres_TwrBs_[kN-m]           16     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt1_[kN-m]           17     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt2_[kN-m]           18     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt3_[kN-m]           19     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt4_[kN-m]           20     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt5_[kN-m]           21     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt6_[kN-m]           22     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt7_[kN-m]           23     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt8_[kN-m]           24     1.35     1      1     1     1       1     1     1              1           2
+Mres_TwHt9_[kN-m]           25     1.35     1      1     1     1       1     1     1              1           2
+#
+# ── Tower Top / Yaw Bearing — extreme only ────────────────────────────────────
+Mres_YawBr_[kN-m]           26     1.35     1      1     1     1       1     1     1              1           2

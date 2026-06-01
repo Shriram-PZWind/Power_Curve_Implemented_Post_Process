@@ -1,0 +1,98 @@
+
+
+
+# --- Tower loads (TwrLoads.sum) ---
+# Tower fixed coordinate system (t suffix)
+# Mx = side-side bending, My = fore-aft bending, Mz = torsion
+# Station order in output: Tower Top (YawBr) → TwHt9...TwHt1 → Tower Base (TwrBs)
+# DEL Wöhler slope for fatigue table
+[TOWER]
+# ElastoDyn primary input file — used to read tower station heights
+# Pipeline reads TowerHt, TowerBsHt, TwrFile, TwrGagNd from this file
+# then reads HtFract from the tower properties file (TwrFile path)
+# Set to NONE to skip height annotation in TwrLoads.sum
+TWR_ED_FILE      = C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\INPUTS\NRELOffshrBsline5MW_Onshore_ElastoDyn.dat
+TWR_DEL_SLOPES   = 4.0
+#
+# Tower Top / Yaw Bearing
+TWR_Mres_Top    = mres_yawbr_[kn-m]
+TWR_Mx_Top      = YawBrMxp_[kN-m]
+TWR_My_Top      = YawBrMyp_[kN-m]
+TWR_Mz_Top      = YawBrMzp_[kN-m]
+TWR_Fx_Top      = YawBrFxp_[kN]
+TWR_Fy_Top      = YawBrFyp_[kN]
+TWR_Fz_Top      = YawBrFzp_[kN]
+#
+# Tower Height Stations (TwHt1 = lowest, TwHt9 = highest)
+TWR_Mres_Ht9    = mres_twht9_[kn-m]
+TWR_Mx_Ht9      = TwHt9MLxt_[kN-m]
+TWR_My_Ht9      = TwHt9MLyt_[kN-m]
+TWR_Mz_Ht9      = TwHt9MLzt_[kN-m]
+TWR_Fx_Ht9      = TwHt9FLxt_[kN]
+TWR_Fy_Ht9      = TwHt9FLyt_[kN]
+TWR_Fz_Ht9      = TwHt9FLzt_[kN]
+TWR_Mres_Ht8    = mres_twht8_[kn-m]
+TWR_Mx_Ht8      = TwHt8MLxt_[kN-m]
+TWR_My_Ht8      = TwHt8MLyt_[kN-m]
+TWR_Mz_Ht8      = TwHt8MLzt_[kN-m]
+TWR_Fx_Ht8      = TwHt8FLxt_[kN]
+TWR_Fy_Ht8      = TwHt8FLyt_[kN]
+TWR_Fz_Ht8      = TwHt8FLzt_[kN]
+TWR_Mres_Ht7    = mres_twht7_[kn-m]
+TWR_Mx_Ht7      = TwHt7MLxt_[kN-m]
+TWR_My_Ht7      = TwHt7MLyt_[kN-m]
+TWR_Mz_Ht7      = TwHt7MLzt_[kN-m]
+TWR_Fx_Ht7      = TwHt7FLxt_[kN]
+TWR_Fy_Ht7      = TwHt7FLyt_[kN]
+TWR_Fz_Ht7      = TwHt7FLzt_[kN]
+TWR_Mres_Ht6    = mres_twht6_[kn-m]
+TWR_Mx_Ht6      = TwHt6MLxt_[kN-m]
+TWR_My_Ht6      = TwHt6MLyt_[kN-m]
+TWR_Mz_Ht6      = TwHt6MLzt_[kN-m]
+TWR_Fx_Ht6      = TwHt6FLxt_[kN]
+TWR_Fy_Ht6      = TwHt6FLyt_[kN]
+TWR_Fz_Ht6      = TwHt6FLzt_[kN]
+TWR_Mres_Ht5    = mres_twht5_[kn-m]
+TWR_Mx_Ht5      = TwHt5MLxt_[kN-m]
+TWR_My_Ht5      = TwHt5MLyt_[kN-m]
+TWR_Mz_Ht5      = TwHt5MLzt_[kN-m]
+TWR_Fx_Ht5      = TwHt5FLxt_[kN]
+TWR_Fy_Ht5      = TwHt5FLyt_[kN]
+TWR_Fz_Ht5      = TwHt5FLzt_[kN]
+TWR_Mres_Ht4    = mres_twht4_[kn-m]
+TWR_Mx_Ht4      = TwHt4MLxt_[kN-m]
+TWR_My_Ht4      = TwHt4MLyt_[kN-m]
+TWR_Mz_Ht4      = TwHt4MLzt_[kN-m]
+TWR_Fx_Ht4      = TwHt4FLxt_[kN]
+TWR_Fy_Ht4      = TwHt4FLyt_[kN]
+TWR_Fz_Ht4      = TwHt4FLzt_[kN]
+TWR_Mres_Ht3    = mres_twht3_[kn-m]
+TWR_Mx_Ht3      = TwHt3MLxt_[kN-m]
+TWR_My_Ht3      = TwHt3MLyt_[kN-m]
+TWR_Mz_Ht3      = TwHt3MLzt_[kN-m]
+TWR_Fx_Ht3      = TwHt3FLxt_[kN]
+TWR_Fy_Ht3      = TwHt3FLyt_[kN]
+TWR_Fz_Ht3      = TwHt3FLzt_[kN]
+TWR_Mres_Ht2    = mres_twht2_[kn-m]
+TWR_Mx_Ht2      = TwHt2MLxt_[kN-m]
+TWR_My_Ht2      = TwHt2MLyt_[kN-m]
+TWR_Mz_Ht2      = TwHt2MLzt_[kN-m]
+TWR_Fx_Ht2      = TwHt2FLxt_[kN]
+TWR_Fy_Ht2      = TwHt2FLyt_[kN]
+TWR_Fz_Ht2      = TwHt2FLzt_[kN]
+TWR_Mres_Ht1    = mres_twht1_[kn-m]
+TWR_Mx_Ht1      = TwHt1MLxt_[kN-m]
+TWR_My_Ht1      = TwHt1MLyt_[kN-m]
+TWR_Mz_Ht1      = TwHt1MLzt_[kN-m]
+TWR_Fx_Ht1      = TwHt1FLxt_[kN]
+TWR_Fy_Ht1      = TwHt1FLyt_[kN]
+TWR_Fz_Ht1      = TwHt1FLzt_[kN]
+#
+# Tower Base
+TWR_Mres_Base   = mres_twrbs_[kn-m]
+TWR_Mx_Base     = TwrBsMxt_[kN-m]
+TWR_My_Base     = TwrBsMyt_[kN-m]
+TWR_Mz_Base     = TwrBsMzt_[kN-m]
+TWR_Fx_Base     = TwrBsFxt_[kN]
+TWR_Fy_Base     = TwrBsFyt_[kN]
+TWR_Fz_Base     = TwrBsFzt_[kN]

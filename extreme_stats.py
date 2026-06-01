@@ -54,33 +54,58 @@ def _absmax_family_average(values, method):
     return float(np.mean(selected)), True
 
 
+# def compute_extreme_stats(df, time_col='Time_[s]'):
+#     """
+#     Compute extreme statistics for every sensor channel in the DataFrame.
+
+#     Parameters
+#     ----------
+#     df       : pandas DataFrame from read_fast_output()
+#     time_col : name of the time column to exclude from computation
+
+#     Returns
+#     -------
+#     stats : dict  {sensor_col: {stat_name: float}}
+#         Keys in inner dict match STAT_KEYS.
+#     """
+#     stats = {}
+#     for col in df.columns:
+#         if col == time_col:
+#             continue
+#         s = df[col].values.astype(float)
+
+#         s_max   = float(np.max(s))
+#         s_min   = float(np.min(s))
+#         # AbsMax preserves sign of the larger-magnitude extreme.
+#         # Industry convention: report the worst load WITH its direction.
+#         # Example: signal range [-100, +50] -> AbsMax = -100 (not +100).
+#         s_absmax = s_max if abs(s_max) >= abs(s_min) else s_min
+
+#         stats[col] = {
+#             'Max'    : s_max,
+#             'Min'    : s_min,
+#             'Mean'   : float(np.mean(s)),
+#             'Stdev'  : float(np.std(s, ddof=1)),
+#             'Range'  : float(s_max - s_min),
+#             'AbsMax' : s_absmax,
+#             'RMS'    : float(np.sqrt(np.mean(s ** 2))),
+#         }
+#     return stats
+
 def compute_extreme_stats(df, time_col='Time_[s]'):
-    """
-    Compute extreme statistics for every sensor channel in the DataFrame.
-
-    Parameters
-    ----------
-    df       : pandas DataFrame from read_fast_output()
-    time_col : name of the time column to exclude from computation
-
-    Returns
-    -------
-    stats : dict  {sensor_col: {stat_name: float}}
-        Keys in inner dict match STAT_KEYS.
-    """
+    # ... (Keep the docstrings up to the 'stats = {}' initialization)
     stats = {}
     for col in df.columns:
         if col == time_col:
             continue
         s = df[col].values.astype(float)
-
+        n = len(s) # Calculate length once
+ 
         s_max   = float(np.max(s))
         s_min   = float(np.min(s))
         # AbsMax preserves sign of the larger-magnitude extreme.
-        # Industry convention: report the worst load WITH its direction.
-        # Example: signal range [-100, +50] -> AbsMax = -100 (not +100).
         s_absmax = s_max if abs(s_max) >= abs(s_min) else s_min
-
+ 
         stats[col] = {
             'Max'    : s_max,
             'Min'    : s_min,
@@ -88,7 +113,8 @@ def compute_extreme_stats(df, time_col='Time_[s]'):
             'Stdev'  : float(np.std(s, ddof=1)),
             'Range'  : float(s_max - s_min),
             'AbsMax' : s_absmax,
-            'RMS'    : float(np.sqrt(np.mean(s ** 2))),
+            # OPTIMISED: Using dot product saves allocating a new array in memory
+            'RMS'    : float(np.sqrt(np.dot(s, s) / n)) if n > 0 else 0.0,
         }
     return stats
 
@@ -258,6 +284,18 @@ def _get_group_sensors(sensor_name, sensor_list, derived_active=None):
             if flags.get('Group') == target_group]
 
 
+# def _moment_resultant(df, moment_sensors, time_idx):
+#     """
+#     Compute moment resultant sqrt(Mx² + My² + Mz²) at a given time index.
+#     Returns scalar float.
+#     """
+#     total = 0.0
+#     for col in moment_sensors:
+#         if col in df.columns:
+#             val = float(df[col].iloc[time_idx])
+#             total += val ** 2
+#     return float(np.sqrt(total))
+
 def _moment_resultant(df, moment_sensors, time_idx):
     """
     Compute moment resultant sqrt(Mx² + My² + Mz²) at a given time index.
@@ -266,7 +304,8 @@ def _moment_resultant(df, moment_sensors, time_idx):
     total = 0.0
     for col in moment_sensors:
         if col in df.columns:
-            val = float(df[col].iloc[time_idx])
+            # OPTIMISED: .values access is ~100x faster than pandas .iloc
+            val = float(df[col].values[time_idx])
             total += val ** 2
     return float(np.sqrt(total))
 

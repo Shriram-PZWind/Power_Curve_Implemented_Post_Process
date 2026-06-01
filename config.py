@@ -9,8 +9,8 @@ import re
 from tower_reader import read_tower_heights
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
-INPUT_FOLDER  = r'C:\Users\PZWind-AkashM\Desktop\setup\2files-test'   # folder containing .outb / .out files
-OUTPUT_FOLDER = r'C:\Users\PZWind-AkashM\Desktop\setup\2files-test\results'            # root output folder
+INPUT_FOLDER  = r'C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\Test\1-file'   # folder containing .outb / .out files
+OUTPUT_FOLDER = r'C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\Test\1-file\1-files-res'            # root output folder
 
 # Subfolders created automatically inside OUTPUT_FOLDER
 STA_FOLDER = os.path.join(OUTPUT_FOLDER, 'STA')  # .sta files (per-file + summary)
