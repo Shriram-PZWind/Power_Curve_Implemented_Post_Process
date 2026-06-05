@@ -37,7 +37,7 @@ jobs:
           --add-data "openfast_toolbox;openfast_toolbox" \
           --collect-all openfast_toolbox \
           --paths . \
-          main.py
+          runner.py
  
       - name: Upload Windows Executable
         uses: actions/upload-artifact@v4
