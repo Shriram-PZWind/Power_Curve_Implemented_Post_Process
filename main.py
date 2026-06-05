@@ -56,6 +56,607 @@ from output_writer  import (write_per_file_sta, write_summary_sta,
                              write_ext_file, write_complementary_file,
                              write_contribution_file)
 
+# Force underlying linear algebra libraries to single-thread to prevent multi-core lockups
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+
+import numpy as np
+import rainflow
+
+# ── 100% ACCURATE ACCELERATED RAINFLOW INTERFACE ────────────────────────────
+# def _extract_cycles_fast(signal):
+#     """
+#     Blazing fast pre-filter using NumPy to extract strict reversals (peaks/valleys).
+#     Feeds the highly compressed array to the official rainflow package to guarantee 
+#     100% exact numerical matching with your original results.
+#     """
+#     # 1. Eliminate consecutive duplicates instantly
+#     mask = np.empty(len(signal), dtype=np.bool_)
+#     mask[0] = True
+#     mask[1:] = (signal[1:] != signal[:-1])
+#     filtered = signal[mask]
+    
+#     if len(filtered) >= 3:
+#         # 2. Identify turning points where direction changes sign
+#         signs = np.sign(np.diff(filtered))
+#         turning_idx = np.where(signs[1:] != signs[:-1])[0] + 1
+#         keep_idx = np.concatenate(([0], turning_idx, [len(filtered) - 1]))
+#         reversals = filtered[keep_idx]
+#     else:
+#         reversals = filtered
+
+#     # 3. Process via official library for precise ASTM compliance
+#     return [(rng, mean, count) for rng, mean, count, *_ in rainflow.extract_cycles(reversals)]
+
+
+# # ── HIGH-SPEED MULTI-CORE WORKER ENGINE ─────────────────────────────────────
+# def fast_turbo_worker_phase4(fpath, is_fatigue, occ_k, config_data, bin_edges_rfc, 
+#                              bin_edges_level, derived_bin_edges, sensor_cols, 
+#                              sensor_cols_all, derived_active, fatigue_sensors):
+#     from io_reader import read_fast_output
+#     from extreme_stats import compute_extreme_stats, compute_derived_channel
+#     from output_writer import write_per_file_sta
+#     from config import get_sensor_flags
+
+#     fname = os.path.basename(fpath)
+#     stem = os.path.splitext(fname)[0]
+    
+#     try:
+#         df = read_fast_output(fpath)
+#     except Exception as e:
+#         return {'fname': fname, 'error': str(e)}
+
+#     time = df[config_data['TIME_CHANNEL']].values
+#     t_sim = float(time[-1] - time[0])
+
+#     # Compute extreme summary statistics
+#     ext_stats = compute_extreme_stats(df, config_data['TIME_CHANNEL'])
+    
+#     # Fast calculated DEL and Cached Rainflow outputs
+#     del_stats = {}
+#     cached_cycles = {}
+    
+#     for col in sensor_cols:
+#         if col not in df.columns: continue
+#         sig = df[col].values.astype(float)
+        
+#         # Call the exact pre-filtered rainflow routine
+#         cycles = _extract_cycles_fast(sig)
+#         cached_cycles[col] = cycles
+        
+#         # Calculate 1Hz DEL values instantly via vector math
+#         del_stats[col] = {}
+#         for m in config_data['RFC_M_VALUES']:
+#             dmg_sum = sum(count * (rng ** m) for rng, mean, count in cycles)
+#             del_stats[col][m] = float((dmg_sum / t_sim) ** (1.0 / m)) if dmg_sum > 0 else 0.0
+
+#     # Process Derived Channels once
+#     derived_extreme = {}
+#     derived_del = {}
+#     derived_signals = {}
+    
+#     if derived_active:
+#         for ds in derived_active:
+#             dn = ds['name']
+#             sig, _ = compute_derived_channel(df, ds)
+#             if sig is None: continue
+#             derived_signals[dn] = sig
+            
+#             if ds.get('sta', 1):
+#                 smax, smin = float(np.max(sig)), float(np.min(sig))
+#                 derived_extreme[dn] = {
+#                     'Max': smax, 'Min': smin, 'Mean': float(np.mean(sig)),
+#                     'Stdev': float(np.std(sig, ddof=1)), 'Range': smax - smin,
+#                     'AbsMax': smax if abs(smax) >= abs(smin) else smin,
+#                     'RMS': float(np.sqrt(np.mean(sig**2)))
+#                 }
+#             if ds.get('1hzeq', 1):
+#                 dcycles = _extract_cycles_fast(sig)
+#                 derived_del[dn] = {}
+#                 for m in config_data['RFC_M_VALUES']:
+#                     ddmg = sum(dcnt * (drng ** m) for drng, dmean, dcnt in dcycles)
+#                     derived_del[dn][m] = float((ddmg / t_sim) ** (1.0 / m)) if ddmg > 0 else 0.0
+
+#     # Write independent .sta files directly from inside the worker core
+#     ext_stats_all = {**ext_stats, **derived_extreme}
+#     del_stats_all = {**del_stats, **derived_del}
+#     sta_path = os.path.join(config_data['STA_FOLDER'], stem + '.sta')
+#     write_per_file_sta(sta_path, sensor_cols_all, ext_stats_all, del_stats_all, config_data['RFC_M_VALUES'])
+
+#     # Compile Fatigue Distribution Data Maps
+#     fatigue_payload = {}
+#     if is_fatigue:
+#         from fatigue_stats import compute_rfc_spectrum, compute_markov_matrix, compute_ldd_lrd
+#         rs_chan = config_data['ROTOR_SPEED_CHANNEL']
+#         rotor_speed = df[rs_chan].values.astype(float) if rs_chan in df.columns else np.zeros(len(time))
+
+#         rfc_up, mkv_up, ldd_lrd_up, dmg_up = {}, {}, {}, {}
+#         for col in fatigue_sensors:
+#             if col not in df.columns: continue
+#             sig = df[col].values.astype(float)
+#             flags = get_sensor_flags(col)
+            
+#             cycles = cached_cycles[col]
+#             rngs = np.array([c[0] for c in cycles])
+#             w_counts = np.array([c[2] for c in cycles])
+            
+#             if flags['RFC']:
+#                 if len(rngs) > 0:
+#                     counts, _ = np.histogram(rngs, bins=bin_edges_rfc[col], weights=w_counts)
+#                 else:
+#                     counts = np.zeros(len(bin_edges_rfc[col]) - 1)
+#                 rfc_up[col] = counts * occ_k
+#                 dmg_up[col] = {m: float(sum(c[2] * (c[0] ** m) for c in cycles)) for m in config_data['RFC_M_VALUES']}
+#             if flags['Markov']:
+#                 mkv_up[col] = compute_markov_matrix(sig, bin_edges_rfc[col], bin_edges_level[col]) * occ_k
+#             if flags['LDD'] or flags['LRD']:
+#                 t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, bin_edges_level[col])
+#                 ldd_lrd_up[col] = (t_lvl * occ_k, r_lvl * occ_k)
+
+#         # Derived Sensor Fatigue Allocations
+#         # drfc_up, dmkv_up, dldd_lrd_up = {}, {}, {}
+#         # for ds in derived_active:
+#         #     dn = ds['name']
+#         #     if dn not in derived_signals or occ_k <= 0: continue
+#         #     sig = derived_signals[dn]
+#         #     be = derived_bin_edges.get(dn, {})
+            
+#         #     if (ds['rfc'] or ds['markov']) and 'rfc' in be:
+#         #         dcycles = _extract_cycles_fast(sig)
+#         #         drngs = np.array([c[0] for c in dcycles])
+#         #         dw_counts = np.array([c[2] for c in dcycles])
+#         #         if ds['rfc']:
+#         #             if len(drngs) > 0:
+#         #                 counts, _ = np.histogram(drngs, bins=be['rfc'], weights=dw_counts)
+#         #             else:
+#         #                 counts = np.zeros(len(be['rfc']) - 1)
+#         #             drfc_up[dn] = counts * occ_k
+#         #         if ds['markov']:
+#         #             dmkv_up[dn] = compute_markov_matrix(sig, be['rfc'], be['level']) * occ_k
+#         #     if (ds['ldd'] or ds['lrd']) and 'level' in be:
+#         #         t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, be['level'])
+#         #         dldd_lrd_up[dn] = (t_lvl * occ_k, r_lvl * occ_k)
+
+#         # fatigue_payload = {
+#         #     'rfc': rfc_up, 'markov': mkv_up, 'ldd_lrd': ldd_lrd_up, 'dmg': dmg_up,
+#         #     'drfc': drfc_up, 'dmarkov': dmkv_up, 'dldd_lrd': dldd_lrd_up
+#         # }
+
+#         # Derived Sensor Fatigue Allocations
+#         drfc_up, dmkv_up, dldd_lrd_up = {}, {}, {}
+#         ddmg_up = {}  # FIX 2: Initialize raw exact damage dictionary for derived sensors
+        
+#         for ds in derived_active:
+#             dn = ds['name']
+#             if dn not in derived_signals or occ_k <= 0: continue
+#             sig = derived_signals[dn]
+#             be = derived_bin_edges.get(dn, {})
+            
+#             if (ds['rfc'] or ds['markov']) and 'rfc' in be:
+#                 dcycles = _extract_cycles_fast(sig)
+#                 drngs = np.array([c[0] for c in dcycles])
+#                 dw_counts = np.array([c[2] for c in dcycles])
+                
+#                 if ds['rfc']:
+#                     if len(drngs) > 0:
+#                         # FIX 1: Clip ranges to the absolute min/max bin edges. 
+#                         # This guarantees NO cycles are dropped due to float precision limits.
+#                         drngs_clipped = np.clip(drngs, be['rfc'][0], be['rfc'][-1])
+#                         counts, _ = np.histogram(drngs_clipped, bins=be['rfc'], weights=dw_counts)
+#                     else:
+#                         counts = np.zeros(len(be['rfc']) - 1)
+                    
+#                     drfc_up[dn] = counts * occ_k
+                    
+#                     # FIX 2: Capture exact raw damage sum (matches standard sensor logic)
+#                     ddmg_up[dn] = {
+#                         m: float(sum(c[2] * (c[0] ** m) for c in dcycles)) 
+#                         for m in config_data['RFC_M_VALUES']
+#                     }
+                    
+#                 if ds['markov']:
+#                     dmkv_up[dn] = compute_markov_matrix(sig, be['rfc'], be['level']) * occ_k
+                    
+#             if (ds['ldd'] or ds['lrd']) and 'level' in be:
+#                 t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, be['level'])
+#                 dldd_lrd_up[dn] = (t_lvl * occ_k, r_lvl * occ_k)
+
+#         # Update the payload to include ddmg
+#         fatigue_payload = {
+#             'rfc': rfc_up, 'markov': mkv_up, 'ldd_lrd': ldd_lrd_up, 'dmg': dmg_up,
+#             'drfc': drfc_up, 'dmarkov': dmkv_up, 'dldd_lrd': dldd_lrd_up, 
+#             'ddmg': ddmg_up  # FIX 2: Pass exact derived damage back to main thread
+#         }
+
+#     return {
+#         'fname': fname, 'stem': stem, 'ext_all': ext_stats_all, 'del_all': del_stats_all,
+#         'is_fatigue': is_fatigue, 'fatigue_payload': fatigue_payload
+#     }
+
+# def fast_turbo_worker_phase4(fpath, is_fatigue, occ_k, config_data, bin_edges_rfc, 
+#                              bin_edges_level, derived_bin_edges, sensor_cols, 
+#                              sensor_cols_all, derived_active, fatigue_sensors):
+#     from io_reader import read_fast_output
+#     from extreme_stats import compute_extreme_stats, compute_derived_channel
+#     from output_writer import write_per_file_sta
+#     from config import get_sensor_flags
+
+#     fname = os.path.basename(fpath)
+#     stem = os.path.splitext(fname)[0]
+    
+#     try:
+#         df = read_fast_output(fpath)
+#     except Exception as e:
+#         return {'fname': fname, 'error': str(e)}
+
+#     time = df[config_data['TIME_CHANNEL']].values
+#     t_sim = float(time[-1] - time[0])
+
+#     # Compute extreme summary statistics
+#     ext_stats = compute_extreme_stats(df, config_data['TIME_CHANNEL'])
+    
+#     # ── OPTIMIZATION: Cache structures to prevent duplicate iterations and loops
+#     del_stats = {}
+#     cached_cycles = {}
+#     cached_rngs_wts = {}  # Holds fast pre-packaged NumPy arrays
+#     cached_dmg = {}       # Caches damage sums to eliminate duplicate loops later
+    
+#     for col in sensor_cols:
+#         if col not in df.columns: continue
+#         sig = df[col].values.astype(float)
+        
+#         # Call the exact pre-filtered rainflow routine
+#         cycles = _extract_cycles_fast(sig)
+#         cached_cycles[col] = cycles
+        
+#         # Vectorization: Pack list into NumPy arrays immediately for vector calculations
+#         if cycles:
+#             rngs = np.array([c[0] for c in cycles], dtype=float)
+#             w_counts = np.array([c[2] for c in cycles], dtype=float)
+#         else:
+#             rngs = np.array([], dtype=float)
+#             w_counts = np.array([], dtype=float)
+            
+#         cached_rngs_wts[col] = (rngs, w_counts)
+        
+#         # Calculate 1Hz DEL values via highly optimized vector math
+#         del_stats[col] = {}
+#         cached_dmg[col] = {}
+#         for m in config_data['RFC_M_VALUES']:
+#             dmg_sum = float(np.sum(w_counts * (rngs ** m))) if len(rngs) > 0 else 0.0
+#             cached_dmg[col][m] = dmg_sum
+#             del_stats[col][m] = float((dmg_sum / t_sim) ** (1.0 / m)) if dmg_sum > 0 else 0.0
+
+#     # Process Derived Channels once
+#     derived_extreme = {}
+#     derived_del = {}
+#     derived_signals = {}
+#     cached_derived_rngs_wts = {} # Cache arrays to avoid double Rainflow extraction
+#     cached_derived_dmg = {}      # Cache damage sums for derived channels
+    
+#     if derived_active:
+#         for ds in derived_active:
+#             dn = ds['name']
+#             sig, _ = compute_derived_channel(df, ds)
+#             if sig is None: continue
+#             derived_signals[dn] = sig
+            
+#             if ds.get('sta', 1):
+#                 smax, smin = float(np.max(sig)), float(np.min(sig))
+#                 derived_extreme[dn] = {
+#                     'Max': smax, 'Min': smin, 'Mean': float(np.mean(sig)),
+#                     'Stdev': float(np.std(sig, ddof=1)), 'Range': smax - smin,
+#                     'AbsMax': smax if abs(smax) >= abs(smin) else smin,
+#                     'RMS': float(np.sqrt(np.mean(sig**2)))
+#                 }
+            
+#             # CRITICAL OPTIMIZATION: Determine if Rainflow counting is needed overall
+#             need_rainflow = ds.get('1hzeq', 1) or ds.get('rfc', 0) or ds.get('markov', 0)
+#             if need_rainflow:
+#                 dcycles = _extract_cycles_fast(sig)
+#                 if dcycles:
+#                     drngs = np.array([c[0] for c in dcycles], dtype=float)
+#                     dw_counts = np.array([c[2] for c in dcycles], dtype=float)
+#                 else:
+#                     drngs = np.array([], dtype=float)
+#                     dw_counts = np.array([], dtype=float)
+#                 cached_derived_rngs_wts[dn] = (drngs, dw_counts)
+#             else:
+#                 drngs, dw_counts = np.array([], dtype=float), np.array([], dtype=float)
+                
+#             # Vectorized derived channel damage tracking
+#             if ds.get('1hzeq', 1) or ds.get('rfc', 0):
+#                 cached_derived_dmg[dn] = {}
+#                 if ds.get('1hzeq', 1): 
+#                     derived_del[dn] = {}
+#                 for m in config_data['RFC_M_VALUES']:
+#                     ddmg = float(np.sum(dw_counts * (drngs ** m))) if len(drngs) > 0 else 0.0
+#                     cached_derived_dmg[dn][m] = ddmg
+#                     if ds.get('1hzeq', 1):
+#                         derived_del[dn][m] = float((ddmg / t_sim) ** (1.0 / m)) if ddmg > 0 else 0.0
+
+#     # Write independent .sta files directly from inside the worker core
+#     ext_stats_all = {**ext_stats, **derived_extreme}
+#     del_stats_all = {**del_stats, **derived_del}
+#     sta_path = os.path.join(config_data['STA_FOLDER'], stem + '.sta')
+#     write_per_file_sta(sta_path, sensor_cols_all, ext_stats_all, del_stats_all, config_data['RFC_M_VALUES'])
+
+#     # Compile Fatigue Distribution Data Maps
+#     fatigue_payload = {}
+#     if is_fatigue:
+#         from fatigue_stats import compute_rfc_spectrum, compute_markov_matrix, compute_ldd_lrd
+#         rs_chan = config_data['ROTOR_SPEED_CHANNEL']
+#         rotor_speed = df[rs_chan].values.astype(float) if rs_chan in df.columns else np.zeros(len(time))
+
+#         # OPTIMIZATION: Pre-calculate sensor configuration flags once outside the loop
+#         sensor_flags_cached = {col: get_sensor_flags(col) for col in fatigue_sensors}
+
+#         rfc_up, mkv_up, ldd_lrd_up, dmg_up = {}, {}, {}, {}
+#         for col in fatigue_sensors:
+#             if col not in df.columns: continue
+#             sig = df[col].values.astype(float)
+#             flags = sensor_flags_cached[col] # Speedup lookup
+            
+#             # OPTIMIZATION: Reuse pre-packaged NumPy arrays from the first pass
+#             rngs, w_counts = cached_rngs_wts[col]
+            
+#             if flags['RFC']:
+#                 if len(rngs) > 0:
+#                     counts, _ = np.histogram(rngs, bins=bin_edges_rfc[col], weights=w_counts)
+#                 else:
+#                     counts = np.zeros(len(bin_edges_rfc[col]) - 1)
+#                 rfc_up[col] = counts * occ_k
+                
+#                 # OPTIMIZATION: Instantly grab pre-calculated damages from cache
+#                 dmg_up[col] = dict(cached_dmg[col])
+                
+#             if flags['Markov']:
+#                 mkv_up[col] = compute_markov_matrix(sig, bin_edges_rfc[col], bin_edges_level[col]) * occ_k
+#             if flags['LDD'] or flags['LRD']:
+#                 t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, bin_edges_level[col])
+#                 ldd_lrd_up[col] = (t_lvl * occ_k, r_lvl * occ_k)
+
+#         # Derived Sensor Fatigue Allocations
+#         drfc_up, dmkv_up, dldd_lrd_up = {}, {}, {}
+#         ddmg_up = {}  
+        
+#         for ds in derived_active:
+#             dn = ds['name']
+#             if dn not in derived_signals or occ_k <= 0: continue
+#             sig = derived_signals[dn]
+#             be = derived_bin_edges.get(dn, {})
+            
+#             if (ds['rfc'] or ds['markov']) and 'rfc' in be:
+#                 # OPTIMIZATION: Pull pre-calculated arrays from cache instead of running Rainflow again!
+#                 drngs, dw_counts = cached_derived_rngs_wts[dn]
+                
+#                 if ds['rfc']:
+#                     if len(drngs) > 0:
+#                         drngs_clipped = np.clip(drngs, be['rfc'][0], be['rfc'][-1])
+#                         counts, _ = np.histogram(drngs_clipped, bins=be['rfc'], weights=dw_counts)
+#                     else:
+#                         counts = np.zeros(len(be['rfc']) - 1)
+                    
+#                     drfc_up[dn] = counts * occ_k
+                    
+#                     # OPTIMIZATION: Pull pre-calculated derived damage from cache
+#                     ddmg_up[dn] = dict(cached_derived_dmg[dn])
+                    
+#                 if ds['markov']:
+#                     dmkv_up[dn] = compute_markov_matrix(sig, be['rfc'], be['level']) * occ_k
+                    
+#             if (ds['ldd'] or ds['lrd']) and 'level' in be:
+#                 t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, be['level'])
+#                 dldd_lrd_up[dn] = (t_lvl * occ_k, r_lvl * occ_k)
+
+#         # Pack optimized variables into payload
+#         fatigue_payload = {
+#             'rfc': rfc_up, 'markov': mkv_up, 'ldd_lrd': ldd_lrd_up, 'dmg': dmg_up,
+#             'drfc': drfc_up, 'dmarkov': dmkv_up, 'dldd_lrd': dldd_lrd_up, 
+#             'ddmg': ddmg_up  
+#         }
+
+#     return {
+#         'fname': fname, 'stem': stem, 'ext_all': ext_stats_all, 'del_all': del_stats_all,
+#         'is_fatigue': is_fatigue, 'fatigue_payload': fatigue_payload
+#     }
+
+def _extract_cycles_exact(signal):
+    """
+    Uses the exact official ASTM rainflow extraction to guarantee 100% precision
+    and completely eliminate the .5 to .6 float/binning deviations.
+    The massive speedup is instead achieved by calling this ONLY ONCE per signal
+    and caching the results into vectorized NumPy arrays for all downstream math!
+    """
+    return [(rng, mean, count) for rng, mean, count, *_ in rainflow.extract_cycles(signal)]
+
+def fast_turbo_worker_phase4(fpath, is_fatigue, occ_k, config_data, bin_edges_rfc, 
+                             bin_edges_level, derived_bin_edges, sensor_cols, 
+                             sensor_cols_all, derived_active, fatigue_sensors):
+    from io_reader import read_fast_output
+    from extreme_stats import compute_extreme_stats, compute_derived_channel
+    from output_writer import write_per_file_sta
+    from config import get_sensor_flags
+
+    fname = os.path.basename(fpath)
+    stem = os.path.splitext(fname)[0]
+    
+    try:
+        df = read_fast_output(fpath)
+    except Exception as e:
+        return {'fname': fname, 'error': str(e)}
+
+    time = df[config_data['TIME_CHANNEL']].values
+    t_sim = float(time[-1] - time[0])
+
+    # Compute extreme summary statistics
+    ext_stats = compute_extreme_stats(df, config_data['TIME_CHANNEL'])
+    
+    # ── OPTIMIZATION: Cache structures to prevent duplicate iterations and loops
+    del_stats = {}
+    cached_cycles = {}
+    cached_rngs_wts = {}  # Holds fast pre-packaged NumPy arrays
+    cached_dmg = {}       # Caches damage sums to eliminate duplicate loops later
+    
+    # FIX: Iterate over ALL dataframe columns for DELs, matching your original script!
+    # (Previously restricted to `sensor_cols`, skipping Wind channels resulting in exact 0 DELs)
+    for col in df.columns:
+        if col == config_data['TIME_CHANNEL']: continue
+        sig = df[col].values.astype(float)
+        
+        # Call the EXACT rainflow routine for 100% precision
+        cycles = _extract_cycles_exact(sig)
+        cached_cycles[col] = cycles
+        
+        # Vectorization: Pack list into NumPy arrays immediately for vector calculations
+        if cycles:
+            rngs = np.array([c[0] for c in cycles], dtype=float)
+            w_counts = np.array([c[2] for c in cycles], dtype=float)
+        else:
+            rngs = np.array([], dtype=float)
+            w_counts = np.array([], dtype=float)
+            
+        cached_rngs_wts[col] = (rngs, w_counts)
+        
+        # Calculate 1Hz DEL values via highly optimized vector math
+        del_stats[col] = {}
+        cached_dmg[col] = {}
+        for m in config_data['RFC_M_VALUES']:
+            m_f = float(m) # Safeguard m mapping logic
+            dmg_sum = float(np.sum(w_counts * (rngs ** m_f))) if len(rngs) > 0 else 0.0
+            cached_dmg[col][m] = dmg_sum
+            del_stats[col][m] = float((dmg_sum / t_sim) ** (1.0 / m_f)) if dmg_sum > 0 else 0.0
+
+    # Process Derived Channels once
+    derived_extreme = {}
+    derived_del = {}
+    derived_signals = {}
+    cached_derived_rngs_wts = {} # Cache arrays to avoid double Rainflow extraction
+    cached_derived_dmg = {}      # Cache damage sums for derived channels
+    
+    if derived_active:
+        for ds in derived_active:
+            dn = ds['name']
+            sig, _ = compute_derived_channel(df, ds)
+            if sig is None: continue
+            derived_signals[dn] = sig
+            
+            if ds.get('sta', 1):
+                smax, smin = float(np.max(sig)), float(np.min(sig))
+                derived_extreme[dn] = {
+                    'Max': smax, 'Min': smin, 'Mean': float(np.mean(sig)),
+                    'Stdev': float(np.std(sig, ddof=1)), 'Range': smax - smin,
+                    'AbsMax': smax if abs(smax) >= abs(smin) else smin,
+                    'RMS': float(np.sqrt(np.mean(sig**2)))
+                }
+            
+            # CRITICAL OPTIMIZATION: Determine if Rainflow counting is needed overall
+            need_rainflow = ds.get('1hzeq', 1) or ds.get('rfc', 0) or ds.get('markov', 0)
+            if need_rainflow:
+                dcycles = _extract_cycles_exact(sig)
+                if dcycles:
+                    drngs = np.array([c[0] for c in dcycles], dtype=float)
+                    dw_counts = np.array([c[2] for c in dcycles], dtype=float)
+                else:
+                    drngs = np.array([], dtype=float)
+                    dw_counts = np.array([], dtype=float)
+                cached_derived_rngs_wts[dn] = (drngs, dw_counts)
+            else:
+                drngs, dw_counts = np.array([], dtype=float), np.array([], dtype=float)
+                
+            # Vectorized derived channel damage tracking
+            if ds.get('1hzeq', 1) or ds.get('rfc', 0):
+                cached_derived_dmg[dn] = {}
+                if ds.get('1hzeq', 1): 
+                    derived_del[dn] = {}
+                for m in config_data['RFC_M_VALUES']:
+                    m_f = float(m)
+                    ddmg = float(np.sum(dw_counts * (drngs ** m_f))) if len(drngs) > 0 else 0.0
+                    cached_derived_dmg[dn][m] = ddmg
+                    if ds.get('1hzeq', 1):
+                        derived_del[dn][m] = float((ddmg / t_sim) ** (1.0 / m_f)) if ddmg > 0 else 0.0
+
+    # Write independent .sta files directly from inside the worker core
+    ext_stats_all = {**ext_stats, **derived_extreme}
+    del_stats_all = {**del_stats, **derived_del}
+    sta_path = os.path.join(config_data['STA_FOLDER'], stem + '.sta')
+    write_per_file_sta(sta_path, sensor_cols_all, ext_stats_all, del_stats_all, config_data['RFC_M_VALUES'])
+
+    # Compile Fatigue Distribution Data Maps
+    fatigue_payload = {}
+    if is_fatigue:
+        from fatigue_stats import compute_markov_matrix, compute_ldd_lrd
+        rs_chan = config_data['ROTOR_SPEED_CHANNEL']
+        rotor_speed = df[rs_chan].values.astype(float) if rs_chan in df.columns else np.zeros(len(time))
+
+        # OPTIMIZATION: Pre-calculate sensor configuration flags once outside the loop
+        sensor_flags_cached = {col: get_sensor_flags(col) for col in fatigue_sensors}
+
+        rfc_up, mkv_up, ldd_lrd_up, dmg_up = {}, {}, {}, {}
+        for col in fatigue_sensors:
+            if col not in df.columns: continue
+            sig = df[col].values.astype(float)
+            flags = sensor_flags_cached[col] 
+            
+            # OPTIMIZATION: Reuse pre-packaged NumPy arrays from the first pass
+            rngs, w_counts = cached_rngs_wts[col]
+            
+            if flags['RFC']:
+                if len(rngs) > 0:
+                    counts, _ = np.histogram(rngs, bins=bin_edges_rfc[col], weights=w_counts)
+                else:
+                    counts = np.zeros(len(bin_edges_rfc[col]) - 1)
+                rfc_up[col] = counts * occ_k
+                
+                dmg_up[col] = dict(cached_dmg[col])
+                
+            if flags['Markov']:
+                mkv_up[col] = compute_markov_matrix(sig, bin_edges_rfc[col], bin_edges_level[col]) * occ_k
+            if flags['LDD'] or flags['LRD']:
+                t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, bin_edges_level[col])
+                ldd_lrd_up[col] = (t_lvl * occ_k, r_lvl * occ_k)
+
+        # Derived Sensor Fatigue Allocations
+        drfc_up, dmkv_up, dldd_lrd_up = {}, {}, {}
+        ddmg_up = {}  
+        
+        for ds in derived_active:
+            dn = ds['name']
+            if dn not in derived_signals or occ_k <= 0: continue
+            sig = derived_signals[dn]
+            be = derived_bin_edges.get(dn, {})
+            
+            if (ds.get('rfc', 0) or ds.get('markov', 0)) and 'rfc' in be:
+                drngs, dw_counts = cached_derived_rngs_wts[dn]
+                
+                if ds.get('rfc', 0):
+                    if len(drngs) > 0:
+                        drngs_clipped = np.clip(drngs, be['rfc'][0], be['rfc'][-1])
+                        counts, _ = np.histogram(drngs_clipped, bins=be['rfc'], weights=dw_counts)
+                    else:
+                        counts = np.zeros(len(be['rfc']) - 1)
+                    
+                    drfc_up[dn] = counts * occ_k
+                    ddmg_up[dn] = dict(cached_derived_dmg[dn])
+                    
+                if ds.get('markov', 0):
+                    dmkv_up[dn] = compute_markov_matrix(sig, be['rfc'], be['level']) * occ_k
+                    
+            if (ds.get('ldd', 0) or ds.get('lrd', 0)) and 'level' in be:
+                t_lvl, r_lvl = compute_ldd_lrd(time, sig, rotor_speed, be['level'])
+                dldd_lrd_up[dn] = (t_lvl * occ_k, r_lvl * occ_k)
+
+        fatigue_payload = {
+            'rfc': rfc_up, 'markov': mkv_up, 'ldd_lrd': ldd_lrd_up, 'dmg': dmg_up,
+            'drfc': drfc_up, 'dmarkov': dmkv_up, 'dldd_lrd': dldd_lrd_up, 
+            'ddmg': ddmg_up  
+        }
+
+    return {
+        'fname': fname, 'stem': stem, 'ext_all': ext_stats_all, 'del_all': del_stats_all,
+        'is_fatigue': is_fatigue, 'fatigue_payload': fatigue_payload
+    }
 
 def _raw_header(n_files):
     """Generate header lines for summary_Raw.sta."""
@@ -75,7 +676,6 @@ def _raw_header(n_files):
 
 
 def main():
-
     # ── Phase 0: Setup ────────────────────────────────────────────────────────
     print("=" * 70)
     print("  OpenFAST Postprocessing")
@@ -352,180 +952,254 @@ def main():
     # {fname: {sensor: {m: damage_sum}}} — only for RFC sensors, occ > 0
     damage_per_file = {}
 
-    # ── Phase 4: Main processing loop ─────────────────────────────────────────
+    # # ── Phase 4: Main processing loop ─────────────────────────────────────────
+    # summary_files    = []
+    # summary_extreme  = {}   # {fname: {sensor: {stat: val}}}
+    # summary_del      = {}   # {fname: {sensor: {m: val}}}
+    # summary_sta_path = os.path.join(config.STA_FOLDER, 'summary_Raw.sta')
+
+    # print(f"\n[Phase 4] Processing {len(all_files)} files...\n")
+
+    # for fpath in all_files:
+    #     fname = os.path.basename(fpath)
+    #     print(f"  ► {fname}")
+
+    #     # Read file
+    #     try:
+    #         df = read_fast_output(fpath)
+    #     except Exception as e:
+    #         print(f"    ERROR reading file: {e} — skipped")
+    #         continue
+
+    #     time = df[config.TIME_CHANNEL].values
+    #     t_sim = float(time[-1] - time[0])
+
+    #     # Check sensor consistency
+    #     file_sensors = get_sensor_columns(df, config.TIME_CHANNEL)
+    #     if set(file_sensors) != set(sensor_cols):
+    #         extra   = set(file_sensors) - set(sensor_cols)
+    #         missing = set(sensor_cols)  - set(file_sensors)
+    #         if extra:
+    #             print(f"    WARNING: {len(extra)} extra channels (ignored)")
+    #         if missing:
+    #             print(f"    WARNING: {len(missing)} channels missing vs first file")
+
+    #     # ── Real sensor stats ─────────────────────────────────────────────────
+    #     ext_stats = compute_extreme_stats(df, config.TIME_CHANNEL)
+    #     del_stats = compute_del_all_m(df, config.RFC_M_VALUES, config.TIME_CHANNEL)
+
+    #     # ── Derived sensor stats (Part A: STA + 1HzEq) ───────────────────────
+    #     # Runs for ALL files (not just fatigue DLCs)
+    #     # Must happen BEFORE write_per_file_sta so Mres is included in .sta
+    #     if derived_active:
+    #         if fname not in derived_extreme:
+    #             derived_extreme[fname]  = {}
+    #             derived_del_file[fname] = {}
+    #         for _ds in derived_active:
+    #             _dn = _ds['name']
+    #             _sig, _miss = compute_derived_channel(df, _ds)
+    #             if _sig is None:
+    #                 continue
+    #             if _ds.get('sta', 1):
+    #                 _smax = float(np.max(_sig))
+    #                 _smin = float(np.min(_sig))
+    #                 # AbsMax preserves sign of larger-magnitude extreme
+    #                 _absmax = _smax if abs(_smax) >= abs(_smin) else _smin
+    #                 derived_extreme[fname][_dn] = {
+    #                     'Max'   : _smax,
+    #                     'Min'   : _smin,
+    #                     'Mean'  : float(np.mean(_sig)),
+    #                     'Stdev' : float(np.std(_sig, ddof=1)),
+    #                     'Range' : _smax - _smin,
+    #                     'AbsMax': _absmax,
+    #                     'RMS'   : float(np.sqrt(np.mean(_sig**2))),
+    #                 }
+    #             if _ds.get('1hzeq', 1):
+    #                 # compute_del returns single value; loop over slopes
+    #                 from fatigue_stats import compute_del
+    #                 derived_del_file[fname][_dn] = {
+    #                     m: compute_del(_sig, t_sim, m)
+    #                     for m in config.RFC_M_VALUES
+    #                 }
+
+    #     # ── Merge real + derived → write per-file .sta ────────────────────────
+    #     ext_stats_all = dict(ext_stats)
+    #     del_stats_all = dict(del_stats)
+    #     for _dn, _dstats in derived_extreme.get(fname, {}).items():
+    #         ext_stats_all[_dn] = _dstats
+    #     for _dn, _ddel in derived_del_file.get(fname, {}).items():
+    #         del_stats_all[_dn] = _ddel
+
+    #     stem     = os.path.splitext(fname)[0]
+    #     sta_path = os.path.join(config.STA_FOLDER, stem + '.sta')
+
+    #     # print("ext stats all", ext_stats_all)
+        
+    #     write_per_file_sta(sta_path, sensor_cols_all,
+    #                        ext_stats_all, del_stats_all, config.RFC_M_VALUES)
+    #     print(f"    ✓ written: STA/{stem}.sta")
+    #     log.file_written(f'STA/{stem}.sta', tag='Phase 4')
+
+    #     # Update in-memory summary — real + derived combined
+    #     summary_files.append(fname)
+    #     summary_extreme[fname] = ext_stats_all
+    #     summary_del[fname]     = del_stats_all
+
+    #     # Incrementally rewrite summary.sta in STA folder (no lifetime DEL yet)
+    #     write_summary_sta(
+    #         summary_sta_path, summary_files, sensor_cols_all,
+    #         summary_extreme, summary_del, config.RFC_M_VALUES,
+    #         header=_raw_header(len(summary_files)),
+    #     )
+
+    #     # ── Fatigue accumulation (fatigue DLCs only) ──────────────────────────
+    #     if fname in fatigue_set:
+    #         occ_k = config.FATIGUE_FILES[fname]   # occurrences over lifetime
+
+    #         # Rotor speed for LDD/LRD
+    #         if config.ROTOR_SPEED_CHANNEL in df.columns:
+    #             rotor_speed = df[config.ROTOR_SPEED_CHANNEL].values.astype(float)
+    #         else:
+    #             print(f"    WARNING: '{config.ROTOR_SPEED_CHANNEL}' not found — "
+    #                   f"revolutions set to zero for this file")
+    #             rotor_speed = np.zeros(len(time))
+
+    #         for col in fatigue_sensors:
+    #             if col not in df.columns:
+    #                 continue
+    #             signal = df[col].values.astype(float)
+    #             flags  = get_sensor_flags(col)
+
+    #             # RFC spectrum — only if RFC flag enabled
+    #             if flags['RFC'] and col in rfc_accum:
+    #                 rfc_accum[col] += compute_rfc_spectrum(
+    #                     signal, bin_edges_rfc[col]) * occ_k
+
+    #             # Markov matrix — only if Markov flag enabled
+    #             if flags['Markov'] and col in markov_accum:
+    #                 markov_accum[col] += compute_markov_matrix(
+    #                     signal, bin_edges_rfc[col], bin_edges_level[col]) * occ_k
+
+    #             # LDD / LRD — only if LDD or LRD flag enabled
+    #             if (flags['LDD'] or flags['LRD']) and col in ldd_lrd_accum:
+    #                 t_lvl, r_lvl = compute_ldd_lrd(
+    #                     time, signal, rotor_speed, bin_edges_level[col])
+    #                 ldd_lrd_accum[col][:, 0] += t_lvl * occ_k
+    #                 ldd_lrd_accum[col][:, 1] += r_lvl * occ_k
+
+    #         # Per-file damage scalar for contribution analysis
+    #         file_dmg = {}
+    #         for col in fatigue_sensors:
+    #             if col not in df.columns:
+    #                 continue
+    #             if not get_sensor_flags(col)['RFC']:
+    #                 continue
+    #             signal = df[col].values.astype(float)
+    #             file_dmg[col] = compute_file_damage(signal, config.RFC_M_VALUES)
+    #         if file_dmg:
+    #             damage_per_file[fname] = file_dmg
+
+    #         # ── Derived sensor fatigue accumulation (Part B) ──────────────────
+    #         # STA stats already computed in Part A above for all files
+    #         # Here only RFC/Markov/LDD/LRD accumulation for fatigue DLCs
+    #         if derived_active and occ_k > 0:
+    #             for ds in derived_active:
+    #                 dname = ds['name']
+    #                 # Time series already computed in Part A — recompute for fatigue
+    #                 sig, miss = compute_derived_channel(df, ds)
+    #                 if sig is None:
+    #                     continue
+    #                 be = derived_bin_edges.get(dname, {})
+    #                 if (ds['rfc'] or ds['markov']) and 'rfc' in be:
+    #                     if dname in derived_rfc_accum:
+    #                         rfc = compute_rfc_spectrum(sig, be['rfc'])
+    #                         derived_rfc_accum[dname] += rfc * occ_k
+    #                     if ds['markov'] and dname in derived_markov_accum:
+    #                         mkv = compute_markov_matrix(sig, be['rfc'], be['level'])
+    #                         derived_markov_accum[dname] += mkv * occ_k
+    #                 if (ds['ldd'] or ds['lrd']) and dname in derived_ldd_accum:
+    #                     # rotor_speed already loaded above for this file
+    #                     lvl_be = be.get('level',
+    #                         np.linspace(float(np.min(sig)), float(np.max(sig)), config.N_BINS+1))
+    #                     # compute_ldd_lrd signature: (time, signal, rotor_speed_rpm, bin_edges_level)
+    #                     ldd_arr, lrd_arr = compute_ldd_lrd(time, sig, rotor_speed, lvl_be)
+    #                     if ds['ldd']:
+    #                         derived_ldd_accum[dname] += ldd_arr * occ_k
+    #                     if ds['lrd']:
+    #                         derived_lrd_accum[dname] += lrd_arr * occ_k
+
+    #         print(f"    ✓ fatigue matrices updated  (occurrences = {occ_k:g})")
+
+# ── Phase 4: Main processing loop ─────────────────────────────────────────
     summary_files    = []
-    summary_extreme  = {}   # {fname: {sensor: {stat: val}}}
-    summary_del      = {}   # {fname: {sensor: {m: val}}}
+    summary_extreme  = {}   
+    summary_del      = {}   
     summary_sta_path = os.path.join(config.STA_FOLDER, 'summary_Raw.sta')
 
-    print(f"\n[Phase 4] Processing {len(all_files)} files...\n")
+    print(f"\n[Phase 4] Processing {len(all_files)} files at HIGH ACCELERATION INTERFACE...\n")
 
-    for fpath in all_files:
-        fname = os.path.basename(fpath)
-        print(f"  ► {fname}")
+    import multiprocessing
+    from concurrent.futures import ProcessPoolExecutor, as_completed
 
-        # Read file
-        try:
-            df = read_fast_output(fpath)
-        except Exception as e:
-            print(f"    ERROR reading file: {e} — skipped")
-            continue
+    config_data = {
+        'TIME_CHANNEL': config.TIME_CHANNEL,
+        'RFC_M_VALUES': config.RFC_M_VALUES,
+        'ROTOR_SPEED_CHANNEL': config.ROTOR_SPEED_CHANNEL,
+        'STA_FOLDER': config.STA_FOLDER
+    }
 
-        time = df[config.TIME_CHANNEL].values
-        t_sim = float(time[-1] - time[0])
+    num_cores = max(1, multiprocessing.cpu_count() - 1)
 
-        # Check sensor consistency
-        file_sensors = get_sensor_columns(df, config.TIME_CHANNEL)
-        if set(file_sensors) != set(sensor_cols):
-            extra   = set(file_sensors) - set(sensor_cols)
-            missing = set(sensor_cols)  - set(file_sensors)
-            if extra:
-                print(f"    WARNING: {len(extra)} extra channels (ignored)")
-            if missing:
-                print(f"    WARNING: {len(missing)} channels missing vs first file")
+    with ProcessPoolExecutor(max_workers=num_cores) as executor:
+        futures = {}
+        for fpath in all_files:
+            fname = os.path.basename(fpath)
+            is_fatigue = fname in fatigue_set
+            occ_k = config.FATIGUE_FILES[fname] if is_fatigue else 0
+            
+            futures[executor.submit(
+                fast_turbo_worker_phase4, fpath, is_fatigue, occ_k, config_data, 
+                bin_edges_rfc, bin_edges_level, derived_bin_edges, 
+                sensor_cols, sensor_cols_all, derived_active, fatigue_sensors
+            )] = fname
 
-        # ── Real sensor stats ─────────────────────────────────────────────────
-        ext_stats = compute_extreme_stats(df, config.TIME_CHANNEL)
-        del_stats = compute_del_all_m(df, config.RFC_M_VALUES, config.TIME_CHANNEL)
+        for future in as_completed(futures):
+            res = future.result()
+            if 'error' in res:
+                print(f"    ERROR reading file {res['fname']}: {res['error']} — skipped")
+                continue
 
-        # ── Derived sensor stats (Part A: STA + 1HzEq) ───────────────────────
-        # Runs for ALL files (not just fatigue DLCs)
-        # Must happen BEFORE write_per_file_sta so Mres is included in .sta
-        if derived_active:
-            if fname not in derived_extreme:
-                derived_extreme[fname]  = {}
-                derived_del_file[fname] = {}
-            for _ds in derived_active:
-                _dn = _ds['name']
-                _sig, _miss = compute_derived_channel(df, _ds)
-                if _sig is None:
-                    continue
-                if _ds.get('sta', 1):
-                    _smax = float(np.max(_sig))
-                    _smin = float(np.min(_sig))
-                    # AbsMax preserves sign of larger-magnitude extreme
-                    _absmax = _smax if abs(_smax) >= abs(_smin) else _smin
-                    derived_extreme[fname][_dn] = {
-                        'Max'   : _smax,
-                        'Min'   : _smin,
-                        'Mean'  : float(np.mean(_sig)),
-                        'Stdev' : float(np.std(_sig, ddof=1)),
-                        'Range' : _smax - _smin,
-                        'AbsMax': _absmax,
-                        'RMS'   : float(np.sqrt(np.mean(_sig**2))),
-                    }
-                if _ds.get('1hzeq', 1):
-                    # compute_del returns single value; loop over slopes
-                    from fatigue_stats import compute_del
-                    derived_del_file[fname][_dn] = {
-                        m: compute_del(_sig, t_sim, m)
-                        for m in config.RFC_M_VALUES
-                    }
+            fname, stem = res['fname'], res['stem']
+            print(f"  ► {fname} ✓")
+            log.file_written(f'STA/{stem}.sta', tag='Phase 4')
 
-        # ── Merge real + derived → write per-file .sta ────────────────────────
-        ext_stats_all = dict(ext_stats)
-        del_stats_all = dict(del_stats)
-        for _dn, _dstats in derived_extreme.get(fname, {}).items():
-            ext_stats_all[_dn] = _dstats
-        for _dn, _ddel in derived_del_file.get(fname, {}).items():
-            del_stats_all[_dn] = _ddel
+            summary_files.append(fname)
+            summary_extreme[fname] = res['ext_all']
+            summary_del[fname]     = res['del_all']
 
-        stem     = os.path.splitext(fname)[0]
-        sta_path = os.path.join(config.STA_FOLDER, stem + '.sta')
-        write_per_file_sta(sta_path, sensor_cols_all,
-                           ext_stats_all, del_stats_all, config.RFC_M_VALUES)
-        print(f"    ✓ written: STA/{stem}.sta")
-        log.file_written(f'STA/{stem}.sta', tag='Phase 4')
+            if res['is_fatigue']:
+                p = res['fatigue_payload']
+                for col, val in p['rfc'].items(): rfc_accum[col] += val
+                for col, val in p['markov'].items(): markov_accum[col] += val
+                for col, (t_lvl, r_lvl) in p['ldd_lrd'].items():
+                    ldd_lrd_accum[col][:, 0] += t_lvl
+                    ldd_lrd_accum[col][:, 1] += r_lvl
+                if p['dmg']: damage_per_file[fname] = p['dmg']
 
-        # Update in-memory summary — real + derived combined
-        summary_files.append(fname)
-        summary_extreme[fname] = ext_stats_all
-        summary_del[fname]     = del_stats_all
+                # Accumulate derived sensor components
+                for dname, val in p['drfc'].items(): derived_rfc_accum[dname] += val
+                for dname, val in p['dmarkov'].items(): derived_markov_accum[dname] += val
+                for dname, (t_lvl, r_lvl) in p['dldd_lrd'].items():
+                    if dname in derived_ldd_accum: derived_ldd_accum[dname] += t_lvl
+                    if dname in derived_lrd_accum: derived_lrd_accum[dname] += r_lvl
 
-        # Incrementally rewrite summary.sta in STA folder (no lifetime DEL yet)
-        write_summary_sta(
-            summary_sta_path, summary_files, sensor_cols_all,
-            summary_extreme, summary_del, config.RFC_M_VALUES,
-            header=_raw_header(len(summary_files)),
-        )
-
-        # ── Fatigue accumulation (fatigue DLCs only) ──────────────────────────
-        if fname in fatigue_set:
-            occ_k = config.FATIGUE_FILES[fname]   # occurrences over lifetime
-
-            # Rotor speed for LDD/LRD
-            if config.ROTOR_SPEED_CHANNEL in df.columns:
-                rotor_speed = df[config.ROTOR_SPEED_CHANNEL].values.astype(float)
-            else:
-                print(f"    WARNING: '{config.ROTOR_SPEED_CHANNEL}' not found — "
-                      f"revolutions set to zero for this file")
-                rotor_speed = np.zeros(len(time))
-
-            for col in fatigue_sensors:
-                if col not in df.columns:
-                    continue
-                signal = df[col].values.astype(float)
-                flags  = get_sensor_flags(col)
-
-                # RFC spectrum — only if RFC flag enabled
-                if flags['RFC'] and col in rfc_accum:
-                    rfc_accum[col] += compute_rfc_spectrum(
-                        signal, bin_edges_rfc[col]) * occ_k
-
-                # Markov matrix — only if Markov flag enabled
-                if flags['Markov'] and col in markov_accum:
-                    markov_accum[col] += compute_markov_matrix(
-                        signal, bin_edges_rfc[col], bin_edges_level[col]) * occ_k
-
-                # LDD / LRD — only if LDD or LRD flag enabled
-                if (flags['LDD'] or flags['LRD']) and col in ldd_lrd_accum:
-                    t_lvl, r_lvl = compute_ldd_lrd(
-                        time, signal, rotor_speed, bin_edges_level[col])
-                    ldd_lrd_accum[col][:, 0] += t_lvl * occ_k
-                    ldd_lrd_accum[col][:, 1] += r_lvl * occ_k
-
-            # Per-file damage scalar for contribution analysis
-            file_dmg = {}
-            for col in fatigue_sensors:
-                if col not in df.columns:
-                    continue
-                if not get_sensor_flags(col)['RFC']:
-                    continue
-                signal = df[col].values.astype(float)
-                file_dmg[col] = compute_file_damage(signal, config.RFC_M_VALUES)
-            if file_dmg:
-                damage_per_file[fname] = file_dmg
-
-            # ── Derived sensor fatigue accumulation (Part B) ──────────────────
-            # STA stats already computed in Part A above for all files
-            # Here only RFC/Markov/LDD/LRD accumulation for fatigue DLCs
-            if derived_active and occ_k > 0:
-                for ds in derived_active:
-                    dname = ds['name']
-                    # Time series already computed in Part A — recompute for fatigue
-                    sig, miss = compute_derived_channel(df, ds)
-                    if sig is None:
-                        continue
-                    be = derived_bin_edges.get(dname, {})
-                    if (ds['rfc'] or ds['markov']) and 'rfc' in be:
-                        if dname in derived_rfc_accum:
-                            rfc = compute_rfc_spectrum(sig, be['rfc'])
-                            derived_rfc_accum[dname] += rfc * occ_k
-                        if ds['markov'] and dname in derived_markov_accum:
-                            mkv = compute_markov_matrix(sig, be['rfc'], be['level'])
-                            derived_markov_accum[dname] += mkv * occ_k
-                    if (ds['ldd'] or ds['lrd']) and dname in derived_ldd_accum:
-                        # rotor_speed already loaded above for this file
-                        lvl_be = be.get('level',
-                            np.linspace(float(np.min(sig)), float(np.max(sig)), config.N_BINS+1))
-                        # compute_ldd_lrd signature: (time, signal, rotor_speed_rpm, bin_edges_level)
-                        ldd_arr, lrd_arr = compute_ldd_lrd(time, sig, rotor_speed, lvl_be)
-                        if ds['ldd']:
-                            derived_ldd_accum[dname] += ldd_arr * occ_k
-                        if ds['lrd']:
-                            derived_lrd_accum[dname] += lrd_arr * occ_k
-
-            print(f"    ✓ fatigue matrices updated  (occurrences = {occ_k:g})")
+    print("\n[Phase 4] Concluding processing passes. Generating unified summary file data...")
+    # Critical performance modification: Consolidated into a single, high-speed write pass
+    write_summary_sta(
+        summary_sta_path, summary_files, sensor_cols_all,
+        summary_extreme, summary_del, config.RFC_M_VALUES,
+        header=_raw_header(len(summary_files)),
+    )
 
     # ── Phase 5: Accumulators already lifetime-scaled ─────────────────────────
     # Each file's contribution was multiplied by its occurrence count during
@@ -1104,29 +1778,29 @@ def main():
         log.file_written("SUM/PitchBearing.sum", tag="Phase 11")
 
     # ── PitchBearing.sum ──────────────────────────────────────────────────
-    ptb_cfg = get_pitch_bearing_config()
-    ptb_sensors_found = any(
-        s in sensor_cols_all
-        for b in ptb_cfg["blades"].values()
-        for s in b.values() if s)
-    if not ptb_sensors_found:
-        print("  WARNING: No pitch bearing sensors found — PitchBearing.sum skipped")
-        log.warning("No pitch bearing sensors found — PitchBearing.sum skipped",
-                    tag="Phase 11")
-    else:
-        ptb_sum_path = os.path.join(config.SUM_FOLDER, "PitchBearing.sum")
-        write_pitch_bearing_sum(
-            output_path    = ptb_sum_path,
-            ptb_config     = ptb_cfg,
-            family_order   = family_order,
-            sensor_cols    = sensor_cols_all,
-            lifetime_years = config.LIFETIME_YEARS,
-            neq_lifetime   = config.NEQ_LIFETIME,
-            ext_folder     = config.EXT_FOLDER,
-            fat_folder     = config.FAT_FOLDER,
-            log            = log)
-        print(f"  -> Written: SUM/PitchBearing.sum")
-        log.file_written("SUM/PitchBearing.sum", tag="Phase 11")
+    # ptb_cfg = get_pitch_bearing_config()
+    # ptb_sensors_found = any(
+    #     s in sensor_cols_all
+    #     for b in ptb_cfg["blades"].values()
+    #     for s in b.values() if s)
+    # if not ptb_sensors_found:
+    #     print("  WARNING: No pitch bearing sensors found — PitchBearing.sum skipped")
+    #     log.warning("No pitch bearing sensors found — PitchBearing.sum skipped",
+    #                 tag="Phase 11")
+    # else:
+    #     ptb_sum_path = os.path.join(config.SUM_FOLDER, "PitchBearing.sum")
+    #     write_pitch_bearing_sum(
+    #         output_path    = ptb_sum_path,
+    #         ptb_config     = ptb_cfg,
+    #         family_order   = family_order,
+    #         sensor_cols    = sensor_cols_all,
+    #         lifetime_years = config.LIFETIME_YEARS,
+    #         neq_lifetime   = config.NEQ_LIFETIME,
+    #         ext_folder     = config.EXT_FOLDER,
+    #         fat_folder     = config.FAT_FOLDER,
+    #         log            = log)
+    #     print(f"  -> Written: SUM/PitchBearing.sum")
+    #     log.file_written("SUM/PitchBearing.sum", tag="Phase 11")
 
     # ── MainLoads.sum ─────────────────────────────────────────────────
     main_sum_path = os.path.join(config.SUM_FOLDER, "MainLoads.sum")

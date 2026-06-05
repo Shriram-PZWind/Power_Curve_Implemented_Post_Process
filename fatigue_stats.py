@@ -171,90 +171,193 @@ def compute_del(signal, T_sim, m):
     return float((damage / T_sim) ** (1.0 / m))
 
 
+# def compute_del_all_m(df, m_values, time_col='Time_[s]'):
+#     """
+#     Compute 1Hz DEL for every sensor channel and every Wöhler slope value.
+
+#     Parameters
+#     ----------
+#     df       : pandas DataFrame
+#     m_values : list of float — Wöhler slopes
+#     time_col : str
+
+#     Returns
+#     -------
+#     del_stats : dict  {sensor_col: {m: float}}
+#     """
+#     time   = df[time_col].values
+#     T_sim  = float(time[-1] - time[0])
+#     result = {}
+#     for col in df.columns:
+#         if col == time_col:
+#             continue
+#         signal = df[col].values.astype(float)
+#         result[col] = {m: compute_del(signal, T_sim, m) for m in m_values}
+#     return result
+
 def compute_del_all_m(df, m_values, time_col='Time_[s]'):
     """
     Compute 1Hz DEL for every sensor channel and every Wöhler slope value.
-
-    Parameters
-    ----------
-    df       : pandas DataFrame
-    m_values : list of float — Wöhler slopes
-    time_col : str
-
-    Returns
-    -------
-    del_stats : dict  {sensor_col: {m: float}}
+    Optimised: Extracts cycles and builds typed arrays ONLY ONCE per signal.
     """
-    time   = df[time_col].values
-    T_sim  = float(time[-1] - time[0])
+    time = df[time_col].values
+    T_sim = float(time[-1] - time[0])
     result = {}
+   
     for col in df.columns:
         if col == time_col:
             continue
+           
+        # Using typed numpy array for speed
         signal = df[col].values.astype(float)
-        result[col] = {m: compute_del(signal, T_sim, m) for m in m_values}
+       
+        # 1. EXTRACT CYCLES ONCE PER SIGNAL (Massive algorithmic speedup)
+        cycles = _extract_cycles(signal)
+       
+        if not cycles or T_sim <= 0:
+            result[col] = {m: 0.0 for m in m_values}
+            continue
+           
+        # 2. CREATE TYPED ARRAYS ONCE
+        ranges = np.array([c[0] for c in cycles], dtype=float)
+        counts = np.array([c[2] for c in cycles], dtype=float)
+       
+        # 3. COMPUTE ALL 'm' SLOPES VECTORISED
+        res_m = {}
+        for m in m_values:
+            m_f = float(m)
+            damage = float(np.sum(counts * (ranges ** m_f)))
+            if damage <= 0:
+                res_m[m] = 0.0
+            else:
+                res_m[m] = float((damage / T_sim) ** (1.0 / m_f))
+               
+        result[col] = res_m
+       
     return result
+ 
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # RFC Spectrum (1D)
 # ─────────────────────────────────────────────────────────────────────────────
 
+# def compute_rfc_spectrum(signal, bin_edges_rfc):
+#     """
+#     Compute 1D RFC spectrum: total cycle count per range bin.
+
+#     Parameters
+#     ----------
+#     signal       : np.ndarray — load time series
+#     bin_edges_rfc: np.ndarray (n_bins+1,) — range bin edges starting at 0
+
+#     Returns
+#     -------
+#     counts : np.ndarray (n_bins,) — cycle counts per range bin
+#     """
+#     n      = len(bin_edges_rfc) - 1
+#     counts = np.zeros(n, dtype=float)
+#     for rng, _mean, count in _extract_cycles(signal):
+#         idx = int(np.clip(
+#             np.searchsorted(bin_edges_rfc, rng, side='right') - 1,
+#             0, n - 1))
+#         counts[idx] += count
+#     return counts
+
+
+# # ─────────────────────────────────────────────────────────────────────────────
+# # Markov Matrix (2D)
+# # ─────────────────────────────────────────────────────────────────────────────
+
+# def compute_markov_matrix(signal, bin_edges_range, bin_edges_mean):
+#     """
+#     Compute 2D Markov matrix (Convention 2): rows = cycle range bins,
+#     columns = cycle mean bins.
+
+#     For each RFC cycle:
+#       range = max - min  (binned on rows)
+#       mean  = (max + min) / 2  (binned on columns)
+
+#     Parameters
+#     ----------
+#     signal          : np.ndarray — load time series
+#     bin_edges_range : np.ndarray (n_bins+1,) — range bin edges (0 → global max range)
+#     bin_edges_mean  : np.ndarray (n_bins+1,) — mean bin edges (global min → global max)
+
+#     Returns
+#     -------
+#     matrix : np.ndarray (n_range_bins, n_mean_bins) — cycle counts
+#     """
+#     n_range = len(bin_edges_range) - 1
+#     n_mean  = len(bin_edges_mean)  - 1
+#     matrix  = np.zeros((n_range, n_mean), dtype=float)
+#     for rng, mean, count in _extract_cycles(signal):
+#         i_range = int(np.clip(
+#             np.searchsorted(bin_edges_range, rng,  side='right') - 1, 0, n_range - 1))
+#         i_mean  = int(np.clip(
+#             np.searchsorted(bin_edges_mean,  mean, side='right') - 1, 0, n_mean  - 1))
+#         matrix[i_range, i_mean] += count
+#     return matrix
+
 def compute_rfc_spectrum(signal, bin_edges_rfc):
     """
-    Compute 1D RFC spectrum: total cycle count per range bin.
-
-    Parameters
-    ----------
-    signal       : np.ndarray — load time series
-    bin_edges_rfc: np.ndarray (n_bins+1,) — range bin edges starting at 0
-
-    Returns
-    -------
-    counts : np.ndarray (n_bins,) — cycle counts per range bin
+    Compute 1D RFC spectrum: total cycle count per range bin (Vectorized).
     """
-    n      = len(bin_edges_rfc) - 1
+    n = len(bin_edges_rfc) - 1
     counts = np.zeros(n, dtype=float)
-    for rng, _mean, count in _extract_cycles(signal):
-        idx = int(np.clip(
-            np.searchsorted(bin_edges_rfc, rng, side='right') - 1,
-            0, n - 1))
-        counts[idx] += count
+    
+    # Extract all cycles at once
+    cycles = _extract_cycles(signal)
+    if not cycles:
+        return counts
+        
+    # Convert to a single 2D numpy array: columns are [range, mean, count]
+    cycles_arr = np.array(cycles)
+    ranges = cycles_arr[:, 0]
+    weights = cycles_arr[:, 2]
+    
+    # Vectorized bin index calculation matching your exact clipping logic
+    idx = np.clip(
+        np.searchsorted(bin_edges_rfc, ranges, side='right') - 1, 
+        0, n - 1
+    ).astype(int)
+    
+    # Instantaneous un-looped accumulation
+    np.add.at(counts, idx, weights)
     return counts
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Markov Matrix (2D)
-# ─────────────────────────────────────────────────────────────────────────────
-
 def compute_markov_matrix(signal, bin_edges_range, bin_edges_mean):
     """
-    Compute 2D Markov matrix (Convention 2): rows = cycle range bins,
-    columns = cycle mean bins.
-
-    For each RFC cycle:
-      range = max - min  (binned on rows)
-      mean  = (max + min) / 2  (binned on columns)
-
-    Parameters
-    ----------
-    signal          : np.ndarray — load time series
-    bin_edges_range : np.ndarray (n_bins+1,) — range bin edges (0 → global max range)
-    bin_edges_mean  : np.ndarray (n_bins+1,) — mean bin edges (global min → global max)
-
-    Returns
-    -------
-    matrix : np.ndarray (n_range_bins, n_mean_bins) — cycle counts
+    Compute 2D Markov matrix: rows = cycle range bins, columns = cycle mean bins (Vectorized).
     """
     n_range = len(bin_edges_range) - 1
     n_mean  = len(bin_edges_mean)  - 1
     matrix  = np.zeros((n_range, n_mean), dtype=float)
-    for rng, mean, count in _extract_cycles(signal):
-        i_range = int(np.clip(
-            np.searchsorted(bin_edges_range, rng,  side='right') - 1, 0, n_range - 1))
-        i_mean  = int(np.clip(
-            np.searchsorted(bin_edges_mean,  mean, side='right') - 1, 0, n_mean  - 1))
-        matrix[i_range, i_mean] += count
+    
+    # Extract all cycles at once
+    cycles = _extract_cycles(signal)
+    if not cycles:
+        return matrix
+        
+    cycles_arr = np.array(cycles)
+    ranges  = cycles_arr[:, 0]
+    means   = cycles_arr[:, 1]
+    weights = cycles_arr[:, 2]
+    
+    # Vectorized calculation for both dimensions matching your exact logic
+    i_range = np.clip(
+        np.searchsorted(bin_edges_range, ranges, side='right') - 1, 
+        0, n_range - 1
+    ).astype(int)
+    
+    i_mean = np.clip(
+        np.searchsorted(bin_edges_mean, means, side='right') - 1, 
+        0, n_mean - 1
+    ).astype(int)
+    
+    # Instantaneous multi-dimensional un-looped accumulation
+    np.add.at(matrix, (i_range, i_mean), weights)
     return matrix
 
 
@@ -341,7 +444,7 @@ def compute_lifetime_del(rfc_accum, bin_edges_rfc, m_values, Neq_life):
         rfc_accum = {'default': rfc_accum}
         bin_edges_rfc = {'default': bin_edges_rfc}
     
-
+    
     lifetime_del = {}
 
     for col, counts in rfc_accum.items():

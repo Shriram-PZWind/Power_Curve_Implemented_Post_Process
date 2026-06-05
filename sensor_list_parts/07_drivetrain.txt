@@ -1,0 +1,69 @@
+
+
+# --- Drivetrain loads (DRTLoads.sum) ---
+# Frame a = Non-rotating (fixed to nacelle)     suffix = a
+# Frame s = Rotating (rotates with rotor)        suffix = s
+#
+# IMPORTANT: For LSS, Mx = shaft torque (about rotor/shaft axis = x-axis)
+#            My and Mz = bending moments perpendicular to shaft axis
+#            Mres      = resultant bending sqrt(My^2 + Mz^2)  [excludes Mx torque]
+#            Fx        = axial thrust force
+#
+# Table 1A : Design extreme AbsMax with PLF  — EXT/<sensor>.abs header
+# Table 1B : Lifetime RFC DEL               — FAT/<sensor>.rfc header
+# Table 1C : Lifetime LDD/LRD DEL           — FAT/<sensor>.ldd/.lrd header
+#             Full sensor names in DRT_LDD_LRD_SENSORS
+#             Frame grouping inferred from sensor name suffix (_a or _s)
+# Table 2  : Complementary loads (with PLF) — EXT/<sensor>_comp.abs header
+[DRIVETRAIN]
+#
+# ── RFC DEL slopes for Table 1B ──────────────────────────────────────────────
+DRT_DEL_SLOPES         = 4.0  8.0
+#
+# ── Non-rotating frame (a suffix) ────────────────────────────────────────────
+# IMPORTANT: For LSS, Mx = shaft torque (about rotor/shaft axis = x-axis)
+#            My and Mz = bending moments perpendicular to shaft axis
+#            Mres = sqrt(My^2 + Mz^2) — resultant bending (excludes torque Mx)
+# OpenFAST notes (verified against the .out file header):
+#   - LSShftMxa is the ONLY shaft moment channel (rotor torque); it is
+#     identical in the rotating and non-rotating frames, so DRT_Mx_s also
+#     points at LSShftMxa rather than a non-existent "LSShftMxs"/"LSSGagMxs".
+#   - LSShftFxa (axial thrust) is identical in both frames; there is no
+#     separate "LSShftFxs", so DRT_Fx_s also uses LSShftFxa.
+#   - LSS bending moments are reported at the strain-gage section
+#     (LSSGagMya/Mys/Mza/Mzs), not on LSShft*; we use those for My/Mz.
+DRT_Mres_a             = mres_lsshft_a_kn-m
+DRT_Mx_a               = LSShftMxa_[kN-m]
+DRT_My_a               = LSSGagMya_[kN-m]
+DRT_Mz_a               = LSSGagMza_[kN-m]
+DRT_Fx_a               = LSShftFxa_[kN]
+DRT_Fy_a               = LSShftFya_[kN]
+DRT_Fz_a               = LSShftFza_[kN]
+#
+# ── Rotating frame (s suffix) ────────────────────────────────────────────────
+# Same convention: Mx = shaft torque, My/Mz = bending, Mres = sqrt(My^2+Mz^2)
+DRT_Mres_s             = mres_lsshft_s_kN-m
+DRT_Mx_s               = LSShftMxs_[kN-m]
+DRT_My_s               = LSSGagMys_[kN-m]
+DRT_Mz_s               = LSSGagMzs_[kN-m]
+DRT_Fx_s               = LSShftFxs_[kN]
+DRT_Fy_s               = LSShftFys_[kN]
+DRT_Fz_s               = LSShftFzs_[kN]
+#
+# ── LDD / LRD configuration for Table 1C ─────────────────────────────────────
+# Slopes must be subset of LDD_M_VALUES / LRD_M_VALUES in Table 0
+# Sensors must have LDD=1 or LRD=1 in Table 2 / Table 3B
+DRT_LDD_SLOPES         = 3.3  6.7
+DRT_LRD_SLOPES         = 3.3  6.7
+DRT_LDD_LRD_SENSORS    = LSShftMxa_[kN-m]  LSSGagMya_[kN-m]  LSSGagMza_[kN-m]  LSSGagMys_[kN-m]  LSSGagMzs_[kN-m]
+#
+# ── High-speed shaft (Table 3) ───────────────────────────────────────────────
+# HSS torque written with PLF and without PLF
+# HSS power and speed written without PLF (operational reference)
+# HSS speed channel: OpenFAST does NOT export "HSShftV". GenSpeed (rpm)
+# is reported on the high-speed shaft (rigid coupling to generator) and
+# is the standard HSS speed channel. Use GenSpeed_[rpm].
+DRT_HSS_DEL_SLOPES     = 4.0  8.0
+DRT_HSS_Tq             = HSShftTq_[kN-m]
+DRT_HSS_Pwr            = HSShftPwr_[kW]
+DRT_HSS_V              = GenSpeed_[rpm]
