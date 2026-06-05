@@ -1,0 +1,46 @@
+name: Build for Windows
+on: [push]
+ 
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+ 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+ 
+      - name: Install Base Dependencies
+        run: pip install numpy pandas rainflow scipy matplotlib pyinstaller
+ 
+      - name: Manually Prepare OpenFAST Toolbox
+        shell: bash
+        run: |
+          # 1. Clean up
+          rm -rf openfast_toolbox openfast_toolbox_src
+          # 2. Clone the repo
+          git clone https://github.com/OpenFAST/openfast_toolbox.git
+          # 3. Move the internal library folder out
+          mv openfast_toolbox/openfast_toolbox ./openfast_toolbox_src
+          # 4. Remove the repo wrapper
+          rm -rf openfast_toolbox
+          # 5. Rename to final library name
+          mv openfast_toolbox_src openfast_toolbox
+ 
+      - name: Build Executable
+        shell: bash
+        run: |
+          python -m PyInstaller --onefile --clean \
+          --add-data "openfast_toolbox;openfast_toolbox" \
+          --collect-all openfast_toolbox \
+          --paths . \
+          main.py
+ 
+      - name: Upload Windows Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-binary
+          path: dist/main.exe
