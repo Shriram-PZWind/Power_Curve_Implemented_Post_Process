@@ -444,7 +444,7 @@ def compute_lifetime_del(rfc_accum, bin_edges_rfc, m_values, Neq_life):
         rfc_accum = {'default': rfc_accum}
         bin_edges_rfc = {'default': bin_edges_rfc}
     
-
+    
     lifetime_del = {}
 
     for col, counts in rfc_accum.items():

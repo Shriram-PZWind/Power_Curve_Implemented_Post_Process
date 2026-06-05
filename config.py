@@ -6,11 +6,71 @@
 
 import os
 import re
+import sys
 from tower_reader import read_tower_heights
 
+# ─── Command Line Argument Parsing ────────────────────────────────────────────
+# Expected syntax:
+# python main.py <INPUT_FOLDER> <OUTPUT_FOLDER> <LC_POSTPROCESS_PATH> <SENSOR_LIST_PATH>
+
+def _parse_cli_arguments():
+    """Validates and extracts global paths from command-line arguments."""
+    if len(sys.argv) < 5:
+        print("\n[ERROR] Missing required command-line arguments!")
+        print("Usage:")
+        print("  python main.py <INPUT_FOLDER> <OUTPUT_FOLDER> <LC_POSTPROCESS_PATH> <SENSOR_LIST_PATH>\n")
+        sys.exit(1)
+        
+    # os.path.abspath resolves relative paths and cleans up mismatched slashes
+    input_folder  = os.path.abspath(sys.argv[1])
+    output_folder = os.path.abspath(sys.argv[2])
+    lc_path       = os.path.abspath(sys.argv[3])
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    dest_path = os.path.join(BASE_DIR, "sensorList.txt")
+    input_dir = os.path.join(BASE_DIR, "sensor_list_parts")
+
+    """
+    Gathers all split section files, sorts them by sequential numeric prefix,
+    and stitches them back into a single unified sensorList.txt with zero data loss.
+    """
+    if not os.path.exists(input_dir):
+        print(f"Error: Split parts directory not found at: {input_dir}")
+        return
+
+    # Filter out only the .txt files from the split folder
+    files = [f for f in os.listdir(input_dir) if f.endswith(".txt")]
+    files.sort()  # Alphabetical sort naturally aligns the numeric 00_, 01_, 02_ prefixes
+
+    if not files:
+        print(f"Error: No configuration part files found in '{input_dir}'")
+        return
+
+    all_lines = []
+    print("Re-aggregating sensor configurations in sequence:")
+    for filename in files:
+        file_path = os.path.join(input_dir, filename)
+        print(f"  [Merging] <- {filename}")
+        with open(file_path, "r", encoding="utf-8") as in_f:
+            all_lines.extend(in_f.readlines())
+
+    # Overwrite/Generate the unified sensor list file
+    with open(dest_path, "w", encoding="utf-8") as out_f:
+        out_f.writelines(all_lines)
+
+    print(
+        f"\nSuccess! Reconstructed unified file with 100% data fidelity at:\n  '{dest_path}'"
+    )
+    
+    return input_folder, output_folder, lc_path, dest_path
+
+# Initialize global configuration paths from sys.argv first
+INPUT_FOLDER, OUTPUT_FOLDER, LC_POSTPROCESS_PATH, SENSOR_LIST_PATH = _parse_cli_arguments()
+
+
 # ─── Paths ────────────────────────────────────────────────────────────────────
-INPUT_FOLDER  = r'C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\Test\1-file'   # folder containing .outb / .out files
-OUTPUT_FOLDER = r'C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\Test\1-file\1-files-res'            # root output folder
+# INPUT_FOLDER  = r'C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\Test\1-file'   # folder containing .outb / .out files
+# OUTPUT_FOLDER = r'C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\Test\1-file\1-files-debugmode'            # root output folder
 
 # Subfolders created automatically inside OUTPUT_FOLDER
 STA_FOLDER = os.path.join(OUTPUT_FOLDER, 'STA')  # .sta files (per-file + summary)
@@ -49,8 +109,10 @@ LOG_FILE   = os.path.join(OUTPUT_FOLDER, 'postprocess.log')  # .sum component lo
 #   (2) Accumulate lifetime cycle counts  (cycles_k × occurrences_k per file)
 # All other files in INPUT_FOLDER are processed for extreme stats + per-file
 # DEL only.
-LC_POSTPROCESS_PATH = r'C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\LC_PostProcess.txt'
-SENSOR_LIST_PATH = r'C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\sensorList.txt'
+
+
+# LC_POSTPROCESS_PATH = r'C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\LC_PostProcess.txt'
+# SENSOR_LIST_PATH = r'C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\sensorList.txt'
 
 # Column indices in the file table (0-based)
 _COL_FILENAME   = 0
