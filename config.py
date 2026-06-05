@@ -28,7 +28,7 @@ def _parse_cli_arguments():
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     dest_path = os.path.join(BASE_DIR, "sensorList.txt")
-    input_dir = os.path.join(BASE_DIR, "sensor_list_parts")
+    input_dir = os.path.abspath(sys.argv[4])
 
     """
     Gathers all split section files, sorts them by sequential numeric prefix,
