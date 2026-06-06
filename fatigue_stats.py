@@ -13,6 +13,7 @@
 # =============================================================================
 
 import numpy as np
+from tqdm import tqdm
 
 try:
     import rainflow
@@ -80,13 +81,19 @@ def determine_bin_ranges(fatigue_file_paths, n_bins,
     sensor_set = set(sensor_filter) if sensor_filter is not None else None
 
     print("  [bin range scan]")
-    for fpath in fatigue_file_paths:
-        print(f"    scanning: {fpath}")
+    # for fpath in fatigue_file_paths:
+    #     print(f"    scanning: {fpath}")
+    #     try:
+    #         df = read_fast_output(fpath)
+    #     except Exception as e:
+    #         print(f"    WARNING: could not read {fpath}: {e} — skipping")
+    #         continue
+    for fpath in tqdm(fatigue_file_paths, desc="Scanning files", unit="file"):
         try:
             df = read_fast_output(fpath)
         except Exception as e:
-            print(f"    WARNING: could not read {fpath}: {e} — skipping")
-            continue
+            # Use tqdm.write instead of print so it doesn't corrupt the loading bar
+            tqdm.write(f"    WARNING: could not read {fpath}")
 
         time = df[time_col].values
         T_total_sim += float(time[-1] - time[0])

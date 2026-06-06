@@ -5,6 +5,7 @@ Guarantees 100% byte-level data, comment, and layout preservation.
 """
 
 import os
+import re
 import sys
 
 # Define explicit paths matching your post-processing setup
@@ -91,18 +92,27 @@ def merge_sensor_list(dest_path, input_dir):
         return
 
     # Filter out only the .txt files from the split folder
-    files = [f for f in os.listdir(input_dir) if f.endswith(".txt")]
-    files.sort()  # Alphabetical sort naturally aligns the numeric 00_, 01_, 02_ prefixes
+    # files = [f for f in os.listdir(input_dir) if f.endswith(".txt")]
+    # files.sort()  # Alphabetical sort naturally aligns the numeric 00_, 01_, 02_ prefixes
+
+    files = [
+        f for f in os.listdir(input_dir) 
+        if f.endswith(".txt") and re.match(r"^\d+", f)
+    ]
+
+    # 2. Sort them numerically based on the leading integer prefix
+    # This ensures "10_..." correctly comes AFTER "2_..." instead of alphabetically
+    files.sort(key=lambda f: int(re.match(r"^\d+", f).group()))
 
     if not files:
         print(f"Error: No configuration part files found in '{input_dir}'")
         return
 
     all_lines = []
-    print("Re-aggregating sensor configurations in sequence:")
+    # print("Re-aggregating sensor configurations in sequence:")
     for filename in files:
         file_path = os.path.join(input_dir, filename)
-        print(f"  [Merging] <- {filename}")
+        # print(f"  [Merging] <- {filename}")
         with open(file_path, "r", encoding="utf-8") as in_f:
             all_lines.extend(in_f.readlines())
 
@@ -110,9 +120,9 @@ def merge_sensor_list(dest_path, input_dir):
     with open(dest_path, "w", encoding="utf-8") as out_f:
         out_f.writelines(all_lines)
 
-    print(
-        f"\nSuccess! Reconstructed unified file with 100% data fidelity at:\n  '{dest_path}'"
-    )
+    # print(
+    #     f"\nSuccess! Reconstructed unified file with 100% data fidelity at:\n  '{dest_path}'"
+    # )
 
 
 if __name__ == "__main__":

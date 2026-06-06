@@ -23,6 +23,7 @@
 import os
 import sys
 import numpy as np
+from tqdm import tqdm
 from logger import PostProcessLogger
 log = PostProcessLogger("main files")
 
@@ -810,7 +811,7 @@ def main():
     sensor_cols = get_sensor_columns(df0, config.TIME_CHANNEL)
     print(f"  → {len(sensor_cols)} sensor channels found")
 
-    print(f"DEBUG: Available channels in file: {sensor_cols}")
+    # print(f"DEBUG: Available channels in file: {sensor_cols}")
 
     # 1. Pre-build a lowercase map for case-insensitive matching
     sensor_cols_lower = {c.lower(): c for c in sensor_cols}
@@ -887,9 +888,9 @@ def main():
         )
 
     # Log per-file occurrence weights
-    print(f"  → {len(config.FATIGUE_FILES)} fatigue DLCs with occurrence weights:")
-    for name, occ in config.FATIGUE_FILES.items():
-        print(f"      {name:<50s}  occurrences = {occ:g}")
+    # print(f"  → {len(config.FATIGUE_FILES)} fatigue DLCs with occurrence weights:")
+    # for name, occ in config.FATIGUE_FILES.items():
+        # print(f"      {name:<50s}  occurrences = {occ:g}")
 
     # Compute bin edges for derived sensors needing RFC/Markov
     for ds in derived_active:
@@ -1136,7 +1137,7 @@ def main():
     summary_del      = {}   
     summary_sta_path = os.path.join(config.STA_FOLDER, 'summary_Raw.sta')
 
-    print(f"\n[Phase 4] Processing {len(all_files)} files at HIGH ACCELERATION INTERFACE...\n")
+    print(f"\n[Phase 4] Processing {len(all_files)} files...\n")
 
     import multiprocessing
     from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -1163,15 +1164,26 @@ def main():
                 sensor_cols, sensor_cols_all, derived_active, fatigue_sensors
             )] = fname
 
-        for future in as_completed(futures):
+        # for future in as_completed(futures):
+        #     res = future.result()
+        #     if 'error' in res:
+        #         print(f"    ERROR reading file {res['fname']}: {res['error']} — skipped")
+        #         continue
+
+        #     fname, stem = res['fname'], res['stem']
+        #     print(f"  ► {fname} ✓")
+        #     log.file_written(f'STA/{stem}.sta', tag='Phase 4')
+        for future in tqdm(as_completed(futures), total=len(futures), desc="Processing Phase 4", unit="file"):
             res = future.result()
             if 'error' in res:
-                print(f"    ERROR reading file {res['fname']}: {res['error']} — skipped")
+                # Use tqdm.write so errors print beautifully *above* the progress bar without tearing it apart
+                tqdm.write(f"    ERROR reading file {res['fname']}: {res['error']} — skipped")
                 continue
 
             fname, stem = res['fname'], res['stem']
-            print(f"  ► {fname} ✓")
-            log.file_written(f'STA/{stem}.sta', tag='Phase 4')
+            
+            # The serial print statement has been removed to keep your terminal clean!
+            # log.file_written(f'STA/{stem}.sta', tag='Phase 4')
 
             summary_files.append(fname)
             summary_extreme[fname] = res['ext_all']
@@ -1444,21 +1456,51 @@ def main():
     n_comp_written = 0
 
     # ── Real sensors: Max / Min / AbsMax ──────────────────────────────────────
-    for col in ext_sensors:
-        safe         = sanitize_for_filename(col)
-        comp_method  = get_sensor_flags(col)['CompMethod']
-        comp_enabled = get_sensor_flags(col)['Complimentary']
+    # for col in ext_sensors:
+    #     safe         = sanitize_for_filename(col)
+    #     comp_method  = get_sensor_flags(col)['CompMethod']
+    #     comp_enabled = get_sensor_flags(col)['Complimentary']
 
-        for ext_suffix, stat_key in ext_stats_map.items():
-            ranked_plf, ranked_noplf = compute_ext_ranking(
-                summary_extreme, config.FILE_METADATA, col,
-                stat=stat_key, top_n=10)
-            if not ranked_plf and not ranked_noplf:
-                continue
-            out_path = os.path.join(config.EXT_FOLDER, safe + f'.{ext_suffix}')
-            write_ext_file(out_path, col, stat_key, ranked_plf, ranked_noplf)
-            log.file_written(f'EXT/{safe}.{ext_suffix}', tag='Phase 9')
-            n_ext_written += 1
+    #     for ext_suffix, stat_key in ext_stats_map.items():
+    #         ranked_plf, ranked_noplf = compute_ext_ranking(
+    #             summary_extreme, config.FILE_METADATA, col,
+    #             stat=stat_key, top_n=10)
+    #         if not ranked_plf and not ranked_noplf:
+    #             continue
+    #         out_path = os.path.join(config.EXT_FOLDER, safe + f'.{ext_suffix}')
+    #         write_ext_file(out_path, col, stat_key, ranked_plf, ranked_noplf)
+    #         log.file_written(f'EXT/{safe}.{ext_suffix}', tag='Phase 9')
+    #         n_ext_written += 1
+
+    # 1. Calculate total expected tasks for the progress bar
+    total_tasks = len(ext_sensors) * len(ext_stats_map)
+
+    # 2. Wrap the execution block with tqdm
+    with tqdm(total=total_tasks, desc="Ranking Real Sensors", unit="stat") as pbar:
+        
+        # ── Real sensors: Max / Min / AbsMax ──────────────────────────────────────
+        for col in ext_sensors:
+            safe         = sanitize_for_filename(col)
+            comp_method  = get_sensor_flags(col)['CompMethod']
+            comp_enabled = get_sensor_flags(col)['Complimentary']
+
+            for ext_suffix, stat_key in ext_stats_map.items():
+                ranked_plf, ranked_noplf = compute_ext_ranking(
+                    summary_extreme, config.FILE_METADATA, col,
+                    stat=stat_key, top_n=10)
+                
+                if not ranked_plf and not ranked_noplf:
+                    pbar.update(1)  # Still increment progress if skipped
+                    continue
+                    
+                out_path = os.path.join(config.EXT_FOLDER, safe + f'.{ext_suffix}')
+                write_ext_file(out_path, col, stat_key, ranked_plf, ranked_noplf)
+                
+                # Internal log keeping can stay, but direct print statements are gone!
+                # log.file_written(f'EXT/{safe}.{ext_suffix}', tag='Phase 9')
+                n_ext_written += 1
+                
+                pbar.update(1)  # Increment progress on successful write
 
             if comp_enabled:
                 comp_results = compute_complementary_loads(
@@ -1486,46 +1528,106 @@ def main():
     # _comp.max / _comp.abs = written if Complimentary=1 in Table 3B
     #   Mres computed at time instant from operands inside
     #   compute_complementary_loads() via derived_active parameter
+    # n_derived_ext = 0
+    # for ds in ext_derived:
+    #     dname      = ds['name']
+    #     safe       = sanitize_for_filename(dname)
+    #     comp_meth  = ds.get('compmethod', 2)
+    #     comp_en    = ds.get('comp', 0)
+
+    #     for stat_key, ext_suffix in [('Max', 'max'), ('AbsMax', 'abs')]:
+    #         ranked_plf_d, ranked_noplf_d = compute_ext_ranking(
+    #             summary_extreme, config.FILE_METADATA, dname,
+    #             stat=stat_key, top_n=10)
+    #         if not ranked_plf_d and not ranked_noplf_d:
+    #             continue
+    #         # Write EXT ranking file
+    #         out_path = os.path.join(config.EXT_FOLDER, safe + f'.{ext_suffix}')
+    #         write_ext_file(out_path, dname, stat_key, ranked_plf_d, ranked_noplf_d)
+    #         log.file_written(f'EXT/{safe}.{ext_suffix}', tag='Phase 9')
+    #         n_derived_ext += 1
+    #         # Write _comp file if Complimentary=1
+    #         if comp_en:
+    #             comp_results_d = compute_complementary_loads(
+    #                 sensor_col=dname,
+    #                 stat=stat_key,
+    #                 ranked_plf=ranked_plf_d,
+    #                 all_extreme=summary_extreme,
+    #                 file_metadata=config.FILE_METADATA,
+    #                 sensor_list=config.SENSOR_LIST,
+    #                 input_folder=config.INPUT_FOLDER,
+    #                 time_channel=config.TIME_CHANNEL,
+    #                 top_n=10,
+    #                 derived_active=derived_active)
+    #             if comp_results_d:
+    #                 comp_path = os.path.join(
+    #                     config.EXT_FOLDER, safe + f'_comp.{ext_suffix}')
+    #                 write_complementary_file(
+    #                     comp_path, dname, stat_key,
+    #                     comp_results_d, comp_meth)
+    #                 log.file_written(f'EXT/{safe}_comp.{ext_suffix}', tag='Phase 9')
+    #                 n_derived_ext += 1
+
+    # print(f"  → {n_ext_written} EXT files  "
+    #       f"({len(ext_sensors)} sensors × 3 types)")
+    # print(f"  → {n_comp_written} complementary files")
+    # print(f"  → {n_derived_ext} derived sensor EXT + _comp files")
+    # log.phase_complete(9, f'{n_ext_written} real EXT + {n_comp_written} _comp + '
+    #                    f'{n_derived_ext} derived EXT files written')
+
     n_derived_ext = 0
-    for ds in ext_derived:
-        dname      = ds['name']
-        safe       = sanitize_for_filename(dname)
-        comp_meth  = ds.get('compmethod', 2)
-        comp_en    = ds.get('comp', 0)
+    
+    # 1. Calculate total expected iterations (2 stats per derived sensor)
+    total_derived_tasks = len(ext_derived) * 2
 
-        for stat_key, ext_suffix in [('Max', 'max'), ('AbsMax', 'abs')]:
-            ranked_plf_d, ranked_noplf_d = compute_ext_ranking(
-                summary_extreme, config.FILE_METADATA, dname,
-                stat=stat_key, top_n=10)
-            if not ranked_plf_d and not ranked_noplf_d:
-                continue
-            # Write EXT ranking file
-            out_path = os.path.join(config.EXT_FOLDER, safe + f'.{ext_suffix}')
-            write_ext_file(out_path, dname, stat_key, ranked_plf_d, ranked_noplf_d)
-            log.file_written(f'EXT/{safe}.{ext_suffix}', tag='Phase 9')
-            n_derived_ext += 1
-            # Write _comp file if Complimentary=1
-            if comp_en:
-                comp_results_d = compute_complementary_loads(
-                    sensor_col=dname,
-                    stat=stat_key,
-                    ranked_plf=ranked_plf_d,
-                    all_extreme=summary_extreme,
-                    file_metadata=config.FILE_METADATA,
-                    sensor_list=config.SENSOR_LIST,
-                    input_folder=config.INPUT_FOLDER,
-                    time_channel=config.TIME_CHANNEL,
-                    top_n=10,
-                    derived_active=derived_active)
-                if comp_results_d:
-                    comp_path = os.path.join(
-                        config.EXT_FOLDER, safe + f'_comp.{ext_suffix}')
-                    write_complementary_file(
-                        comp_path, dname, stat_key,
-                        comp_results_d, comp_meth)
-                    log.file_written(f'EXT/{safe}_comp.{ext_suffix}', tag='Phase 9')
-                    n_derived_ext += 1
+    # 2. Wrap the execution block with tqdm
+    with tqdm(total=total_derived_tasks, desc="Ranking Derived Sensors", unit="stat") as pbar:
+        for ds in ext_derived:
+            dname      = ds['name']
+            safe       = sanitize_for_filename(dname)
+            comp_meth  = ds.get('compmethod', 2)
+            comp_en    = ds.get('comp', 0)
 
+            for stat_key, ext_suffix in [('Max', 'max'), ('AbsMax', 'abs')]:
+                ranked_plf_d, ranked_noplf_d = compute_ext_ranking(
+                    summary_extreme, config.FILE_METADATA, dname,
+                    stat=stat_key, top_n=10)
+                
+                if not ranked_plf_d and not ranked_noplf_d:
+                    pbar.update(1)  # Still update progress if skipped
+                    continue
+                    
+                # Write EXT ranking file
+                out_path = os.path.join(config.EXT_FOLDER, safe + f'.{ext_suffix}')
+                write_ext_file(out_path, dname, stat_key, ranked_plf_d, ranked_noplf_d)
+                # log.file_written(f'EXT/{safe}.{ext_suffix}', tag='Phase 9')
+                n_derived_ext += 1
+                
+                # Write _comp file if Complimentary=1
+                if comp_en:
+                    comp_results_d = compute_complementary_loads(
+                        sensor_col=dname,
+                        stat=stat_key,
+                        ranked_plf=ranked_plf_d,
+                        all_extreme=summary_extreme,
+                        file_metadata=config.FILE_METADATA,
+                        sensor_list=config.SENSOR_LIST,
+                        input_folder=config.INPUT_FOLDER,
+                        time_channel=config.TIME_CHANNEL,
+                        top_n=10,
+                        derived_active=derived_active)
+                    if comp_results_d:
+                        comp_path = os.path.join(
+                            config.EXT_FOLDER, safe + f'_comp.{ext_suffix}')
+                        write_complementary_file(
+                            comp_path, dname, stat_key,
+                            comp_results_d, comp_meth)
+                        # log.file_written(f'EXT/{safe}_comp.{ext_suffix}', tag='Phase 9')
+                        n_derived_ext += 1
+                
+                pbar.update(1)  # Update progress after processing the stat block
+
+    # The final summaries print once cleanly at the very end
     print(f"  → {n_ext_written} EXT files  "
           f"({len(ext_sensors)} sensors × 3 types)")
     print(f"  → {n_comp_written} complementary files")
@@ -1613,8 +1715,8 @@ def main():
     hub_map = hub_cfg['sensor_map']
 
 
-    print(f"DEBUG: Available sensors are: {sensor_cols[:10]}...") 
-    print(f"DEBUG: Looking for: {hub_map.get('Mx', {}).get('B1')}")
+    # print(f"DEBUG: Available sensors are: {sensor_cols[:10]}...") 
+    # print(f"DEBUG: Looking for: {hub_map.get('Mx', {}).get('B1')}")
 
 
 
@@ -1841,7 +1943,7 @@ def main():
     print(f"      FNDLoads.sum      (foundation load summary)")
     print(f"      PitchBearing.sum  (pitch bearing load summary)")
     print(f"      MainLoads.sum     (master turbine load summary)")
-    print(f"      YawLoads.sum  (yaw bearing load summary)")
+    # print(f"      YawLoads.sum  (yaw bearing load summary)")
     print("=" * 70)
 
 

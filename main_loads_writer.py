@@ -411,7 +411,7 @@ def _parse_hub_section1(lines):
         result.append({'label': parts[0], 'val': _val(parts, 1),
                        'plf': _val(parts, 2), 'dlc_blade': dlc_blade})
         
-    print("result is this", result)
+    # print("result is this", result)
     return result
 
 
