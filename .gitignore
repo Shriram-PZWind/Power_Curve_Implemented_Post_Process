@@ -1,0 +1,9 @@
+sensor_list_parts/
+
+.vscode/
+
+__pycache__/
+
+main_sensorList.txt
+
+sensorList.txt

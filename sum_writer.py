@@ -88,11 +88,18 @@ from io_reader import sanitize_for_filename
 #             log.warning(f'Error reading {os.path.basename(fpath)}: {e}', tag='SUM')
 #     return None
 
+_FAT_HEADER_CACHE = {}
+_EXT_LOAD_CACHE = {}
+
 def read_fat_del_header(fat_folder, sensor_name, m_value, method='rfc', log=None):
     """
     Corrected reader that handles multi-word unit strings by indexing from the right.
     """
     import os
+
+    cache_key = (fat_folder, sensor_name, float(m_value), method)
+    if cache_key in _FAT_HEADER_CACHE:
+        return _FAT_HEADER_CACHE[cache_key]
  
     # 1. Strip unit suffixes like _[kN-m] so we find the actual file "TwrBsMxt.rfc"
     # clean_name = sensor_name.split('[')[0].strip().rstrip('_')
@@ -141,10 +148,18 @@ def read_fat_del_header(fat_folder, sensor_name, m_value, method='rfc', log=None
                        
                         # LOGIC: The values are the LAST 'total_slopes' items on the line.
                         # We ignore the units by counting from the end of the list.
+                        # try:
+                        #     # e.g., if there are 9 slopes, v_parts[-9] is the first value
+                        #     value_str = v_parts[-total_slopes + target_idx]
+                        #     return float(value_str)
+                        # except (ValueError, IndexError):
+                        #     continue
+
                         try:
-                            # e.g., if there are 9 slopes, v_parts[-9] is the first value
                             value_str = v_parts[-total_slopes + target_idx]
-                            return float(value_str)
+                            res = float(value_str)
+                            _FAT_HEADER_CACHE[cache_key] = res  # Store in Cache
+                            return res
                         except (ValueError, IndexError):
                             continue
                 break
@@ -152,7 +167,8 @@ def read_fat_del_header(fat_folder, sensor_name, m_value, method='rfc', log=None
     except Exception as e:
         if log:
             log.warning(f'Error reading {safe}.{method}: {e}', tag='SUM')
-           
+
+    _FAT_HEADER_CACHE[cache_key] = None       
     return None
  
 
@@ -876,12 +892,17 @@ def read_ext_design_load(ext_folder, sensor_name, ext_type='abs',
 
     Returns (value, plf, family) or (None, None, None)
     """
+    cache_key = (ext_folder, sensor_name, ext_type, with_plf)
+    if cache_key in _EXT_LOAD_CACHE:
+        return _EXT_LOAD_CACHE[cache_key]
+    
     safe  = sanitize_for_filename(sensor_name)
     fpath = os.path.join(ext_folder, safe + f'.{ext_type}')
 
     if not os.path.isfile(fpath):
         if log:
             log.warning(f'{safe}.{ext_type} not found — N/A in .sum', tag='SUM')
+        _EXT_LOAD_CACHE[cache_key] = (None, None, None)  # Cache the empty result
         return None, None, None
 
     marker = 'with PLF' if with_plf else 'without PLF'
@@ -916,10 +937,13 @@ def read_ext_design_load(ext_folder, sensor_name, ext_type='abs',
                             plf = 1.0  # '-' means no PLF
                     # Family name is the last token
                     fam = tokens[-1]
+                    
+                _EXT_LOAD_CACHE[cache_key] = (val, plf, fam)
                 return val, plf, fam
     except Exception as e:
         if log:
             log.warning(f'Error reading {os.path.basename(fpath)}: {e}', tag='SUM')
+    _EXT_LOAD_CACHE[cache_key] = (None, None, None)
     return None, None, None
 
 
