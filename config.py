@@ -450,35 +450,87 @@ M_VALUES = RFC_M_VALUES
 
 
 def get_blade_config():
+    # """
+    # Extract blade summary configuration from COMPONENT_CONFIG.
+    # Returns dict with BLADE_FILE_PATH, BLADE_LENGTH, SUM_DEL_SLOPES, CONVENTION.
+    # """
+    # blade = COMPONENT_CONFIG.get('BLADE', {})
+    # blade_file = blade.get('BLADE_FILE_PATH', '')
+    # if blade_file.upper() == 'NONE':
+    #     blade_file = None
+    # try:
+    #     blade_length = float(blade.get('BLADE_LENGTH', 63.0))
+    # except ValueError:
+    #     blade_length = 63.0
+    # slopes_str = blade.get('SUM_DEL_SLOPES', '10 12 25')
+    # try:
+    #     del_slopes = [float(s) for s in slopes_str.split()]
+    # except ValueError:
+    #     del_slopes = [10, 12, 25]
+    # convention = blade.get('CONVENTION', 'AUTO').upper()
+    # fracs_str  = blade.get('MAIN_BLD_FRACTIONS', '0  25  50  75')
+    # try:
+    #     main_fractions = [float(s) / 100.0 for s in fracs_str.split()]
+    # except ValueError:
+    #     main_fractions = [0.0, 0.25, 0.50, 0.75]
+    # return {
+    #     'BLADE_FILE_PATH'   : blade_file,
+    #     'BLADE_LENGTH'      : blade_length,
+    #     'SUM_DEL_SLOPES'    : del_slopes,
+    #     'CONVENTION'        : convention,
+    #     'MAIN_BLD_FRACTIONS': main_fractions,
+    # }
+    
     """
-    Extract blade summary configuration from COMPONENT_CONFIG.
-    Returns dict with BLADE_FILE_PATH, BLADE_LENGTH, SUM_DEL_SLOPES, CONVENTION.
+    Extracts explicit blade configuration from COMPONENT_CONFIG['BLADE'].
+    Returns a dictionary mapping compatible with write_bld_loads_sum.
     """
-    blade = COMPONENT_CONFIG.get('BLADE', {})
-    blade_file = blade.get('BLADE_FILE_PATH', '')
-    if blade_file.upper() == 'NONE':
-        blade_file = None
-    try:
-        blade_length = float(blade.get('BLADE_LENGTH', 63.0))
-    except ValueError:
-        blade_length = 63.0
-    slopes_str = blade.get('SUM_DEL_SLOPES', '10 12 25')
-    try:
-        del_slopes = [float(s) for s in slopes_str.split()]
-    except ValueError:
-        del_slopes = [10, 12, 25]
-    convention = blade.get('CONVENTION', 'AUTO').upper()
-    fracs_str  = blade.get('MAIN_BLD_FRACTIONS', '0  25  50  75')
-    try:
-        main_fractions = [float(s) / 100.0 for s in fracs_str.split()]
-    except ValueError:
-        main_fractions = [0.0, 0.25, 0.50, 0.75]
+    cfg = COMPONENT_CONFIG.get('BLADE', {})
+    
+    # 1. Fetch base configuration 
+    blade_file = cfg.get('BLADE_FILE_PATH', '').strip()
+    blade_length = float(cfg.get('BLADE_LENGTH', 61.5))
+    convention = cfg.get('CONVENTION', 'AUTO').strip().upper()
+    
+    slopes_str = cfg.get('SUM_DEL_SLOPES', '10 12 25')
+    slopes = [float(s) for s in slopes_str.split() if s]
+
+    # 2. Build explicit station dictionary (if applicable)
+    stations = {}
+    n_blades = 3  # Standard number of blades
+    
+    if convention == 'EXPLICIT':
+        # Regex to match format: BLD_Mx_Root_B1 or BLD_Fx_Spn4_B3
+        pattern = re.compile(r'^BLD_([A-Za-z]+)_([A-Za-z0-9]+)_B([123])$', re.IGNORECASE)
+        
+        for key, val in cfg.items():
+            val = val.strip()
+            if not val:
+                continue
+            
+            m = pattern.match(key)
+            if m:
+                comp = m.group(1).capitalize()    # e.g., Mx, Fx
+                station = m.group(2).capitalize() # e.g., Root, Spn1
+                blade = int(m.group(3))           # e.g., 1, 2, 3
+                
+                # Special casing: 'Mres'
+                if comp.lower() == 'mres':
+                    comp = 'Mres'
+                
+                # Initialize nested dict structure
+                if station not in stations:
+                    stations[station] = {1: {}, 2: {}, 3: {}}
+                
+                stations[station][blade][comp] = val
+
     return {
-        'BLADE_FILE_PATH'   : blade_file,
-        'BLADE_LENGTH'      : blade_length,
-        'SUM_DEL_SLOPES'    : del_slopes,
-        'CONVENTION'        : convention,
-        'MAIN_BLD_FRACTIONS': main_fractions,
+        'BLADE_FILE_PATH': blade_file,
+        'BLADE_LENGTH': blade_length,
+        'SUM_DEL_SLOPES': slopes,
+        'CONVENTION': convention,
+        'stations': stations,
+        'n_blades': n_blades
     }
 
 

@@ -1,4 +1,4 @@
-input folder = C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\ALL
-output folder = C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\OUTPUT\ALL\6Junejhghjgfhjgf
+input folder = C:\Users\PZWind-AkashM\Desktop\setup\Beamdyn test
+output folder = C:\Users\PZWind-AkashM\Desktop\setup\Beamdyn test\results-v7
 lcpostproc = C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\LC_PostProcess.txt
 sensorlist = C:\Some\Desired\SensorList.txt

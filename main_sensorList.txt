@@ -823,12 +823,226 @@ Mres_YawBr_[kN-m]           26     1.35     1      1     1     1       1     1  
 #   that fallback is approximate. To get correct values, leave TWR_ED_FILE
 #   set in [TOWER] and just keep BLADE_FILE_PATH below as a legacy hint.
 [BLADE]
-BLADE_FILE_PATH  = C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\INPUTS\NRELOffshrBsline5MW_AeroDyn_blade.dat
-BLADE_LENGTH     = 61.5
-SUM_DEL_SLOPES   = 10.0  12.0  25.0
-CONVENTION       = AUTO
-# Radial fractions (%) for MainLoads.sum blade section — 4 stations
+BLADE_FILE_PATH    = C:\Users\PZWind-AkashM\Desktop\setup\V7_Simulations\IEC_2A_\INPUTS\NRELOffshrBsline5MW_AeroDyn_blade.dat
+BLADE_LENGTH       = 61.5
+SUM_DEL_SLOPES     = 10.0  12.0  25.0
+CONVENTION         = EXPLICIT
 MAIN_BLD_FRACTIONS = 0  25  50  75
+
+# --- Blade Root ---
+BLD_Mx_Root_B1 = RootMxb1_[kN-m]
+BLD_My_Root_B1 = RootMyb1_[kN-m]
+BLD_Mz_Root_B1 = RootMzb1_[kN-m]
+BLD_Fx_Root_B1 = RootFxb1_[kN]
+BLD_Fy_Root_B1 = RootFyb1_[kN]
+BLD_Fz_Root_B1 = RootFzb1_[kN]
+
+BLD_Mx_Root_B2 = RootMxb2_[kN-m]
+BLD_My_Root_B2 = RootMyb2_[kN-m]
+BLD_Mz_Root_B2 = RootMzb2_[kN-m]
+BLD_Fx_Root_B2 = RootFxb2_[kN]
+BLD_Fy_Root_B2 = RootFyb2_[kN]
+BLD_Fz_Root_B2 = RootFzb2_[kN]
+
+BLD_Mx_Root_B3 = RootMxb3_[kN-m]
+BLD_My_Root_B3 = RootMyb3_[kN-m]
+BLD_Mz_Root_B3 = RootMzb3_[kN-m]
+BLD_Fx_Root_B3 = RootFxb3_[kN]
+BLD_Fy_Root_B3 = RootFyb3_[kN]
+BLD_Fz_Root_B3 = RootFzb3_[kN]
+
+# --- Spanwise Stations ---
+BLD_Mx_Spn1_B1 = Spn1MLxb1_[kN-m]
+BLD_My_Spn1_B1 = Spn1MLyb1_[kN-m]
+BLD_Mz_Spn1_B1 = Spn1MLzb1_[kN-m]
+BLD_Fx_Spn1_B1 = Spn1FLxb1_[kN]
+BLD_Fy_Spn1_B1 = Spn1FLyb1_[kN]
+BLD_Fz_Spn1_B1 = Spn1FLzb1_[kN]
+
+BLD_Mx_Spn2_B1 = Spn2MLxb1_[kN-m]
+BLD_My_Spn2_B1 = Spn2MLyb1_[kN-m]
+BLD_Mz_Spn2_B1 = Spn2MLzb1_[kN-m]
+BLD_Fx_Spn2_B1 = Spn2FLxb1_[kN]
+BLD_Fy_Spn2_B1 = Spn2FLyb1_[kN]
+BLD_Fz_Spn2_B1 = Spn2FLzb1_[kN]
+
+BLD_Mx_Spn3_B1 = Spn3MLxb1_[kN-m]
+BLD_My_Spn3_B1 = Spn3MLyb1_[kN-m]
+BLD_Mz_Spn3_B1 = Spn3MLzb1_[kN-m]
+BLD_Fx_Spn3_B1 = Spn3FLxb1_[kN]
+BLD_Fy_Spn3_B1 = Spn3FLyb1_[kN]
+BLD_Fz_Spn3_B1 = Spn3FLzb1_[kN]
+
+BLD_Mx_Spn4_B1 = Spn4MLxb1_[kN-m]
+BLD_My_Spn4_B1 = Spn4MLyb1_[kN-m]
+BLD_Mz_Spn4_B1 = Spn4MLzb1_[kN-m]
+BLD_Fx_Spn4_B1 = Spn4FLxb1_[kN]
+BLD_Fy_Spn4_B1 = Spn4FLyb1_[kN]
+BLD_Fz_Spn4_B1 = Spn4FLzb1_[kN]
+
+BLD_Mx_Spn5_B1 = Spn5MLxb1_[kN-m]
+BLD_My_Spn5_B1 = Spn5MLyb1_[kN-m]
+BLD_Mz_Spn5_B1 = Spn5MLzb1_[kN-m]
+BLD_Fx_Spn5_B1 = Spn5FLxb1_[kN]
+BLD_Fy_Spn5_B1 = Spn5FLyb1_[kN]
+BLD_Fz_Spn5_B1 = Spn5FLzb1_[kN]
+
+BLD_Mx_Spn6_B1 = Spn6MLxb1_[kN-m]
+BLD_My_Spn6_B1 = Spn6MLyb1_[kN-m]
+BLD_Mz_Spn6_B1 = Spn6MLzb1_[kN-m]
+BLD_Fx_Spn6_B1 = Spn6FLxb1_[kN]
+BLD_Fy_Spn6_B1 = Spn6FLyb1_[kN]
+BLD_Fz_Spn6_B1 = Spn6FLzb1_[kN]
+
+BLD_Mx_Spn7_B1 = Spn7MLxb1_[kN-m]
+BLD_My_Spn7_B1 = Spn7MLyb1_[kN-m]
+BLD_Mz_Spn7_B1 = Spn7MLzb1_[kN-m]
+BLD_Fx_Spn7_B1 = Spn7FLxb1_[kN]
+BLD_Fy_Spn7_B1 = Spn7FLyb1_[kN]
+BLD_Fz_Spn7_B1 = Spn7FLzb1_[kN]
+
+BLD_Mx_Spn8_B1 = Spn8MLxb1_[kN-m]
+BLD_My_Spn8_B1 = Spn8MLyb1_[kN-m]
+BLD_Mz_Spn8_B1 = Spn8MLzb1_[kN-m]
+BLD_Fx_Spn8_B1 = Spn8FLxb1_[kN]
+BLD_Fy_Spn8_B1 = Spn8FLyb1_[kN]
+BLD_Fz_Spn8_B1 = Spn8FLzb1_[kN]
+
+BLD_Mx_Spn9_B1 = Spn9MLxb1_[kN-m]
+BLD_My_Spn9_B1 = Spn9MLyb1_[kN-m]
+BLD_Mz_Spn9_B1 = Spn9MLzb1_[kN-m]
+BLD_Fx_Spn9_B1 = Spn9FLxb1_[kN]
+BLD_Fy_Spn9_B1 = Spn9FLyb1_[kN]
+BLD_Fz_Spn9_B1 = Spn9FLzb1_[kN]
+
+#--------------------------------------------------------------
+BLD_Mx_Spn1_B2 = Spn1MLxb2_[kN-m]
+BLD_My_Spn1_B2 = Spn1MLyb2_[kN-m]
+BLD_Mz_Spn1_B2 = Spn1MLzb2_[kN-m]
+BLD_Fx_Spn1_B2 = Spn1FLxb2_[kN]
+BLD_Fy_Spn1_B2 = Spn1FLyb2_[kN]
+BLD_Fz_Spn1_B2 = Spn1FLzb2_[kN]
+
+BLD_Mx_Spn2_B2 = Spn2MLxb2_[kN-m]
+BLD_My_Spn2_B2 = Spn2MLyb2_[kN-m]
+BLD_Mz_Spn2_B2 = Spn2MLzb2_[kN-m]
+BLD_Fx_Spn2_B2 = Spn2FLxb2_[kN]
+BLD_Fy_Spn2_B2 = Spn2FLyb2_[kN]
+BLD_Fz_Spn2_B2 = Spn2FLzb2_[kN]
+
+BLD_Mx_Spn3_B2 = Spn3MLxb2_[kN-m]
+BLD_My_Spn3_B2 = Spn3MLyb2_[kN-m]
+BLD_Mz_Spn3_B2 = Spn3MLzb2_[kN-m]
+BLD_Fx_Spn3_B2 = Spn3FLxb2_[kN]
+BLD_Fy_Spn3_B2 = Spn3FLyb2_[kN]
+BLD_Fz_Spn3_B2 = Spn3FLzb2_[kN]
+
+BLD_Mx_Spn4_B2 = Spn4MLxb2_[kN-m]
+BLD_My_Spn4_B2 = Spn4MLyb2_[kN-m]
+BLD_Mz_Spn4_B2 = Spn4MLzb2_[kN-m]
+BLD_Fx_Spn4_B2 = Spn4FLxb2_[kN]
+BLD_Fy_Spn4_B2 = Spn4FLyb2_[kN]
+BLD_Fz_Spn4_B2 = Spn4FLzb2_[kN]
+
+BLD_Mx_Spn5_B2 = Spn5MLxb2_[kN-m]
+BLD_My_Spn5_B2 = Spn5MLyb2_[kN-m]
+BLD_Mz_Spn5_B2 = Spn5MLzb2_[kN-m]
+BLD_Fx_Spn5_B2 = Spn5FLxb2_[kN]
+BLD_Fy_Spn5_B2 = Spn5FLyb2_[kN]
+BLD_Fz_Spn5_B2 = Spn5FLzb2_[kN]
+
+BLD_Mx_Spn6_B2 = Spn6MLxb2_[kN-m]
+BLD_My_Spn6_B2 = Spn6MLyb2_[kN-m]
+BLD_Mz_Spn6_B2 = Spn6MLzb2_[kN-m]
+BLD_Fx_Spn6_B2 = Spn6FLxb2_[kN]
+BLD_Fy_Spn6_B2 = Spn6FLyb2_[kN]
+BLD_Fz_Spn6_B2 = Spn6FLzb2_[kN]
+
+BLD_Mx_Spn7_B2 = Spn7MLxb2_[kN-m]
+BLD_My_Spn7_B2 = Spn7MLyb2_[kN-m]
+BLD_Mz_Spn7_B2 = Spn7MLzb2_[kN-m]
+BLD_Fx_Spn7_B2 = Spn7FLxb2_[kN]
+BLD_Fy_Spn7_B2 = Spn7FLyb2_[kN]
+BLD_Fz_Spn7_B2 = Spn7FLzb2_[kN]
+
+BLD_Mx_Spn8_B2 = Spn8MLxb2_[kN-m]
+BLD_My_Spn8_B2 = Spn8MLyb2_[kN-m]
+BLD_Mz_Spn8_B2 = Spn8MLzb2_[kN-m]
+BLD_Fx_Spn8_B2 = Spn8FLxb2_[kN]
+BLD_Fy_Spn8_B2 = Spn8FLyb2_[kN]
+BLD_Fz_Spn8_B2 = Spn8FLzb2_[kN]
+
+BLD_Mx_Spn9_B2 = Spn9MLxb2_[kN-m]
+BLD_My_Spn9_B2 = Spn9MLyb2_[kN-m]
+BLD_Mz_Spn9_B2 = Spn9MLzb2_[kN-m]
+BLD_Fx_Spn9_B2 = Spn9FLxb2_[kN]
+BLD_Fy_Spn9_B2 = Spn9FLyb2_[kN]
+BLD_Fz_Spn9_B2 = Spn9FLzb2_[kN]
+
+#------------------------------------------------------------------------------
+
+BLD_Mx_Spn1_B3 = Spn1MLxb3_[kN-m]
+BLD_My_Spn1_B3 = Spn1MLyb3_[kN-m]
+BLD_Mz_Spn1_B3 = Spn1MLzb3_[kN-m]
+BLD_Fx_Spn1_B3 = Spn1FLxb3_[kN]
+BLD_Fy_Spn1_B3 = Spn1FLyb3_[kN]
+BLD_Fz_Spn1_B3 = Spn1FLzb3_[kN]
+
+BLD_Mx_Spn2_B3 = Spn2MLxb3_[kN-m]
+BLD_My_Spn2_B3 = Spn2MLyb3_[kN-m]
+BLD_Mz_Spn2_B3 = Spn2MLzb3_[kN-m]
+BLD_Fx_Spn2_B3 = Spn2FLxb3_[kN]
+BLD_Fy_Spn2_B3 = Spn2FLyb3_[kN]
+BLD_Fz_Spn2_B3 = Spn2FLzb3_[kN]
+
+BLD_Mx_Spn3_B3 = Spn3MLxb3_[kN-m]
+BLD_My_Spn3_B3 = Spn3MLyb3_[kN-m]
+BLD_Mz_Spn3_B3 = Spn3MLzb3_[kN-m]
+BLD_Fx_Spn3_B3 = Spn3FLxb3_[kN]
+BLD_Fy_Spn3_B3 = Spn3FLyb3_[kN]
+BLD_Fz_Spn3_B3 = Spn3FLzb3_[kN]
+
+BLD_Mx_Spn4_B3 = Spn4MLxb3_[kN-m]
+BLD_My_Spn4_B3 = Spn4MLyb3_[kN-m]
+BLD_Mz_Spn4_B3 = Spn4MLzb3_[kN-m]
+BLD_Fx_Spn4_B3 = Spn4FLxb3_[kN]
+BLD_Fy_Spn4_B3 = Spn4FLyb3_[kN]
+BLD_Fz_Spn4_B3 = Spn4FLzb3_[kN]
+
+BLD_Mx_Spn5_B3 = Spn5MLxb3_[kN-m]
+BLD_My_Spn5_B3 = Spn5MLyb3_[kN-m]
+BLD_Mz_Spn5_B3 = Spn5MLzb3_[kN-m]
+BLD_Fx_Spn5_B3 = Spn5FLxb3_[kN]
+BLD_Fy_Spn5_B3 = Spn5FLyb3_[kN]
+BLD_Fz_Spn5_B3 = Spn5FLzb3_[kN]
+
+BLD_Mx_Spn6_B3 = Spn6MLxb3_[kN-m]
+BLD_My_Spn6_B3 = Spn6MLyb3_[kN-m]
+BLD_Mz_Spn6_B3 = Spn6MLzb3_[kN-m]
+BLD_Fx_Spn6_B3 = Spn6FLxb3_[kN]
+BLD_Fy_Spn6_B3 = Spn6FLyb3_[kN]
+BLD_Fz_Spn6_B3 = Spn6FLzb3_[kN]
+
+BLD_Mx_Spn7_B3 = Spn7MLxb3_[kN-m]
+BLD_My_Spn7_B3 = Spn7MLyb3_[kN-m]
+BLD_Mz_Spn7_B3 = Spn7MLzb3_[kN-m]
+BLD_Fx_Spn7_B3 = Spn7FLxb3_[kN]
+BLD_Fy_Spn7_B3 = Spn7FLyb3_[kN]
+BLD_Fz_Spn7_B3 = Spn7FLzb3_[kN]
+
+BLD_Mx_Spn8_B3 = Spn8MLxb3_[kN-m]
+BLD_My_Spn8_B3 = Spn8MLyb3_[kN-m]
+BLD_Mz_Spn8_B3 = Spn8MLzb3_[kN-m]
+BLD_Fx_Spn8_B3 = Spn8FLxb3_[kN]
+BLD_Fy_Spn8_B3 = Spn8FLyb3_[kN]
+BLD_Fz_Spn8_B3 = Spn8FLzb3_[kN]
+
+BLD_Mx_Spn9_B3 = Spn9MLxb3_[kN-m]
+BLD_My_Spn9_B3 = Spn9MLyb3_[kN-m]
+BLD_Mz_Spn9_B3 = Spn9MLzb3_[kN-m]
+BLD_Fx_Spn9_B3 = Spn9FLxb3_[kN]
+BLD_Fy_Spn9_B3 = Spn9FLyb3_[kN]
+BLD_Fz_Spn9_B3 = Spn9FLzb3_[kN]
 
 
 # --- Hub loads (HubLoads.sum) ---

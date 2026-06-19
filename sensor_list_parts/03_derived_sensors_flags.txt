@@ -24,16 +24,16 @@
 # =============================================================================================================
 #
 # ── Blade Root — Blade frame — pitch bearing design (LRD + LDD on) ───────────
-Mres_RootBld1_[kN-m]         2     1.35     1      1     1     1       1     1     1              1           2
-Mres_RootBld2_[kN-m]         4     1.35     1      1     1     1       1     1     1              1           2
-Mres_RootBld3_[kN-m]         6     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld1_[N-m]         2     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld2_[N-m]         4     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootBld3_[N-m]         6     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── Blade Root — Hub/Coned frame — pitch bearing design (LRD + LDD on) ───────
 # RFC=1 here so HubLoads.sum Section 2 (Mres DEL) populates. Without RFC, the
 # .rfc file is not produced and the SUM writer falls back to N/A.
-Mres_RootHub1_[kN-m]         1     1.35     1      1     1     1       1     1     1              1           2
-Mres_RootHub2_[kN-m]         3     1.35     1      1     1     1       1     1     1              1           2
-Mres_RootHub3_[kN-m]         5     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub1_[N-m]         1     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub2_[N-m]         3     1.35     1      1     1     1       1     1     1              1           2
+Mres_RootHub3_[N-m]         5     1.35     1      1     1     1       1     1     1              1           2
 #
 # ── LSS Shaft — Non-rotating (RFC + Markov + LDD, no LRD) ────────────────────
 Mres_LSShft_a_[kN-m]        27     1.35     1      1     1     1       1     1     1              1           2

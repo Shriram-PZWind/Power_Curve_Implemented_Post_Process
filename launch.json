@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Debug with Folder Path",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/runner.py",
+      "console": "integratedTerminal",
+      "args": [
+        "C:/Users/PZWind-AkashM/Desktop/Post-Proccessing/V7_BugFix2/sensor_list_parts"
+      ]
+    }
+  ]
+}

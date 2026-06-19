@@ -1657,34 +1657,91 @@ def main():
     print("\n[Phase 11] Writing component load summary files...")
 
     # Read blade configuration from sensorList.txt [BLADE] section
-    blade_cfg  = get_blade_config()
+    # blade_cfg  = get_blade_config()
+    # convention_hint = blade_cfg['CONVENTION']
+
+    # # Detect blade sensors from output file sensor list
+    # convention, bld_stations, n_blades = detect_blade_sensors(
+    #     sensor_cols)
+
+    # # Override convention if explicitly set
+    # if convention_hint != 'AUTO' and convention_hint in ('ED', 'BD'):
+    #     print(f"  → Convention override: {convention_hint}")
+
+    # if convention == 'None':
+    #     print("  WARNING: No blade sensors detected — BldLoads.sum skipped")
+    #     print("           Check sensorList.txt [BLADE] section and OpenFAST output channels")
+    # else:
+    #     print(f"  → Detected {convention} convention, "
+    #           f"{n_blades} blade(s), "
+    #           f"{len(bld_stations)} stations")
+
+    #     # Read radial positions — prefer ElastoDyn primary file (correct
+    #     # OpenFAST formula); fall back to BLADE_FILE_PATH if ED file absent.
+    #     # The ED path is shared with TWR_ED_FILE under [TOWER] in sensorList.
+    #     twr_cfg_for_ed = get_tower_config(log=log)
+    #     # NOTE: get_tower_config consumes the path internally; expose it here.
+    #     from config import COMPONENT_CONFIG as _CC
+    #     ed_file_path_for_blade = _CC.get('TOWER', {}).get('TWR_ED_FILE', '').strip()
+    #     if ed_file_path_for_blade.upper() == 'NONE':
+    #         ed_file_path_for_blade = ''
+    #     radial_src = ed_file_path_for_blade or blade_cfg['BLADE_FILE_PATH']
+    #     radial_pos = read_radial_positions(
+    #         radial_src,
+    #         blade_cfg['BLADE_LENGTH'],
+    #         list(bld_stations.keys()),
+    #         log=log)
+
+    #     # Write BldLoads.sum
+    #     bld_sum_path = os.path.join(config.SUM_FOLDER, 'BldLoads.sum')
+    #     write_bld_loads_sum(
+    #         output_path    = bld_sum_path,
+    #         stations       = bld_stations,
+    #         radial_pos     = radial_pos,
+    #         family_order   = family_order,
+    #         sensor_cols    = sensor_cols_all,
+    #         m_values_sum   = blade_cfg['SUM_DEL_SLOPES'],
+    #         lifetime_years = config.LIFETIME_YEARS,
+    #         neq_lifetime   = config.NEQ_LIFETIME,
+    #         ext_folder     = config.EXT_FOLDER,
+    #         fat_folder     = config.FAT_FOLDER,
+    #         log            = log,
+    #         n_blades       = n_blades)
+    #     print(f"  → Written: SUM/BldLoads.sum")
+    #     log.file_written("SUM/BldLoads.sum", tag="Phase 11")
+
+    # 1. Get parsed config dictionary
+    blade_cfg = get_blade_config()
     convention_hint = blade_cfg['CONVENTION']
 
-    # Detect blade sensors from output file sensor list
-    convention, bld_stations, n_blades = detect_blade_sensors(
-        sensor_cols)
+    # 2. Determine stations based on AUTO vs EXPLICIT logic
+    if convention_hint == 'EXPLICIT':
+        print(f"  → Convention override: EXPLICIT (Reading sensors directly from sensorList.txt)")
+        convention = 'EXPLICIT'
+        bld_stations = blade_cfg['stations']
+        n_blades = blade_cfg['n_blades']
+    else:
+        # Fallback to legacy auto-detection
+        convention, bld_stations, n_blades = detect_blade_sensors(sensor_cols)
+        if convention_hint != 'AUTO' and convention_hint in ('ED', 'BD'):
+            print(f"  → Convention override: {convention_hint}")
 
-    # Override convention if explicitly set
-    if convention_hint != 'AUTO' and convention_hint in ('ED', 'BD'):
-        print(f"  → Convention override: {convention_hint}")
-
-    if convention == 'None':
-        print("  WARNING: No blade sensors detected — BldLoads.sum skipped")
+    if convention == 'None' or not bld_stations:
+        print("  WARNING: No blade sensors detected or defined — BldLoads.sum skipped")
         print("           Check sensorList.txt [BLADE] section and OpenFAST output channels")
     else:
         print(f"  → Detected {convention} convention, "
               f"{n_blades} blade(s), "
               f"{len(bld_stations)} stations")
 
-        # Read radial positions — prefer ElastoDyn primary file (correct
-        # OpenFAST formula); fall back to BLADE_FILE_PATH if ED file absent.
-        # The ED path is shared with TWR_ED_FILE under [TOWER] in sensorList.
+        # Read radial positions — prefer ElastoDyn primary file
         twr_cfg_for_ed = get_tower_config(log=log)
-        # NOTE: get_tower_config consumes the path internally; expose it here.
+        
         from config import COMPONENT_CONFIG as _CC
         ed_file_path_for_blade = _CC.get('TOWER', {}).get('TWR_ED_FILE', '').strip()
         if ed_file_path_for_blade.upper() == 'NONE':
             ed_file_path_for_blade = ''
+            
         radial_src = ed_file_path_for_blade or blade_cfg['BLADE_FILE_PATH']
         radial_pos = read_radial_positions(
             radial_src,
@@ -1696,7 +1753,7 @@ def main():
         bld_sum_path = os.path.join(config.SUM_FOLDER, 'BldLoads.sum')
         write_bld_loads_sum(
             output_path    = bld_sum_path,
-            stations       = bld_stations,
+            stations       = bld_stations,    # This will now contain your parsed explicitly defined sensors
             radial_pos     = radial_pos,
             family_order   = family_order,
             sensor_cols    = sensor_cols_all,
@@ -1707,6 +1764,7 @@ def main():
             fat_folder     = config.FAT_FOLDER,
             log            = log,
             n_blades       = n_blades)
+            
         print(f"  → Written: SUM/BldLoads.sum")
         log.file_written("SUM/BldLoads.sum", tag="Phase 11")
 

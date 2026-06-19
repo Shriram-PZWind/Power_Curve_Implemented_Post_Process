@@ -255,12 +255,13 @@ def execution_pipeline():
     # print("=" * 80)
     
     # 1. Terminal Input Validation
-    if len(sys.argv) < 2:
-        print("\n[CRITICAL ERROR] Target folder path parameter is missing.")
-        print("Usage in terminal: your_pipeline.exe <PATH_TO_FOLDER>")
-        sys.exit(1)
+    # if len(sys.argv) < 2:
+    #     print("\n[CRITICAL ERROR] Target folder path parameter is missing.")
+    #     print("Usage in terminal: your_pipeline.exe <PATH_TO_FOLDER>")
+    #     sys.exit(1)
         
-    user_folder = os.path.abspath(sys.argv[1])
+    # user_folder = os.path.abspath(sys.argv[1])
+    user_folder = r"C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\sensor_list_parts"
     if not os.path.isdir(user_folder):
         print(f"\n[CRITICAL ERROR] Provided folder does not exist:\n  {user_folder}")
         sys.exit(1)

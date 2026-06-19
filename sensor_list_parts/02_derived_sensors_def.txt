@@ -18,14 +18,14 @@
 [DERIVED_SENSORS_DEF]
 #
 # ── Blade Root — Blade frame (b suffix, edgewise + flapwise) ─────────────────
-Mres_RootBld1_[kN-m]  = sqrt(RootMxb1_[kN-m]^2 + RootMyb1_[kN-m]^2)   # Blade 1 root resultant bending — blade frame
-Mres_RootBld2_[kN-m]  = sqrt(RootMxb2_[kN-m]^2 + RootMyb2_[kN-m]^2)   # Blade 2 root resultant bending — blade frame
-Mres_RootBld3_[kN-m]  = sqrt(RootMxb3_[kN-m]^2 + RootMyb3_[kN-m]^2)   # Blade 3 root resultant bending — blade frame
+Mres_RootBld1_[N-m]  = sqrt(B1RootMxr_[N-m]^2 + B1RootMyr_[N-m]^2)   # Blade 1 root resultant bending — blade frame
+Mres_RootBld2_[N-m]  = sqrt(B2RootMxr_[N-m]^2 + B2RootMyr_[N-m]^2)   # Blade 2 root resultant bending — blade frame
+Mres_RootBld3_[N-m]  = sqrt(B3RootMxr_[N-m]^2 + B3RootMyr_[N-m]^2)   # Blade 3 root resultant bending — blade frame
 #
 # ── Blade Root — Hub/Coned frame (c suffix, in-plane + out-of-plane) ─────────
-Mres_RootHub1_[kN-m]  = sqrt(RootMxc1_[kN-m]^2 + RootMyc1_[kN-m]^2)   # Blade 1 root resultant bending — hub/coned frame
-Mres_RootHub2_[kN-m]  = sqrt(RootMxc2_[kN-m]^2 + RootMyc2_[kN-m]^2)   # Blade 2 root resultant bending — hub/coned frame
-Mres_RootHub3_[kN-m]  = sqrt(RootMxc3_[kN-m]^2 + RootMyc3_[kN-m]^2)   # Blade 3 root resultant bending — hub/coned frame
+Mres_RootHub1_[N-m]  = sqrt(B1RootMxr_[N-m]^2 + B1RootMyr_[N-m]^2)   # Blade 1 root resultant bending — hub/coned frame
+Mres_RootHub2_[N-m]  = sqrt(B2RootMxr_[N-m]^2 + B2RootMyr_[N-m]^2)   # Blade 2 root resultant bending — hub/coned frame
+Mres_RootHub3_[N-m]  = sqrt(B3RootMxr_[N-m]^2 + B3RootMyr_[N-m]^2)   # Blade 3 root resultant bending — hub/coned frame
 #
 # ── LSS Shaft — Non-rotating frame (tilt + yaw) ──────────────────────────────
 Mres_LSShft_a_[kN-m]  = sqrt(LSSGagMya_[kN-m]^2 + LSSGagMza_[kN-m]^2) # LSS resultant bending — non-rotating frame
