@@ -10,32 +10,32 @@
 #
 # ── RFC and LDD DEL slopes (Hertzian contact, m=3.3) ─────────────────────────
 # Must be subset of RFC_M_VALUES / LDD_M_VALUES in Table 0
-PTB_RFC_SLOPES     = 3.3
-PTB_LDD_SLOPES     = 3.3
-#
-# ── Blade 1 sensors (c suffix — hub/coned frame) ─────────────────────────────
-PTB_Mres_B1        = mres_rootbld1_[n-m]
-PTB_Mx_B1          = B1RootMxr_[N-m]
-PTB_My_B1          = B1RootMyr_[N-m]
-PTB_Mz_B1          = B1RootMzr_[N-m]
-PTB_Fx_B1          = B1RootFxr_[N]
-PTB_Fy_B1          = B1RootFyr_[N]
-PTB_Fz_B1          = B1RootFzr_[N]
-#
-# ── Blade 2 sensors ───────────────────────────────────────────────────────────
-PTB_Mres_B2        = mres_rootbld2_[n-m]
-PTB_Mx_B2          = B2RootMxr_[N-m]
-PTB_My_B2          = B2RootMyr_[N-m]
-PTB_Mz_B2          = B2RootMzr_[N-m]
-PTB_Fx_B2          = B2RootFxr_[N]
-PTB_Fy_B2          = B2RootFyr_[N]
-PTB_Fz_B2          = B2RootFzr_[N]
-#
-# ── Blade 3 sensors ───────────────────────────────────────────────────────────
-PTB_Mres_B3        = mres_rootbld3_[n-m]
-PTB_Mx_B3          = B3RootMxr_[N-m]
-PTB_My_B3          = B3RootMyr_[N-m]
-PTB_Mz_B3          = B3RootMzr_[N-m]
-PTB_Fx_B3          = B3RootFxr_[N]
-PTB_Fy_B3          = B3RootFyr_[N]
-PTB_Fz_B3          = B3RootFzr_[N]
+#PTB_RFC_SLOPES     = 3.3
+#PTB_LDD_SLOPES     = 3.3
+##
+## ── Blade 1 sensors (c suffix — hub/coned frame) ─────────────────────────────
+#PTB_Mres_B1        = mres_rootbld1_[n-m]
+#PTB_Mx_B1          = B1RootMxr_[N-m]
+#PTB_My_B1          = B1RootMyr_[N-m]
+#PTB_Mz_B1          = B1RootMzr_[N-m]
+#PTB_Fx_B1          = B1RootFxr_[N]
+#PTB_Fy_B1          = B1RootFyr_[N]
+#PTB_Fz_B1          = B1RootFzr_[N]
+##
+## ── Blade 2 sensors ───────────────────────────────────────────────────────────
+#PTB_Mres_B2        = mres_rootbld2_[n-m]
+#PTB_Mx_B2          = B2RootMxr_[N-m]
+#PTB_My_B2          = B2RootMyr_[N-m]
+#PTB_Mz_B2          = B2RootMzr_[N-m]
+#PTB_Fx_B2          = B2RootFxr_[N]
+#PTB_Fy_B2          = B2RootFyr_[N]
+#PTB_Fz_B2          = B2RootFzr_[N]
+##
+## ── Blade 3 sensors ───────────────────────────────────────────────────────────
+#PTB_Mres_B3        = mres_rootbld3_[n-m]
+#PTB_Mx_B3          = B3RootMxr_[N-m]
+#PTB_My_B3          = B3RootMyr_[N-m]
+#PTB_Mz_B3          = B3RootMzr_[N-m]
+#PTB_Fx_B3          = B3RootFxr_[N]
+#PTB_Fy_B3          = B3RootFyr_[N]
+#PTB_Fz_B3          = B3RootFzr_[N]

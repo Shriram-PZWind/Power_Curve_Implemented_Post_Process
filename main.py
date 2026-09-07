@@ -56,6 +56,8 @@ from output_writer  import (write_per_file_sta, write_summary_sta,
                              write_ldd_file, write_lrd_file,
                              write_ext_file, write_complementary_file,
                              write_contribution_file)
+from PowerCurve import(MultiDensityPowerCalculator)
+from merge_All_pc_files import(merge_power_curve_files)
 
 # Force underlying linear algebra libraries to single-thread to prevent multi-core lockups
 os.environ["OMP_NUM_THREADS"] = "1"
@@ -687,6 +689,7 @@ def main():
     os.makedirs(config.FAT_FOLDER, exist_ok=True)
     os.makedirs(config.EXT_FOLDER, exist_ok=True)
     os.makedirs(config.SUM_FOLDER, exist_ok=True)
+    os.makedirs(config.POWER_CURVE_FOLDER, exist_ok=True)
 
     all_files = get_all_output_files(config.INPUT_FOLDER)
     if not all_files:
@@ -712,6 +715,7 @@ def main():
     print(f"  FAT folder    : {config.FAT_FOLDER}")
     print(f"  EXT folder    : {config.EXT_FOLDER}")
     print(f"  SUM folder    : {config.SUM_FOLDER}")
+    print(f" POWER CURVE folder  : {config.POWER_CURVE_FOLDER}")
 
     # ── Initialise logger ─────────────────────────────────────────────────────
     log = PostProcessLogger(config.LOG_FILE, config.OUTPUT_FOLDER)
@@ -1357,6 +1361,25 @@ def main():
     print(f"  → Written: STA/summary_Raw.sta")
     log.file_written("STA/summary_Raw.sta", tag="Phase 8")
 
+
+# Phase 8a : for power curve Input file
+    print("\n[Phase 8a] Power Curve Input file")
+    calculator = MultiDensityPowerCalculator()
+    output_txt = os.path.join(config.POWER_CURVE_FOLDER, "Power_Curve_Input_file11.txt")
+    
+    base_folder_path = r"C:\\Akanksha\\Post-Processing\\Output"
+    
+    
+    calculator.process_root_directory(base_folder_path)
+    calculator.generate_formatted_text(output_txt)
+
+# Phase 8aa : Power Curve merged file
+    base_folder_path = r"C:\\Akanksha\\Post-Processing\\Output\\POWER_CURVE"
+    output_txt = r"C:\\Akanksha\\Post-Processing\\Output\\Power_Curve.txt"
+    
+    merge_power_curve_files(base_folder_path, output_txt)  
+
+
     # ── Phase 8b: Family averaged summary files ──────────────────────────────
     print("\n[Phase 8b] Computing family averaged summary files...")
     family_order, family_extreme, family_del, family_plf, family_method, n_seeds = \
@@ -1792,14 +1815,14 @@ def main():
         write_hub_loads_sum(
             output_path        = hub_sum_path,
             hub_sensor_map     = hub_map,
-                                    family_order       = family_order,
+            family_order       = family_order,
             sensor_cols        = sensor_cols,
             m_values_hub       = hub_cfg['del_slopes'],
             lifetime_years     = config.LIFETIME_YEARS,
             neq_lifetime       = config.NEQ_LIFETIME,
-                ext_folder         = config.EXT_FOLDER,
-                fat_folder         = config.FAT_FOLDER,
-                log                = log)
+            ext_folder         = config.EXT_FOLDER,
+            fat_folder         = config.FAT_FOLDER,
+            log                = log)
         print(f"  → Written: SUM/HubLoads.sum")
         log.file_written("SUM/HubLoads.sum", tag="Phase 11")
 

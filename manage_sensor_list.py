@@ -77,31 +77,24 @@ def split_sensor_list(src_path, output_dir):
             out_f.writelines(sec_lines)
         print(f"  [Created] -> {filename} ({len(sec_lines)} lines)")
 
-    print(
-        f"\nSuccess! Highly organized sub-files generated inside: '{output_dir}'"
-    )
+    print(f"\nSuccess! Highly organized sub-files generated inside: '{output_dir}'")
 
 
 def merge_sensor_list(dest_path, input_dir):
     """
-    Gathers all split section files, sorts them by sequential numeric prefix,
-    and stitches them back into a single unified sensorList.txt with zero data loss.
+    Reads all configuration part files in order and merges them.
+    Automatically detects matrix layouts (using '|') and flattens them
+    into standard KEY = VALUE pairs for the final parser.
     """
-    if not os.path.exists(input_dir):
-        print(f"Error: Split parts directory not found at: {input_dir}")
+    if not os.path.isdir(input_dir):
+        print(f"Error: Parts directory not found at: {input_dir}")
         return
 
-    # Filter out only the .txt files from the split folder
-    # files = [f for f in os.listdir(input_dir) if f.endswith(".txt")]
-    # files.sort()  # Alphabetical sort naturally aligns the numeric 00_, 01_, 02_ prefixes
-
     files = [
-        f for f in os.listdir(input_dir) 
-        if f.endswith(".txt") and re.match(r"^\d+", f)
+        f for f in os.listdir(input_dir) if f.endswith(".txt") and re.match(r"^\d+", f)
     ]
 
-    # 2. Sort them numerically based on the leading integer prefix
-    # This ensures "10_..." correctly comes AFTER "2_..." instead of alphabetically
+    # Sort numerically based on leading integer (e.g., 2 before 10)
     files.sort(key=lambda f: int(re.match(r"^\d+", f).group()))
 
     if not files:
@@ -109,20 +102,32 @@ def merge_sensor_list(dest_path, input_dir):
         return
 
     all_lines = []
-    # print("Re-aggregating sensor configurations in sequence:")
+
     for filename in files:
         file_path = os.path.join(input_dir, filename)
-        # print(f"  [Merging] <- {filename}")
         with open(file_path, "r", encoding="utf-8") as in_f:
-            all_lines.extend(in_f.readlines())
+            for line in in_f:
+                stripped = line.strip()
+
+                # 1. If it's a comment or a standard line without matrix formatting
+                if stripped.startswith("#") or "|" not in line or "=" not in line:
+                    all_lines.append(line)
+
+                # 2. If it is a generic matrix grid line containing '|' and '='
+                else:
+                    cells = line.split("|")
+                    for cell in cells:
+                        if "=" in cell:
+                            # Clean up the equation and add it as a flat line
+                            clean_equation = cell.strip()
+                            all_lines.append(clean_equation + "\n")
+
+            # Add a small buffer space between merged files
+            all_lines.append("\n")
 
     # Overwrite/Generate the unified sensor list file
     with open(dest_path, "w", encoding="utf-8") as out_f:
         out_f.writelines(all_lines)
-
-    # print(
-    #     f"\nSuccess! Reconstructed unified file with 100% data fidelity at:\n  '{dest_path}'"
-    # )
 
 
 if __name__ == "__main__":

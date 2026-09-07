@@ -1,4 +1,5 @@
-input folder = C:\Users\PZWind-AkashM\Desktop\setup\Beamdyn test
-output folder = C:\Users\PZWind-AkashM\Desktop\setup\Beamdyn test\results-v7
-lcpostproc = C:\Users\PZWind-AkashM\Desktop\Post-Proccessing\V7_BugFix2\LC_PostProcess.txt
-sensorlist = C:\Some\Desired\SensorList.txt
+input folder = C:\Akanksha\Post-Processing\Input
+output folder = C:\Akanksha\Post-Processing\Output
+
+lcpostproc = C:\Akanksha\Post-Process-V7\LC_PostProcess20-3.txt
+sensorlist =C:\Akanksha\Post-Process-V7\senso_rList1.txt

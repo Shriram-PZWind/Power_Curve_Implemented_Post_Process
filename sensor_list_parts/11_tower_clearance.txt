@@ -11,9 +11,9 @@
 #CLR_TwrClrnc_B2          = TwrClrnc2_[m]
 #CLR_TwrClrnc_B3          = TwrClrnc3_[m]
 
-CLR_TwrClrnc_B1          = TipClrnc1_[m]
-CLR_TwrClrnc_B2          = TipClrnc2_[m]
-CLR_TwrClrnc_B3          = TipClrnc3_[m]
+#CLR_TwrClrnc_B1          = TipClrnc1_[m]
+#CLR_TwrClrnc_B2          = TipClrnc2_[m]
+#CLR_TwrClrnc_B3          = TipClrnc3_[m]
 #
 # ── Out-of-plane tip deflection (fallback if TwrClrnc not available) ────────
 #CLR_OoPDefl_B1           = OoPDefl1_[m]

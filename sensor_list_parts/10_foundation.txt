@@ -20,9 +20,9 @@ FND_Mres             = mres_twrbs_[kn-m]
 FND_Mx               = TwrBsMxt_[kN-m]
 FND_My               = TwrBsMyt_[kN-m]
 FND_Mz               = TwrBsMzt_[kN-m]
-FND_Fx               = TwrBsFxt_[kN]
-FND_Fy               = TwrBsFyt_[kN]
-FND_Fz               = TwrBsFzt_[kN]
+#FND_Fx               = TwrBsFxt_[kN]
+#FND_Fy               = TwrBsFyt_[kN]
+#FND_Fz               = TwrBsFzt_[kN]
 #
 # ── RFC DEL slopes for Table 2A (steel weld S-N) ─────────────────────────────
 # Must be subset of RFC_M_VALUES in Table 0

@@ -61,6 +61,7 @@ def get_all_files(folder):
             files.append(os.path.join(folder, fname))
 
     return files
+    
 
 
 def get_sensor_names(df, time_col='Time_[s]'):

@@ -12,18 +12,18 @@ YAW_DEL_SLOPES   = 3.0
 #
 # Loads — moments
 YAW_Mres         = mres_yawbr_[kn-m]
-YAW_Mx           = YawBrMxp_[kN-m]
-YAW_My           = YawBrMyp_[kN-m]
-YAW_Mz           = YawBrMzp_[kN-m]
+YAW_Mx           = YawBrMxn_[kN-m]
+YAW_My           = YawBrMyn_[kN-m]
+YAW_Mz           = YawBrMzn_[kN-m]
 # Loads — forces
-YAW_Fx           = YawBrFxp_[kN]
-YAW_Fy           = YawBrFyp_[kN]
-YAW_Fz           = YawBrFzp_[kN]
-# Translational accelerations
-YAW_TAxp         = YawBrTAxp_[m/s^2]
-YAW_TAyp         = YawBrTAyp_[m/s^2]
-YAW_TAzp         = YawBrTAzp_[m/s^2]
-# Angular accelerations
-YAW_RAxp         = YawBrRAxp_[deg/s^2]
-YAW_RAyp         = YawBrRAyp_[deg/s^2]
-YAW_RAzp         = YawBrRAzp_[deg/s^2]
+#YAW_Fx           = YawBrFxp_[kN]
+#YAW_Fy           = YawBrFyp_[kN]
+#YAW_Fz           = YawBrFzp_[kN]
+## Translational accelerations
+#YAW_TAxp         = YawBrTAxp_[m/s^2]
+#YAW_TAyp         = YawBrTAyp_[m/s^2]
+#YAW_TAzp         = YawBrTAzp_[m/s^2]
+## Angular accelerations
+#YAW_RAxp         = YawBrRAxp_[deg/s^2]
+#YAW_RAyp         = YawBrRAyp_[deg/s^2]
+#YAW_RAzp         = YawBrRAzp_[deg/s^2]

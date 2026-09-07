@@ -32,38 +32,39 @@ DRT_DEL_SLOPES         = 4.0  8.0
 #     separate "LSShftFxs", so DRT_Fx_s also uses LSShftFxa.
 #   - LSS bending moments are reported at the strain-gage section
 #     (LSSGagMya/Mys/Mza/Mzs), not on LSShft*; we use those for My/Mz.
-DRT_Mres_a             = mres_lsshft_a_kn-m
-DRT_Mx_a               = LSShftMxa_[kN-m]
-DRT_My_a               = LSSGagMya_[kN-m]
-DRT_Mz_a               = LSSGagMza_[kN-m]
-DRT_Fx_a               = LSShftFxa_[kN]
-DRT_Fy_a               = LSShftFya_[kN]
-DRT_Fz_a               = LSShftFza_[kN]
+#DRT_Mres_a             = mres_lsshft_a_kn-m
+#DRT_Mx_a               = LSShftMxa_[kN-m]
+#DRT_My_a               = LSSGagMya_[kN-m]
+#DRT_Mz_a               = LSSGagMza_[kN-m]
+#DRT_Fx_a               = LSShftFxa_[kN]
+#DRT_Fy_a               = LSShftFya_[kN]
+#DRT_Fz_a               = LSShftFza_[kN]
+##
+## ── Rotating frame (s suffix) ────────────────────────────────────────────────
+## Same convention: Mx = shaft torque, My/Mz = bending, Mres = sqrt(My^2+Mz^2)
+#DRT_Mres_s             = mres_lsshft_s_kN-m
+#DRT_Mx_s               = LSShftMxs_[kN-m]
+#DRT_My_s               = LSSGagMys_[kN-m]
+#DRT_Mz_s               = LSSGagMzs_[kN-m]
+#DRT_Fx_s               = LSShftFxs_[kN]
+#DRT_Fy_s               = LSShftFys_[kN]
+#DRT_Fz_s               = LSShftFzs_[kN]
+##
+## ── LDD / LRD configuration for Table 1C ─────────────────────────────────────
+## Slopes must be subset of LDD_M_VALUES / LRD_M_VALUES in Table 0
+## Sensors must have LDD=1 or LRD=1 in Table 2 / Table 3B
+#DRT_LDD_SLOPES         = 3.3  6.7
+#DRT_LRD_SLOPES         = 3.3  6.7
+#DRT_LDD_LRD_SENSORS    = LSShftMxa_[kN-m]  LSSGagMya_[kN-m]  LSSGagMza_[kN-m]  LSSGagMys_[kN-m]  LSSGagMzs_[kN-m]
+##
+## ── High-speed shaft (Table 3) ───────────────────────────────────────────────
+## HSS torque written with PLF and without PLF
+## HSS power and speed written without PLF (operational reference)
+## HSS speed channel: OpenFAST does NOT export "HSShftV". GenSpeed (rpm)
+## is reported on the high-speed shaft (rigid coupling to generator) and
+## is the standard HSS speed channel. Use GenSpeed_[rpm].
+#DRT_HSS_DEL_SLOPES     = 4.0  8.0
+#DRT_HSS_Tq             = HSShftTq_[kN-m]
+#DRT_HSS_Pwr            = HSShftPwr_[kW]
+#DRT_HSS_V              = GenSpeed_[rpm]
 #
-# ── Rotating frame (s suffix) ────────────────────────────────────────────────
-# Same convention: Mx = shaft torque, My/Mz = bending, Mres = sqrt(My^2+Mz^2)
-DRT_Mres_s             = mres_lsshft_s_kN-m
-DRT_Mx_s               = LSShftMxs_[kN-m]
-DRT_My_s               = LSSGagMys_[kN-m]
-DRT_Mz_s               = LSSGagMzs_[kN-m]
-DRT_Fx_s               = LSShftFxs_[kN]
-DRT_Fy_s               = LSShftFys_[kN]
-DRT_Fz_s               = LSShftFzs_[kN]
-#
-# ── LDD / LRD configuration for Table 1C ─────────────────────────────────────
-# Slopes must be subset of LDD_M_VALUES / LRD_M_VALUES in Table 0
-# Sensors must have LDD=1 or LRD=1 in Table 2 / Table 3B
-DRT_LDD_SLOPES         = 3.3  6.7
-DRT_LRD_SLOPES         = 3.3  6.7
-DRT_LDD_LRD_SENSORS    = LSShftMxa_[kN-m]  LSSGagMya_[kN-m]  LSSGagMza_[kN-m]  LSSGagMys_[kN-m]  LSSGagMzs_[kN-m]
-#
-# ── High-speed shaft (Table 3) ───────────────────────────────────────────────
-# HSS torque written with PLF and without PLF
-# HSS power and speed written without PLF (operational reference)
-# HSS speed channel: OpenFAST does NOT export "HSShftV". GenSpeed (rpm)
-# is reported on the high-speed shaft (rigid coupling to generator) and
-# is the standard HSS speed channel. Use GenSpeed_[rpm].
-DRT_HSS_DEL_SLOPES     = 4.0  8.0
-DRT_HSS_Tq             = HSShftTq_[kN-m]
-DRT_HSS_Pwr            = HSShftPwr_[kW]
-DRT_HSS_V              = GenSpeed_[rpm]

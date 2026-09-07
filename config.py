@@ -86,6 +86,7 @@ FAT_FOLDER = os.path.join(OUTPUT_FOLDER, 'FAT')  # .rfc, .markov, .ldd, .lrd fil
 EXT_FOLDER = os.path.join(OUTPUT_FOLDER, 'EXT')  # .max, .min, .abs files
 SUM_FOLDER = os.path.join(OUTPUT_FOLDER, 'SUM')
 LOG_FILE   = os.path.join(OUTPUT_FOLDER, 'postprocess.log')  # .sum component load summary files
+POWER_CURVE_FOLDER = os.path.join(OUTPUT_FOLDER, 'POWER_CURVE')
 
 # Blade settings and component summary configuration are now read from
 # sensorList.txt [BLADE] section — no settings needed here.

@@ -18,34 +18,34 @@
 [DERIVED_SENSORS_DEF]
 #
 # ── Blade Root — Blade frame (b suffix, edgewise + flapwise) ─────────────────
-Mres_RootBld1_[N-m]  = sqrt(B1RootMxr_[N-m]^2 + B1RootMyr_[N-m]^2)   # Blade 1 root resultant bending — blade frame
-Mres_RootBld2_[N-m]  = sqrt(B2RootMxr_[N-m]^2 + B2RootMyr_[N-m]^2)   # Blade 2 root resultant bending — blade frame
-Mres_RootBld3_[N-m]  = sqrt(B3RootMxr_[N-m]^2 + B3RootMyr_[N-m]^2)   # Blade 3 root resultant bending — blade frame
-#
-# ── Blade Root — Hub/Coned frame (c suffix, in-plane + out-of-plane) ─────────
-Mres_RootHub1_[N-m]  = sqrt(B1RootMxr_[N-m]^2 + B1RootMyr_[N-m]^2)   # Blade 1 root resultant bending — hub/coned frame
-Mres_RootHub2_[N-m]  = sqrt(B2RootMxr_[N-m]^2 + B2RootMyr_[N-m]^2)   # Blade 2 root resultant bending — hub/coned frame
-Mres_RootHub3_[N-m]  = sqrt(B3RootMxr_[N-m]^2 + B3RootMyr_[N-m]^2)   # Blade 3 root resultant bending — hub/coned frame
-#
-# ── LSS Shaft — Non-rotating frame (tilt + yaw) ──────────────────────────────
-Mres_LSShft_a_[kN-m]  = sqrt(LSSGagMya_[kN-m]^2 + LSSGagMza_[kN-m]^2) # LSS resultant bending — non-rotating frame
-#
-# ── LSS Shaft — Rotating frame ───────────────────────────────────────────────
-Mres_LSShft_s_[kN-m]  = sqrt(LSSGagMys_[kN-m]^2 + LSSGagMzs_[kN-m]^2) # LSS resultant bending — rotating frame
-#
-# ── Tower Base ────────────────────────────────────────────────────────────────
-Mres_TwrBs_[kN-m]     = sqrt(TwrBsMxt_[kN-m]^2  + TwrBsMyt_[kN-m]^2)  # Tower base resultant — side-side + fore-aft
-#
-# ── Tower Height Stations ─────────────────────────────────────────────────────
-Mres_TwHt1_[kN-m]     = sqrt(TwHt1MLxt_[kN-m]^2 + TwHt1MLyt_[kN-m]^2) # Tower height station 1 resultant
-Mres_TwHt2_[kN-m]     = sqrt(TwHt2MLxt_[kN-m]^2 + TwHt2MLyt_[kN-m]^2) # Tower height station 2 resultant
-Mres_TwHt3_[kN-m]     = sqrt(TwHt3MLxt_[kN-m]^2 + TwHt3MLyt_[kN-m]^2) # Tower height station 3 resultant
-Mres_TwHt4_[kN-m]     = sqrt(TwHt4MLxt_[kN-m]^2 + TwHt4MLyt_[kN-m]^2) # Tower height station 4 resultant
-Mres_TwHt5_[kN-m]     = sqrt(TwHt5MLxt_[kN-m]^2 + TwHt5MLyt_[kN-m]^2) # Tower height station 5 resultant
-Mres_TwHt6_[kN-m]     = sqrt(TwHt6MLxt_[kN-m]^2 + TwHt6MLyt_[kN-m]^2) # Tower height station 6 resultant
-Mres_TwHt7_[kN-m]     = sqrt(TwHt7MLxt_[kN-m]^2 + TwHt7MLyt_[kN-m]^2) # Tower height station 7 resultant
-Mres_TwHt8_[kN-m]     = sqrt(TwHt8MLxt_[kN-m]^2 + TwHt8MLyt_[kN-m]^2) # Tower height station 8 resultant
-Mres_TwHt9_[kN-m]     = sqrt(TwHt9MLxt_[kN-m]^2 + TwHt9MLyt_[kN-m]^2) # Tower height station 9 resultant
-#
-# ── Tower Top / Yaw Bearing ───────────────────────────────────────────────────
-Mres_YawBr_[kN-m]     = sqrt(YawBrMxp_[kN-m]^2  + YawBrMyp_[kN-m]^2)  # Yaw bearing resultant — rolling + pitching
+#Mres_RootBld1_[N-m]  = sqrt(B1RootMxr_[N-m]^2 + B1RootMyr_[N-m]^2)   # Blade 1 root resultant bending — blade frame
+#Mres_RootBld2_[N-m]  = sqrt(B2RootMxr_[N-m]^2 + B2RootMyr_[N-m]^2)   # Blade 2 root resultant bending — blade frame
+#Mres_RootBld3_[N-m]  = sqrt(B3RootMxr_[N-m]^2 + B3RootMyr_[N-m]^2)   # Blade 3 root resultant bending — blade frame
+##
+## ── Blade Root — Hub/Coned frame (c suffix, in-plane + out-of-plane) ─────────
+#Mres_RootHub1_[N-m]  = sqrt(B1RootMxr_[N-m]^2 + B1RootMyr_[N-m]^2)   # Blade 1 root resultant bending — hub/coned frame
+#Mres_RootHub2_[N-m]  = sqrt(B2RootMxr_[N-m]^2 + B2RootMyr_[N-m]^2)   # Blade 2 root resultant bending — hub/coned frame
+#Mres_RootHub3_[N-m]  = sqrt(B3RootMxr_[N-m]^2 + B3RootMyr_[N-m]^2)   # Blade 3 root resultant bending — hub/coned frame
+##
+## ── LSS Shaft — Non-rotating frame (tilt + yaw) ──────────────────────────────
+#Mres_LSShft_a_[kN-m]  = sqrt(LSSGagMya_[kN-m]^2 + LSSGagMza_[kN-m]^2) # LSS resultant bending — non-rotating frame
+##
+## ── LSS Shaft — Rotating frame ───────────────────────────────────────────────
+#Mres_LSShft_s_[kN-m]  = sqrt(LSSGagMys_[kN-m]^2 + LSSGagMzs_[kN-m]^2) # LSS resultant bending — rotating frame
+##
+## ── Tower Base ────────────────────────────────────────────────────────────────
+#Mres_TwrBs_[kN-m]     = sqrt(TwrBsMxt_[kN-m]^2  + TwrBsMyt_[kN-m]^2)  # Tower base resultant — side-side + fore-aft
+##
+## ── Tower Height Stations ─────────────────────────────────────────────────────
+#Mres_TwHt1_[kN-m]     = sqrt(TwHt1MLxt_[kN-m]^2 + TwHt1MLyt_[kN-m]^2) # Tower height station 1 resultant
+#Mres_TwHt2_[kN-m]     = sqrt(TwHt2MLxt_[kN-m]^2 + TwHt2MLyt_[kN-m]^2) # Tower height station 2 resultant
+#Mres_TwHt3_[kN-m]     = sqrt(TwHt3MLxt_[kN-m]^2 + TwHt3MLyt_[kN-m]^2) # Tower height station 3 resultant
+#Mres_TwHt4_[kN-m]     = sqrt(TwHt4MLxt_[kN-m]^2 + TwHt4MLyt_[kN-m]^2) # Tower height station 4 resultant
+#Mres_TwHt5_[kN-m]     = sqrt(TwHt5MLxt_[kN-m]^2 + TwHt5MLyt_[kN-m]^2) # Tower height station 5 resultant
+#Mres_TwHt6_[kN-m]     = sqrt(TwHt6MLxt_[kN-m]^2 + TwHt6MLyt_[kN-m]^2) # Tower height station 6 resultant
+#Mres_TwHt7_[kN-m]     = sqrt(TwHt7MLxt_[kN-m]^2 + TwHt7MLyt_[kN-m]^2) # Tower height station 7 resultant
+#Mres_TwHt8_[kN-m]     = sqrt(TwHt8MLxt_[kN-m]^2 + TwHt8MLyt_[kN-m]^2) # Tower height station 8 resultant
+#Mres_TwHt9_[kN-m]     = sqrt(TwHt9MLxt_[kN-m]^2 + TwHt9MLyt_[kN-m]^2) # Tower height station 9 resultant
+##
+## ── Tower Top / Yaw Bearing ───────────────────────────────────────────────────
+#Mres_YawBr_[kN-m]     = sqrt(YawBrMxp_[kN-m]^2  + YawBrMyp_[kN-m]^2)  # Yaw bearing resultant — rolling + pitching
